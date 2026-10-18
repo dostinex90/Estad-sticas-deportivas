@@ -1,0 +1,56 @@
+# Cada día: descarga los partidos nuevos, pasa las pruebas y regenera los informes de informes/.
+# No usa IA. En repositorios públicos GitHub Actions es gratuito.
+name: Actualización diaria
+
+on:
+  schedule:
+    - cron: "17 9 * * *"  # 09:17 UTC todos los días
+  workflow_dispatch:       # botón "Run workflow" para lanzarla a mano
+
+permissions:
+  contents: write
+
+concurrency:
+  group: actualizacion-diaria
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Actualizar la base de datos
+        run: python -m analisis_deportivo recopilar
+
+      - name: Pruebas
+        run: python -m unittest discover -s tests
+
+      - name: Generar informes
+        run: python scripts/generar_informes.py
+
+      - name: Guardar los informes en el repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add informes
+          if git diff --cached --quiet; then
+            echo "Los informes no han cambiado."
+            exit 0
+          fi
+          git commit -m "Informes automáticos $(date -u +%Y-%m-%d)"
+          git push
+
+      # La base actualizada se guarda como descarga del propio workflow (30 días) en lugar de
+      # subirla al repositorio cada día, para que el historial de git no crezca 18 MB diarios.
+      - name: Guardar la base actualizada
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-deportiva
+          path: datos/base_deportiva.sqlite.gz
+          retention-days: 30

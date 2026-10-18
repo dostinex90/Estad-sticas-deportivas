@@ -1,0 +1,20 @@
+# Pasa las pruebas en cada cambio de código para detectar errores antes de que lleguen a los informes.
+name: Pruebas
+
+on:
+  push:
+    paths-ignore:
+      - "informes/**"
+  pull_request:
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pruebas
+        run: python -m unittest discover -s tests -v

@@ -25,6 +25,22 @@ Abre en el navegador (http://localhost:8000) una interfaz con todo el programa: 
 
 No necesita instalar nada más que Python. Para detenerla, pulsa Ctrl+C en la terminal.
 
+## Automatización diaria (GitHub Actions)
+
+El repositorio se actualiza solo en los servidores de GitHub. No usa IA ni consume uso de Claude, y es gratis en repositorios públicos.
+
+- **Cada día a las 09:17 UTC** (`.github/workflows/actualizacion-diaria.yml`):
+  1. Descarga los partidos nuevos (`recopilar`).
+  2. Pasa las pruebas.
+  3. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL, y la precisión de los modelos.
+  4. Si algo cambió, los guarda en el repositorio.
+  5. La base actualizada queda como descarga del propio workflow durante 30 días.
+- **Con cada cambio de código** (`.github/workflows/pruebas.yml`): pasa todas las pruebas.
+- **Para lanzarla a mano:** pestaña **Actions** del repositorio → *Actualización diaria* → **Run workflow**.
+- **Para pausarla:** en la misma pantalla, menú **···** → *Disable workflow*.
+
+Los informes también se pueden generar en local con `python3 scripts/generar_informes.py`.
+
 ## Base de datos incluida
 
 El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.sqlite.gz`, con todo lo que se puede recopilar de fuentes abiertas. Se descomprime sola la primera vez que se usa.
