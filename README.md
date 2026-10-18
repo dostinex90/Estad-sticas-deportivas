@@ -4,6 +4,23 @@ Programa en Python para analizar partidos de **fútbol (soccer)** y de la **NFL*
 
 Solo necesita Python 3.9 o posterior. No usa librerías externas.
 
+## Ver el programa en la web (sin instalar nada)
+
+👉 **https://dostinex90.github.io/Estad-sticas-deportivas/**
+
+Esta versión publicada se actualiza sola cada día. Incluye la temporada actual de 7 ligas (LaLiga, Premier League, Serie A, Bundesliga, Ligue 1, Primeira Liga y Eredivisie) y de la NFL:
+
+- Clasificaciones e informes de cada equipo.
+- Predicciones de cualquier partido entre dos equipos de la misma liga.
+- Pronósticos y resúmenes de liga.
+- Cara a cara con todo el historial desde 2000.
+- Rankings.
+- NFL: probabilidades de playoffs y estadísticas de juego.
+
+Para temporadas antiguas, las otras 31 ligas o selecciones, usa la interfaz completa (abajo).
+
+La genera `scripts/generar_sitio.py`. Una web publicada no puede ejecutar Python, así que el script calcula de antemano todas las respuestas como archivos JSON.
+
 ## Interfaz web
 
 ```bash
@@ -34,7 +51,8 @@ El repositorio se actualiza solo en los servidores de GitHub. No usa IA ni consu
   2. Pasa las pruebas.
   3. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL, y la precisión de los modelos.
   4. Si algo cambió, los guarda en el repositorio.
-  5. La base actualizada queda como descarga del propio workflow durante 30 días.
+  5. Publica la versión web en GitHub Pages.
+  6. La base actualizada queda como descarga del propio workflow durante 30 días.
 - **Con cada cambio de código** (`.github/workflows/pruebas.yml`): pasa todas las pruebas.
 - **Para lanzarla a mano:** pestaña **Actions** del repositorio → *Actualización diaria* → **Run workflow**.
 - **Para pausarla:** en la misma pantalla, menú **···** → *Disable workflow*.

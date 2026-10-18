@@ -9,13 +9,51 @@ const num = (v, d = 2) => (v == null ? "—" : Number(v).toFixed(d));
 const signo = (v, d = 1) => (v == null ? "—" : `${v > 0 ? "+" : ""}${Number(v).toFixed(d)}`);
 const clase = (v) => (v > 0 ? "positivo" : v < 0 ? "negativo" : "");
 
+// En la versión publicada (GitHub Pages) no hay servidor: los datos están precalculados en archivos JSON
+const ESTATICO = window.MODO_ESTATICO || null;
+const slug = (n) => String(n ?? "").replace(/[^A-Za-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "_";
+
+function rutaEstatica(ruta, p) {
+  const [deporte, que] = ruta.split("/");
+  if (que === "opciones") return ruta;
+  if (deporte === "futbol") {
+    const liga = p.liga || "SP1";
+    if (["equipos", "liga", "ranking", "pronosticos"].includes(que)) return `futbol/${que}/${liga}`;
+    if (que === "tabla") return `futbol/tabla/${liga}${p.condicion ? "-" + p.condicion : ""}`;
+    if (que === "equipo") return `futbol/equipo/${liga}/${slug(p.equipo)}`;
+    if (que === "predecir") return `futbol/predecir/${liga}/${slug(p.local)}__${slug(p.visitante)}`;
+    if (que === "h2h") { const [a, b] = [p.a, p.b].sort(); return `futbol/h2h/${liga}/${slug(a)}__${slug(b)}`; }
+  } else {
+    const t = p.temporada;
+    if (["clasificacion", "ranking", "liga", "simular", "estadisticas"].includes(que)) return `nfl/${que}/${t}`;
+    if (que === "pronosticos") return `nfl/pronosticos/${t}${p.semana ? "-" + p.semana : ""}`;
+    if (que === "equipo") return `nfl/equipo/${t}/${p.equipo}`;
+    if (que === "predecir") return `nfl/predecir/${t}/${p.local}__${p.visitante}`;
+  }
+  return null;
+}
+
 async function api(ruta, params = {}) {
+  if (ESTATICO) {
+    const archivo = rutaEstatica(ruta, params);
+    const r = archivo && (await fetch(`api/${archivo}.json`));
+    if (!r || !r.ok) throw new Error("Esta consulta no está disponible en la versión web (solo temporada actual de las ligas principales).");
+    const datos = await r.json();
+    if (ruta === "futbol/h2h" && datos.a !== params.a) {  // el archivo está en orden alfabético: se da la vuelta
+      [datos.a, datos.b, datos.victorias_a, datos.victorias_b, datos.goles_a, datos.goles_b] =
+        [datos.b, datos.a, datos.victorias_b, datos.victorias_a, datos.goles_b, datos.goles_a];
+    }
+    return datos;
+  }
   const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== ""));
   const r = await fetch(`/api/${ruta}?${q}`);
   const datos = await r.json();
   if (!r.ok) throw new Error(datos.error || `Error ${r.status}`);
   return datos;
 }
+
+const avisoEstatico = () => (ESTATICO
+  ? `<p class="nota" style="align-self:center;margin:0 0 8px">Versión web · temporada actual · actualizada ${esc(ESTATICO.actualizado)}</p>` : "");
 
 function forma(texto) {
   return `<span class="forma">${[...(texto || "")].map((c) => `<b class="${c}">${c}</b>`).join("")}</span>`;
@@ -211,7 +249,7 @@ function controlesFutbol() {
   const paises = {};
   o.competiciones.forEach((c) => (paises[c.pais] ??= []).push({ valor: `liga:${c.codigo}`, texto: `${c.nombre} (${c.codigo})` }));
   const grupos = Object.entries(paises).map(([pais, ops]) => ({ grupo: pais, opciones: ops }));
-  grupos.push({ grupo: "Selecciones", opciones: [{ valor: "liga:selecciones", texto: "Todas las selecciones" },
+  if (o.torneos.length) grupos.push({ grupo: "Selecciones", opciones: [{ valor: "liga:selecciones", texto: "Todas las selecciones" },
     ...o.torneos.map((t) => ({ valor: `torneo:${t.alias}`, texto: t.nombre }))] });
   const sel = compSeleccionada();
   let temporadas = [];
@@ -225,11 +263,12 @@ function controlesFutbol() {
     for (let a = hasta; a >= Math.max(desde, hasta - 30); a--) temporadas.push({ valor: String(a), texto: String(a) });
   } else {
     const c = o.competiciones.find((x) => x.codigo === (estado.p.liga || "SP1"));
-    temporadas = [{ valor: "", texto: "Más reciente" }, ...(c?.temporadas || []).map((t) => ({ valor: t, texto: t })),
-      { valor: "todas", texto: "Todas las temporadas" }];
+    temporadas = ESTATICO ? [{ valor: "", texto: c?.temporadas?.[0] || "Actual" }]
+      : [{ valor: "", texto: "Más reciente" }, ...(c?.temporadas || []).map((t) => ({ valor: t, texto: t })),
+        { valor: "todas", texto: "Todas las temporadas" }];
   }
   $("#controles").innerHTML = selector("c-comp", "Competición", grupos, sel) +
-    selector("c-temp", "Temporada", temporadas, estado.p.temporada || "");
+    selector("c-temp", "Temporada", temporadas, estado.p.temporada || "") + avisoEstatico();
   $("#c-comp").onchange = (e) => {
     const [tipo, valor] = e.target.value.split(":");
     estado.p = tipo === "torneo" ? { torneo: valor } : { liga: valor };
@@ -240,7 +279,7 @@ function controlesFutbol() {
 
 function controlesNFL() {
   const o = opciones.nfl;
-  $("#controles").innerHTML = selector("c-temp", "Temporada", o.temporadas.map(String), estado.p.temporada || o.temporadas[0]);
+  $("#controles").innerHTML = selector("c-temp", "Temporada", o.temporadas.map(String), estado.p.temporada || o.temporadas[0]) + avisoEstatico();
   $("#c-temp").onchange = (e) => ir({}, { temporada: e.target.value, semana: "" });
 }
 
@@ -347,7 +386,7 @@ const vistasFutbol = {
     const d = await api("futbol/predecir", paramsFutbol({ local, visitante, neutral: neutral ? "1" : "" }));
     const fila = (t, si, no) => `<tr><td class="texto">${t}</td><td>${pct(si)}</td><td>${pct(no)}</td></tr>`;
     let html = `<div class="controles">${selector("c-local", "Local", lista, local)}${selector("c-visit", "Visitante", lista, visitante)}
-      <label class="casilla"><input type="checkbox" id="c-neutral" ${neutral ? "checked" : ""}> Campo neutral</label></div>
+      ${ESTATICO ? "" : `<label class="casilla"><input type="checkbox" id="c-neutral" ${neutral ? "checked" : ""}> Campo neutral</label>`}</div>
       <h1 class="titulo-vista">${esc(d.local)} vs ${esc(d.visitante)}</h1>
       <p class="descripcion">${esc(d.descripcion)} · ${neutral ? "campo neutral" : `en casa de ${esc(d.local)}`}</p><div class="rejilla">`;
     html += tarjeta("Resultado (1X2)", `<div class="cifras">${cifra(`${num(d.goles_local)} - ${num(d.goles_visitante)}`, "Goles esperados")}${cifra(pct(d.elo_local), "Expectativa Elo del local")}</div>`
@@ -369,7 +408,7 @@ const vistasFutbol = {
       html, tras() {
         $("#c-local").onchange = (e) => ir({}, { local: e.target.value });
         $("#c-visit").onchange = (e) => ir({}, { visitante: e.target.value });
-        $("#c-neutral").onchange = (e) => ir({}, { neutral: e.target.checked ? "1" : "" });
+        $("#c-neutral")?.addEventListener("change", (e) => ir({}, { neutral: e.target.checked ? "1" : "" }));
       },
     };
   },
@@ -549,13 +588,14 @@ const vistasNFL = {
   },
 
   async predecir() {
-    const local = estado.p.local || "KC", visitante = estado.p.visitante || "BUF";
+    const local = estado.p.local || "KC";
+    const visitante = estado.p.visitante && estado.p.visitante !== local ? estado.p.visitante : (local === "BUF" ? "KC" : "BUF");
     const d = await api("nfl/predecir", { temporada: nflTemp(), local, visitante, neutral: estado.p.neutral, linea: estado.p.linea, total: estado.p.total });
     const fav = d.margen > 0 ? d.local : d.visitante;
     let html = `<div class="controles">${selector("c-local", "Local", equiposNFL(), d.local)}${selector("c-visit", "Visitante", equiposNFL(), d.visitante)}
-      <div class="campo"><label for="c-linea">Línea del local</label><input id="c-linea" type="number" step="0.5" placeholder="p. ej. 3" value="${esc(estado.p.linea || "")}" style="width:110px"></div>
+      ${ESTATICO ? "" : `<div class="campo"><label for="c-linea">Línea del local</label><input id="c-linea" type="number" step="0.5" placeholder="p. ej. 3" value="${esc(estado.p.linea || "")}" style="width:110px"></div>
       <div class="campo"><label for="c-total">Total</label><input id="c-total" type="number" step="0.5" placeholder="p. ej. 47.5" value="${esc(estado.p.total || "")}" style="width:110px"></div>
-      <label class="casilla"><input type="checkbox" id="c-neutral" ${estado.p.neutral ? "checked" : ""}> Campo neutral</label></div>
+      <label class="casilla"><input type="checkbox" id="c-neutral" ${estado.p.neutral ? "checked" : ""}> Campo neutral</label>`}</div>
       <h1 class="titulo-vista">${esc(d.nombre_visitante)} @ ${esc(d.nombre_local)}</h1>
       <p class="descripcion">${d.programado ? `Partido del calendario: semana ${d.programado.semana}, ${d.programado.fecha} (incluye descanso y QB titular)` : "Partido hipotético"}</p><div class="rejilla">`;
     html += tarjeta("Probabilidad de victoria", barraProb([{ valor: d.prob_local, etiqueta: d.local, color: COLOR.local }, { valor: 1 - d.prob_local, etiqueta: d.visitante, color: COLOR.visitante }])
@@ -573,9 +613,9 @@ const vistasNFL = {
       tras() {
         $("#c-local").onchange = (e) => ir({}, { local: e.target.value, linea: "", total: "" });
         $("#c-visit").onchange = (e) => ir({}, { visitante: e.target.value, linea: "", total: "" });
-        $("#c-neutral").onchange = (e) => ir({}, { neutral: e.target.checked ? "1" : "" });
-        $("#c-linea").onchange = (e) => ir({}, { linea: e.target.value });
-        $("#c-total").onchange = (e) => ir({}, { total: e.target.value });
+        $("#c-neutral")?.addEventListener("change", (e) => ir({}, { neutral: e.target.checked ? "1" : "" }));
+        $("#c-linea")?.addEventListener("change", (e) => ir({}, { linea: e.target.value }));
+        $("#c-total")?.addEventListener("change", (e) => ir({}, { total: e.target.value }));
       },
     };
   },

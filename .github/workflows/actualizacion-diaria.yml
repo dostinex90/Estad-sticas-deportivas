@@ -1,5 +1,5 @@
-# Cada día: descarga los partidos nuevos, pasa las pruebas y regenera los informes de informes/.
-# No usa IA. En repositorios públicos GitHub Actions es gratuito.
+# Cada día: descarga los partidos nuevos, pasa las pruebas, regenera los informes de informes/
+# y publica la versión web en GitHub Pages. No usa IA. En repositorios públicos es gratuito.
 name: Actualización diaria
 
 on:
@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: actualizacion-diaria
@@ -46,6 +48,19 @@ jobs:
           git commit -m "Informes automáticos $(date -u +%Y-%m-%d)"
           git push
 
+      - name: Generar la web
+        run: python scripts/generar_sitio.py sitio
+
+      - name: Preparar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Subir la web
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: sitio
+
       # La base actualizada se guarda como descarga del propio workflow (30 días) en lugar de
       # subirla al repositorio cada día, para que el historial de git no crezca 18 MB diarios.
       - name: Guardar la base actualizada
@@ -54,3 +69,14 @@ jobs:
           name: base-deportiva
           path: datos/base_deportiva.sqlite.gz
           retention-days: 30
+
+  publicar:
+    needs: actualizar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: despliegue
+        uses: actions/deploy-pages@v4
