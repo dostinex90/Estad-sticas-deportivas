@@ -3,8 +3,9 @@
 import argparse
 
 from ..comun import barra, chispa, elegir_equipo, linea_pct, normal_cdf, pct, salir
-from . import analisis, modelos
-from .datos import NOMBRE_TIPO, cargar_juegos, equipos, jugados, temporadas
+from .. import base
+from . import analisis, estadisticas, modelos
+from .datos import NOMBRE_TIPO, cargar_desde_base, cargar_juegos, equipos, jugados, temporadas
 from .equipos import DIVISIONES, conferencia, division, nombre
 
 
@@ -119,6 +120,29 @@ def cmd_equipo(juegos, args):
     if n_r:
         print(f"  Dificultad del calendario restante: {sos_r:+.1f} ({n_r} partidos)")
 
+    if args.conexion is not None:
+        filas = estadisticas.cargar(args.conexion, args.temporada, solo_regular=True)
+        resumenes = estadisticas.por_equipo(filas)
+        r = resumenes.get(equipo)
+        if r:
+            _seccion("Estadísticas de juego (temporada regular, por partido)")
+            print(f"  {'':<26}{'Ataque':>9}{'Puesto':>8}{'Defensa':>10}{'Puesto':>8}")
+            for m, (etiqueta, mayor) in estadisticas.METRICAS.items():
+                if m in ("sacks", "sacks_recibidos", "penalizaciones", "yardas_penalizacion"):
+                    continue
+                fav = sorted(resumenes.values(), key=lambda x: -x.favor_pp(m) if mayor else x.favor_pp(m))
+                con = sorted(resumenes.values(), key=lambda x: x.contra_pp(m) if mayor else -x.contra_pp(m))
+                pf = [x.equipo for x in fav].index(equipo) + 1
+                pc = [x.equipo for x in con].index(equipo) + 1
+                fmt = ".3f" if m == "epa_jugada" else ".1f"
+                print(f"  {etiqueta:<26}{format(r.favor_pp(m), fmt):>9}{pf:>7}º{format(r.contra_pp(m), fmt):>10}{pc:>7}º")
+            print(f"  Sacks: {r.favor_pp('sacks'):.1f} conseguidos y {r.favor_pp('sacks_recibidos'):.1f} recibidos por partido")
+            print(f"  Diferencial de pérdidas: {r.diferencial_perdidas:+.0f} "
+                  f"({r.contra['perdidas']:.0f} provocadas, {r.favor['perdidas']:.0f} propias)")
+            print(f"  Penalizaciones: {r.favor_pp('penalizaciones'):.1f} por partido ({r.favor_pp('yardas_penalizacion'):.0f} yardas)"
+                  f"   Goles de campo: {r.favor['fg_hechos']:.0f}/{r.favor['fg_intentos']:.0f} ({r.fg_pct:.0f}%)")
+            print("  Defensa = lo que permite al rival (puesto 1 = la que menos concede).")
+
     _seccion("Récords por situación")
     print(f"  {'Situación':<34}{'Récord':>9}{'PF/p':>7}{'PC/p':>7}{'ATS':>9}{'O/U':>9}")
     for nom, r in analisis.splits(temporada, equipo):
@@ -204,6 +228,14 @@ def cmd_liga(juegos, args):
     if "pct_over" in r:
         print(linea_pct("Se supera el total (over)", r["pct_over"], 30))
         print(f"  Total medio del mercado: {r['total_linea_media']:.1f} · error medio {r['error_total']:.1f} pts")
+
+    if args.conexion is not None:
+        filas = estadisticas.cargar(args.conexion, args.temporada, solo_regular=args.solo_regular)
+        factores = estadisticas.factores_victoria(filas, temporada)
+        if factores:
+            _seccion("Qué decide los partidos (% que gana quien domina cada estadística)")
+            for m, (p, n) in sorted(factores.items(), key=lambda kv: -kv[1][0]):
+                print(linea_pct(estadisticas.METRICAS[m][0], p, 26) + f"  ({n})")
 
     _seccion("Puntos según condiciones")
     for k, (m, n) in r["puntos_por_techo"].items():
@@ -354,10 +386,43 @@ def cmd_evaluar(juegos, args):
         print("  Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.")
 
 
+def cmd_estadisticas(juegos, args):
+    if args.conexion is None:
+        salir("Este comando necesita la base de datos: python3 -m analisis_deportivo recopilar")
+    resumenes = estadisticas.por_equipo(estadisticas.cargar(args.conexion, args.temporada, solo_regular=True))
+    if not resumenes:
+        salir(f"No hay estadísticas de juego para {args.temporada}.")
+    columnas = [
+        ("Yds/p", lambda r: r.favor_pp("yardas"), True, ".0f"),
+        ("Perm/p", lambda r: r.contra_pp("yardas"), False, ".0f"),
+        ("Yds/jug", lambda r: r.favor_pp("yardas_jugada"), True, ".2f"),
+        ("EPA/j of", lambda r: r.favor_pp("epa_jugada"), True, "+.3f"),
+        ("EPA/j def", lambda r: r.contra_pp("epa_jugada"), False, "+.3f"),
+        ("Dif.pérd", lambda r: r.diferencial_perdidas, True, "+.0f"),
+        ("Sacks", lambda r: r.favor_pp("sacks"), True, ".1f"),
+        ("Sacks rec", lambda r: r.favor_pp("sacks_recibidos"), False, ".1f"),
+        ("Pase/p", lambda r: r.favor_pp("yardas_pase"), True, ".0f"),
+        ("Carr/p", lambda r: r.favor_pp("yardas_carrera"), True, ".0f"),
+        ("20+/p", lambda r: r.favor_pp("explosivas"), True, ".1f"),
+        ("Pen.yds", lambda r: r.favor_pp("yardas_penalizacion"), False, ".0f"),
+    ]
+    claves = {c[0].lower(): c for c in columnas}
+    orden = claves.get((args.orden or "epa/j of").lower())
+    if orden is None:
+        salir(f"Columna desconocida. Opciones: {', '.join(c[0] for c in columnas)}")
+    filas = sorted(resumenes.values(), key=lambda r: -orden[1](r) if orden[2] else orden[1](r))
+    _titulo(f"Estadísticas de juego {args.temporada} (temporada regular, ordenado por {orden[0]})")
+    print(f"  {'#':>2} {'Eq.':<5}" + "".join(f"{c[0]:>10}" for c in columnas))
+    for i, r in enumerate(filas, 1):
+        print(f"  {i:>2} {r.equipo:<5}" + "".join(f"{format(c[1](r), c[3]):>10}" for c in columnas))
+    print("\n  Yds/p: yardas por partido · Perm/p: yardas permitidas · EPA/j: puntos esperados añadidos por jugada")
+    print("  (ataque: más es mejor; defensa: menos es mejor) · Dif.pérd: pérdidas provocadas - propias · 20+/p: jugadas explosivas")
+
+
 def registrar(subparsers, datos_por_defecto):
     comunes = argparse.ArgumentParser(add_help=False)
     comunes.add_argument("-d", "--datos", default=None,
-                        help="CSV de nflverse (games.csv) o formato propio. Por defecto, el último descargado o el ejemplo.")
+                        help="Base .sqlite, CSV de nflverse (games.csv) o formato propio. Por defecto, la base de datos si existe.")
     comunes.add_argument("-t", "--temporada", type=int, help="Temporada a analizar (por defecto, la más reciente)")
     parser = subparsers.add_parser("nfl", help="Análisis de la NFL")
     sub = parser.add_subparsers(dest="comando", required=True)
@@ -384,6 +449,10 @@ def registrar(subparsers, datos_por_defecto):
     p.add_argument("metrica", nargs="?", choices=list(analisis.METRICAS))
     p.add_argument("-n", type=int, default=10)
     p.set_defaults(func=cmd_lideres)
+
+    p = sub.add_parser("estadisticas", parents=[comunes], help="Yardas, EPA, pérdidas, sacks... de todos los equipos")
+    p.add_argument("--orden", help="Columna por la que ordenar (por defecto 'EPA/j of')")
+    p.set_defaults(func=cmd_estadisticas)
 
     p = sub.add_parser("ranking", parents=[comunes], help="Power ranking (Elo, SRS, ofensa, defensa)")
     p.set_defaults(func=cmd_ranking)
@@ -415,13 +484,22 @@ def registrar(subparsers, datos_por_defecto):
 
 
 def _ejecutar(args, datos_por_defecto):
-    ruta = args.datos or datos_por_defecto()
-    try:
-        juegos = cargar_juegos(ruta)
-    except (OSError, ValueError) as e:
-        salir(f"Error al cargar datos: {e}")
-    if not args.datos:
-        print(f"(datos: {ruta})")
+    args.conexion = None
+    if (args.datos and base.es_base(args.datos)) or (not args.datos and base.disponible()):
+        try:
+            args.conexion = base.conectar(args.datos)
+            juegos = cargar_desde_base(args.conexion)
+        except (OSError, ValueError) as e:
+            salir(f"Error al cargar datos: {e}")
+        print(f"(base de datos: NFL {juegos[0].temporada}-{juegos[-1].temporada} · {len(juegos):,} partidos)")
+    else:
+        ruta = args.datos or datos_por_defecto()
+        try:
+            juegos = cargar_juegos(ruta)
+        except (OSError, ValueError) as e:
+            salir(f"Error al cargar datos: {e}")
+        if not args.datos:
+            print(f"(datos: {ruta})")
     if not juegos:
         salir("El archivo no contiene partidos.")
     disponibles = temporadas(juegos)

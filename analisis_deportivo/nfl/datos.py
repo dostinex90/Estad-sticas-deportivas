@@ -44,6 +44,7 @@ class Juego:
     entrenador_local: str = ""
     entrenador_visitante: str = ""
     estadio: str = ""
+    id: str = ""
 
     @property
     def jugado(self):
@@ -121,6 +122,7 @@ def _desde_nflverse(filas):
                     entrenador_local=(f.get("home_coach") or "").strip(),
                     entrenador_visitante=(f.get("away_coach") or "").strip(),
                     estadio=(f.get("stadium") or "").strip(),
+                    id=(f.get("game_id") or "").strip(),
                 )
             )
         except (ValueError, KeyError) as e:
@@ -172,6 +174,12 @@ def cargar_juegos(ruta):
     except ValueError as e:
         raise ValueError(f"{ruta}: {e}") from e
     return sorted(juegos, key=lambda j: (j.fecha, j.local))
+
+
+def cargar_desde_base(con):
+    """Carga todos los partidos de la tabla nfl_partidos de la base SQLite."""
+    filas = [{k: ("" if f[k] is None else str(f[k])) for k in f.keys()} for f in con.execute("SELECT * FROM nfl_partidos")]
+    return sorted(_desde_nflverse(filas), key=lambda j: (j.fecha, j.local))
 
 
 def jugados(juegos):

@@ -51,46 +51,54 @@ class ModeloPoisson:
         if not jug:
             raise ValueError("No hay partidos jugados para ajustar el modelo.")
         referencia = referencia or max(p.fecha for p in jug)
-        datos = [(p, self._peso(p, referencia)) for p in jug]
-        peso_total = sum(w for _, w in datos)
-        self.media_local = sum(p.goles_local * w for p, w in datos) / peso_total
-        self.media_visitante = sum(p.goles_visitante * w for p, w in datos) / peso_total
+        # Los partidos casi sin peso (muy antiguos) no aportan y ralentizan el ajuste
+        datos = [(p, w) for p in jug if (w := self._peso(p, referencia)) >= 0.02]
+        if not datos:
+            raise ValueError("No hay partidos recientes para ajustar el modelo.")
+        con_campo = [(p, w) for p, w in datos if not p.neutral] or datos
+        peso_total = sum(w for _, w in con_campo)
+        self.media_local = sum(p.goles_local * w for p, w in con_campo) / peso_total
+        self.media_visitante = sum(p.goles_visitante * w for p, w in con_campo) / peso_total
         self.media_local = max(self.media_local, 0.05)
         self.media_visitante = max(self.media_visitante, 0.05)
 
-        equipos = {p.local for p in jug} | {p.visitante for p in jug}
+        equipos = {p.local for p, _ in datos} | {p.visitante for p, _ in datos}
+        neutra = (self.media_local + self.media_visitante) / 2
+        base = {id(p): (neutra, neutra) if p.neutral else (self.media_local, self.media_visitante) for p, _ in datos}
         att = {e: 1.0 for e in equipos}
         dfn = {e: 1.0 for e in equipos}
         k = self.previa
         for _ in range(self.iteraciones):
             num, den = defaultdict(float), defaultdict(float)
             for p, w in datos:
+                bl, bv = base[id(p)]
                 num[p.local] += w * p.goles_local
-                den[p.local] += w * self.media_local * dfn[p.visitante]
+                den[p.local] += w * bl * dfn[p.visitante]
                 num[p.visitante] += w * p.goles_visitante
-                den[p.visitante] += w * self.media_visitante * dfn[p.local]
+                den[p.visitante] += w * bv * dfn[p.local]
             att = {e: (num[e] + k) / (den[e] + k) for e in equipos}
             m = sum(att.values()) / len(att)
             att = {e: v / m for e, v in att.items()}
 
             num, den = defaultdict(float), defaultdict(float)
             for p, w in datos:
+                bl, bv = base[id(p)]
                 num[p.local] += w * p.goles_visitante
-                den[p.local] += w * self.media_visitante * att[p.visitante]
+                den[p.local] += w * bv * att[p.visitante]
                 num[p.visitante] += w * p.goles_local
-                den[p.visitante] += w * self.media_local * att[p.local]
+                den[p.visitante] += w * bl * att[p.local]
             dfn = {e: (num[e] + k) / (den[e] + k) for e in equipos}
             m = sum(dfn.values()) / len(dfn)
             dfn = {e: v / m for e, v in dfn.items()}
 
         self.ataque, self.defensa = att, dfn
-        self.partidos_usados = len(jug)
+        self.partidos_usados = len(datos)
         self.rho = self._estimar_rho(datos)
         return self
 
     def _estimar_rho(self, datos):
         mejor, mejor_ll = 0.0, -math.inf
-        lambdas = [(self.goles_esperados(p.local, p.visitante), p, w) for p, w in datos]
+        lambdas = [(self.goles_esperados(p.local, p.visitante, p.neutral), p, w) for p, w in datos]
         for paso in range(-25, 16):
             rho = paso / 100
             ll = 0.0
@@ -168,7 +176,7 @@ class EloFutbol:
     def actualizar(self, p):
         rl = self.rating.get(p.local, self.inicial)
         rv = self.rating.get(p.visitante, self.inicial)
-        we = self.esperado(p.local, p.visitante)
+        we = self.esperado(p.local, p.visitante, p.neutral)
         w = 1.0 if p.goles_local > p.goles_visitante else 0.5 if p.goles_local == p.goles_visitante else 0.0
         dif = abs(p.goles_local - p.goles_visitante)
         g = 1 if dif <= 1 else 1.5 if dif == 2 else (11 + dif) / 8
@@ -219,12 +227,14 @@ def _acumular(m, probs, resultado):
     m["rps"] += _rps(probs, resultado)
 
 
-def evaluar(partidos, minimo=60, **opciones_modelo):
+def evaluar(partidos, minimo=60, previos=(), **opciones_modelo):
     """Valida el modelo partido a partido usando solo datos previos a cada fecha.
 
     Devuelve métricas del modelo Poisson, de una referencia ingenua (frecuencias históricas
-    de 1/X/2) y del mercado de apuestas si el archivo trae cuotas.
+    de 1/X/2) y del mercado de apuestas si el archivo trae cuotas. `previos` son partidos
+    anteriores (p. ej. la temporada pasada) que solo se usan para entrenar.
     """
+    previos = [p for p in previos if p.jugado]
     jug = [p for p in partidos if p.jugado]
     if len(jug) <= minimo:
         raise ValueError(f"Se necesitan más de {minimo} partidos jugados para evaluar (hay {len(jug)}).")
@@ -233,14 +243,17 @@ def evaluar(partidos, minimo=60, **opciones_modelo):
     over = {"n": 0, "aciertos": 0}
     calibracion = defaultdict(lambda: [0, 0.0, 0])  # tramo -> [n, prob sumada, aciertos]
     for fecha in fechas:
-        previos = [p for p in jug if p.fecha < fecha]
-        if len(previos) < minimo:
+        anteriores = [p for p in jug if p.fecha < fecha]
+        if len(anteriores) < minimo:
             continue
-        modelo = ModeloPoisson(**opciones_modelo).ajustar(previos, referencia=fecha)
-        n = len(previos)
-        freq = [sum(p.resultado_1x2 == r for p in previos) / n for r in "1X2"]
+        entrenamiento = previos + anteriores
+        if not entrenamiento:
+            continue
+        modelo = ModeloPoisson(**opciones_modelo).ajustar(entrenamiento, referencia=fecha)
+        n = len(entrenamiento)
+        freq = [sum(p.resultado_1x2 == r for p in entrenamiento) / n for r in "1X2"]
         for p in (q for q in jug if q.fecha == fecha):
-            pr = modelo.predecir(p.local, p.visitante)
+            pr = modelo.predecir(p.local, p.visitante, p.neutral)
             probs = [pr["p1"], pr["px"], pr["p2"]]
             _acumular(res["modelo"], probs, p.resultado_1x2)
             _acumular(res["referencia"], freq, p.resultado_1x2)

@@ -42,6 +42,10 @@ class Partido:
     cuotas: Optional[tuple] = None  # (1, X, 2) decimales
     jornada: str = ""
     competicion: str = ""
+    neutral: bool = False
+    penaltis: Optional[str] = None  # ganador de la tanda de penaltis, si la hubo
+    elo_local: Optional[float] = None  # Elo previo al partido (ClubElo), si la fuente lo trae
+    elo_visitante: Optional[float] = None
 
     @property
     def jugado(self):
@@ -80,7 +84,8 @@ class Partido:
     def marcador(self):
         if not self.jugado:
             return f"{self.local} vs {self.visitante}"
-        return f"{self.local} {self.goles_local}-{self.goles_visitante} {self.visitante}"
+        texto = f"{self.local} {self.goles_local}-{self.goles_visitante} {self.visitante}"
+        return texto + (f" (penaltis: {self.penaltis})" if self.penaltis else "")
 
 
 def _fecha(texto):
@@ -202,6 +207,76 @@ def cargar_partidos(ruta):
     except ValueError as e:
         raise ValueError(f"{ruta}: {e}") from e
     return sorted(partidos, key=lambda p: p.fecha)
+
+
+def _rango(texto, todas):
+    """'2025-26' → ['2025-26']; '2020-21:2025-26' → todas las intermedias; 'todas' → None."""
+    if texto is None or texto.lower() == "todas":
+        return None
+    if ":" in texto:
+        desde, hasta = texto.split(":")
+        return [t for t in todas if desde <= t <= hasta]
+    return [texto]
+
+
+def cargar_desde_base(con, competicion=None, temporada=None, torneo=None):
+    """Carga partidos de la base SQLite.
+
+    competicion: código de liga (SP1, E0...) o "selecciones". torneo: filtra selecciones por torneo.
+    temporada: '2025-26', rango 'A:B', 'todas' o None (la más reciente con partidos jugados).
+    Devuelve (partidos, descripción del filtro aplicado).
+    """
+    if competicion == "selecciones" or torneo:
+        where, params = [], []
+        if torneo:
+            where.append("torneo = ?")
+            params.append(torneo)
+        if temporada is None:
+            if torneo:  # última edición del torneo
+                anio = con.execute("SELECT MAX(substr(fecha, 1, 4)) FROM futbol_selecciones WHERE torneo = ? "
+                                   "AND goles_local IS NOT NULL", (torneo,)).fetchone()[0]
+                temporada = anio
+            else:
+                temporada = f"{date.today().year - 4}:{date.today().year}"
+        if temporada and temporada.lower() != "todas":
+            desde, _, hasta = temporada.partition(":")
+            where.append("substr(fecha, 1, 4) BETWEEN ? AND ?")
+            params += [desde, hasta or desde]
+        filas = con.execute("SELECT * FROM futbol_selecciones" + (" WHERE " + " AND ".join(where) if where else ""),
+                            params).fetchall()
+        partidos = [Partido(fecha=date.fromisoformat(f["fecha"]), local=f["local"], visitante=f["visitante"],
+                            goles_local=f["goles_local"], goles_visitante=f["goles_visitante"],
+                            competicion=f["torneo"], neutral=bool(f["neutral"]), penaltis=f["ganador_penaltis"])
+                    for f in filas]
+        return sorted(partidos, key=lambda p: p.fecha), f"{torneo or 'Selecciones'} · {temporada}"
+
+    todas = [r[0] for r in con.execute(
+        "SELECT DISTINCT temporada FROM futbol_partidos WHERE competicion = ? ORDER BY 1", (competicion,))]
+    if not todas:
+        raise ValueError(f"No hay partidos de {competicion} en la base.")
+    if temporada is None:
+        temporada = con.execute("SELECT MAX(temporada) FROM futbol_partidos WHERE competicion = ? "
+                                "AND goles_local IS NOT NULL", (competicion,)).fetchone()[0]
+    lista = _rango(temporada, todas)
+    sql = "SELECT * FROM futbol_partidos WHERE competicion = ?"
+    params = [competicion]
+    if lista is not None:
+        if not lista:
+            raise ValueError(f"Temporada {temporada!r} no disponible. Hay de {todas[0]} a {todas[-1]}.")
+        sql += f" AND temporada IN ({','.join('?' * len(lista))})"
+        params += lista
+    partidos = []
+    for f in con.execute(sql, params):
+        stats = {n: (f[n + "_local"], f[n + "_visitante"]) for n in ESTADISTICAS
+                 if f[n + "_local"] is not None and f[n + "_visitante"] is not None}
+        cuotas = (f["cuota_local"], f["cuota_empate"], f["cuota_visitante"])
+        partidos.append(Partido(
+            fecha=date.fromisoformat(f["fecha"]), local=f["local"], visitante=f["visitante"],
+            goles_local=f["goles_local"], goles_visitante=f["goles_visitante"],
+            descanso_local=f["descanso_local"], descanso_visitante=f["descanso_visitante"],
+            estadisticas=stats, cuotas=cuotas if all(cuotas) else None, competicion=competicion,
+            jornada=f["temporada"], elo_local=f["elo_local"], elo_visitante=f["elo_visitante"]))
+    return sorted(partidos, key=lambda p: p.fecha), f"{competicion} · {temporada}"
 
 
 def jugados(partidos):

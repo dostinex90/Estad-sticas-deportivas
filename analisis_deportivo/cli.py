@@ -4,7 +4,7 @@ import argparse
 import os
 import sys
 
-from . import descargas
+from . import base, descargas
 from .futbol import cli as futbol_cli
 from .nfl import cli as nfl_cli
 
@@ -28,6 +28,40 @@ def cmd_descargar(args):
         sys.exit(f"Error en la descarga: {e}")
 
 
+def cmd_recopilar(args):
+    try:
+        ruta = base.recopilar(avisar=print, comprimir=not args.sin_comprimir)
+    except (OSError, ValueError) as e:
+        sys.exit(f"Error al recopilar: {e}")
+    print(f"\nBase de datos lista: {ruta} ({ruta.stat().st_size / 1e6:.1f} MB)")
+
+
+def cmd_base(args):
+    try:
+        con = base.conectar()
+    except FileNotFoundError as e:
+        sys.exit(str(e))
+    r = base.resumen(con)
+    print("\nContenido de la base de datos\n═════════════════════════════")
+    for f in r["fuentes"]:
+        print(f"  {f['tabla']:<40}{f['filas']:>9,}  {f['actualizado']}  ({f['origen']})")
+    print(f"\n  {'Código':<7}{'Competición':<34}{'Partidos':>9}{'Temporadas':>22}{'Pend.':>7}{'% tiros':>9}{'% cuotas':>10}")
+    for c in r["competiciones"]:
+        nombre, pais, alias, *_ = base.COMPETICIONES[c["competicion"]]
+        print(f"  {c['competicion']:<7}{(nombre + ' (' + pais + ')')[:33]:<34}{c['n']:>9,}{c['desde'] + ' a ' + c['hasta']:>22}"
+              f"{c['pendientes']:>7}{100 * c['con_tiros'] / c['n']:>8.0f}%{100 * c['con_cuotas'] / c['n']:>9.0f}%")
+    print(f"\n  Selecciones: {r['n_torneos']} torneos. Los más frecuentes:")
+    for t in r["torneos"][:12]:
+        print(f"    {t['torneo']:<40}{t['n']:>7,}  {t['desde'][:4]}-{t['hasta'][:4]}")
+    n, desde, hasta, pend = r["nfl"]
+    print(f"\n  NFL: {n:,} partidos {desde}-{hasta} ({pend} pendientes)")
+    if r["nfl_estadisticas"]:
+        n, desde, hasta = r["nfl_estadisticas"]
+        print(f"  NFL: {n:,} registros de estadísticas por equipo y partido {desde}-{hasta}")
+    print("\n  Alias de competiciones: " + ", ".join(v[2] for v in base.COMPETICIONES.values()))
+    print("  Alias de torneos: " + ", ".join(base.TORNEOS))
+
+
 def construir_parser():
     parser = argparse.ArgumentParser(
         prog="analisis_deportivo",
@@ -36,6 +70,13 @@ def construir_parser():
     sub = parser.add_subparsers(dest="deporte_cmd", required=True)
     futbol_cli.registrar(sub, lambda: descargas.datos_recientes("futbol_", descargas.EJEMPLO_FUTBOL))
     nfl_cli.registrar(sub, lambda: descargas.datos_recientes("nfl_", descargas.EJEMPLO_NFL))
+
+    p = sub.add_parser("recopilar", help="Descarga todas las fuentes y construye la base de datos local")
+    p.add_argument("--sin-comprimir", action="store_true", help="No generar la copia comprimida .gz")
+    p.set_defaults(ejecutar=cmd_recopilar)
+
+    p = sub.add_parser("base", help="Muestra el contenido de la base de datos")
+    p.set_defaults(ejecutar=cmd_base)
 
     p = sub.add_parser("descargar", help="Descarga datos reales")
     dep = p.add_subparsers(dest="deporte", required=True)

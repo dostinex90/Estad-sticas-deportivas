@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .venv/
 datos/descargas/
+datos/base_deportiva.sqlite
+datos/*.nuevo

@@ -5,7 +5,8 @@ from datetime import date
 
 from ..comun import barra, chispa, elegir_equipo, linea_pct, pct, racha_actual, racha_maxima, salir
 from . import analisis, modelos
-from .datos import cargar_partidos, equipos, jugados, pendientes
+from .. import base
+from .datos import cargar_desde_base, cargar_partidos, equipos, jugados, pendientes
 
 NOMBRES_RACHA = {"G": ("victoria", "victorias"), "E": ("empate", "empates"), "P": ("derrota", "derrotas")}
 NOMBRES_JUEGO = {
@@ -20,6 +21,15 @@ def _titulo(texto):
 
 def _seccion(texto):
     print(f"\n── {texto} " + "─" * max(0, 60 - len(texto)))
+
+
+def total_equipos(partidos):
+    return set(equipos(partidos))
+
+
+def _para_modelo(jug, args):
+    """Partidos para entrenar modelos: los analizados más la temporada anterior, si la base la tiene."""
+    return list(getattr(args, "previos", [])) + jug
 
 
 def _filtrar(partidos, args):
@@ -139,11 +149,11 @@ def cmd_equipo(partidos, args):
     print(f"  Puntos acumulados:       {chispa([pts for _, _, pts in evo])}")
 
     _seccion("Modelos")
-    elo = modelos.EloFutbol().procesar(jug)
-    ranking_elo = [e for e, _ in elo.ranking()]
+    elo = modelos.EloFutbol().procesar(_para_modelo(jug, args))
+    ranking_elo = [e for e, _ in elo.ranking() if e in total_equipos(jug)]
     print(f"  Elo: {elo.rating[equipo]:.0f} ({ranking_elo.index(equipo) + 1}º)  "
           f"tendencia {chispa([r for _, r in elo.historial[equipo]])}")
-    mp = modelos.ModeloPoisson().ajustar(jug)
+    mp = modelos.ModeloPoisson().ajustar(_para_modelo(jug, args))
     print(f"  Fuerza de ataque: {mp.ataque[equipo]:.2f}   Fuerza defensiva: {mp.defensa[equipo]:.2f} "
           "(1.00 = media; en defensa, menos es mejor)")
 
@@ -157,7 +167,7 @@ def cmd_equipo(partidos, args):
     if proximos:
         _seccion("Próximos partidos")
         for p in proximos:
-            pr = mp.predecir(p.local, p.visitante)
+            pr = mp.predecir(p.local, p.visitante, p.neutral)
             print(f"  {p.fecha}  {p.local} vs {p.visitante}   1 {100 * pr['p1']:.0f}% · X {100 * pr['px']:.0f}% · 2 {100 * pr['p2']:.0f}%")
 
 
@@ -246,15 +256,16 @@ def cmd_lideres(partidos, args):
 
 def cmd_ranking(partidos, args):
     jug = jugados(partidos)
-    elo = modelos.EloFutbol().procesar(jug)
-    mp = modelos.ModeloPoisson().ajustar(jug)
+    actuales = total_equipos(partidos)
+    elo = modelos.EloFutbol().procesar(_para_modelo(jug, args))
+    mp = modelos.ModeloPoisson().ajustar(_para_modelo(jug, args))
     fuerza = {e: (a, d, dg) for e, a, d, dg in mp.ranking()}
     _titulo("Ranking de fuerza")
     print("  Elo: rating dinámico (más alto = mejor). Ataque/Defensa: 1.00 = media (en defensa, menos es mejor).")
     print("  DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.\n")
     ancho = max(len(e) for e in elo.rating)
     print(f"  {'#':>2}  {'Equipo':<{ancho}}{'Elo':>7}{'Ataque':>8}{'Defensa':>9}{'DG esp.':>9}  Tendencia Elo")
-    for i, (e, r) in enumerate(elo.ranking(), 1):
+    for i, (e, r) in enumerate([x for x in elo.ranking() if x[0] in actuales], 1):
         a, d, dg = fuerza[e]
         tendencia = chispa([x for _, x in elo.historial[e][-12:]])
         print(f"  {i:>2}  {e:<{ancho}}{r:>7.0f}{a:>8.2f}{d:>9.2f}{dg:>+9.2f}  {tendencia}")
@@ -295,8 +306,8 @@ def cmd_predecir(partidos, args):
     disponibles = equipos(jug)
     local = elegir_equipo(args.local, disponibles)
     visitante = elegir_equipo(args.visitante, disponibles)
-    mp = modelos.ModeloPoisson().ajustar(jug)
-    elo = modelos.EloFutbol().procesar(jug)
+    mp = modelos.ModeloPoisson().ajustar(_para_modelo(jug, args))
+    elo = modelos.EloFutbol().procesar(_para_modelo(jug, args))
     _imprimir_prediccion(mp, elo, local, visitante, args.neutral)
     if args.cuotas:
         pr = mp.predecir(local, visitante, args.neutral)
@@ -313,13 +324,17 @@ def cmd_predecir(partidos, args):
 def cmd_pronosticos(partidos, args):
     jug = jugados(partidos)
     pend = pendientes(partidos)
+    futuros = [p for p in pend if p.fecha >= date.today()]
+    if futuros and len(futuros) < len(pend):
+        print(f"  ({len(pend) - len(futuros)} partidos ya disputados aún no tienen resultado en la fuente; se omiten)")
+        pend = futuros
     if not pend:
         salir("No hay partidos pendientes en el archivo. Usa 'predecir LOCAL VISITANTE' para un partido concreto.")
-    mp = modelos.ModeloPoisson().ajustar(jug)
+    mp = modelos.ModeloPoisson().ajustar(_para_modelo(jug, args))
     _titulo(f"Pronósticos de los próximos {min(args.n, len(pend))} partidos")
     print(f"  {'Fecha':<11}{'Partido':<46}{'1':>6}{'X':>6}{'2':>6}{'+2.5':>7}{'AM':>6}  Marcador")
     for p in pend[: args.n]:
-        pr = mp.predecir(p.local, p.visitante)
+        pr = mp.predecir(p.local, p.visitante, p.neutral)
         i, j, _ = pr["marcadores"][0]
         nombre = f"{p.local} vs {p.visitante}"[:45]
         print(f"  {str(p.fecha):<11}{nombre:<46}{100 * pr['p1']:>5.0f}%{100 * pr['px']:>5.0f}%{100 * pr['p2']:>5.0f}%"
@@ -329,7 +344,9 @@ def cmd_pronosticos(partidos, args):
 
 def cmd_evaluar(partidos, args):
     try:
-        r = modelos.evaluar(partidos, minimo=args.minimo)
+        previos = getattr(args, "previos", [])
+        minimo = args.minimo if args.minimo is not None else (0 if previos else 60)
+        r = modelos.evaluar(partidos, minimo=minimo, previos=previos)
     except ValueError as e:
         salir(str(e))
     _titulo("Validación histórica del modelo (sin mirar el futuro)")
@@ -349,6 +366,39 @@ def cmd_evaluar(partidos, args):
         print(f"  Predicho {10 * tramo:>2}-{10 * tramo + 10:<3}%  media {pct(suma, n):5.1f}%  →  real {pct(aciertos, n):5.1f}%  ({n})")
 
 
+def cmd_goleadores(partidos, args):
+    """Máximos goleadores de selecciones en los partidos cargados (torneo y años)."""
+    if args.conexion is None:
+        salir("Este comando necesita la base de datos: python3 -m analisis_deportivo recopilar")
+    claves = {(str(p.fecha), p.local, p.visitante) for p in partidos}
+    if not claves:
+        salir("No hay partidos de selecciones con esos filtros (usa --liga selecciones o --torneo).")
+    goles = [g for g in args.conexion.execute("SELECT * FROM futbol_goleadores_selecciones WHERE autogol = 0")
+             if (g["fecha"], g["local"], g["visitante"]) in claves]
+    if args.equipo:
+        equipo = elegir_equipo(args.equipo, sorted({g["equipo"] for g in goles}))
+        goles = [g for g in goles if g["equipo"] == equipo]
+    conteo = {}
+    for g in goles:
+        c = conteo.setdefault((g["goleador"], g["equipo"]), [0, 0, set()])
+        c[0] += 1
+        c[1] += g["penalti"]
+        c[2].add((g["fecha"], g["local"], g["visitante"]))
+    filas = sorted(conteo.items(), key=lambda kv: (-kv[1][0], kv[1][1], kv[0][0]))[: args.n]
+    _titulo(f"Máximos goleadores ({len(goles):,} goles con autor registrado)")
+    print(f"  {'#':>3}  {'Jugador':<30}{'Selección':<22}{'Goles':>6}{'Pen.':>6}{'Partidos c/gol':>16}")
+    for i, ((jugador, equipo), (n, pen, part)) in enumerate(filas, 1):
+        print(f"  {i:>3}  {jugador[:29]:<30}{equipo[:21]:<22}{n:>6}{pen:>6}{len(part):>16}")
+    minutos = [g["minuto"] for g in goles if g["minuto"] is not None]
+    if minutos:
+        _seccion("Goles por tramo de minutos")
+        tramos = [(0, 15), (16, 30), (31, 45), (46, 60), (61, 75), (76, 90), (91, 200)]
+        cuenta = [sum(a <= m <= b for m in minutos) for a, b in tramos]
+        for (a, b), c in zip(tramos, cuenta):
+            etiqueta = f"{a}-{b}'" if b < 200 else "90+' y prórroga"
+            print(f"  {etiqueta:<16} {barra(pct(c, max(cuenta)), 30)} {pct(c, len(minutos)):5.1f}%")
+
+
 def _fecha_arg(texto):
     return date.fromisoformat(texto)
 
@@ -358,6 +408,14 @@ def registrar(subparsers, datos_por_defecto):
     comunes.add_argument("-d", "--datos", default=None,
                         help="CSV (formato propio o football-data.co.uk) o JSON de openfootball. "
                              "Por defecto, el último archivo descargado o los datos de ejemplo.")
+    comunes.add_argument("-l", "--liga", default=None,
+                         help="Competición de la base de datos: código (SP1, E0...), alias (espana, inglaterra...) "
+                              "o 'selecciones'. Por defecto, espana.")
+    comunes.add_argument("--torneo", default=None,
+                         help="Torneo de selecciones: mundial, eurocopa, copa-america, eliminatorias... o su nombre en inglés")
+    comunes.add_argument("-t", "--temporada", default=None,
+                         help="Temporada (2025-26), rango (2020-21:2025-26) o 'todas'. Selecciones: años (2022:2026). "
+                              "Por defecto, la más reciente.")
     comunes.add_argument("--desde", type=_fecha_arg, help="Solo partidos desde esta fecha (AAAA-MM-DD)")
     comunes.add_argument("--hasta", type=_fecha_arg, help="Solo partidos hasta esta fecha (AAAA-MM-DD)")
     parser = subparsers.add_parser("futbol", help="Análisis de fútbol (soccer)", aliases=["soccer"])
@@ -401,8 +459,14 @@ def registrar(subparsers, datos_por_defecto):
     p.set_defaults(func=cmd_pronosticos)
 
     p = sub.add_parser("evaluar", parents=[comunes], help="Valida la precisión del modelo con datos históricos")
-    p.add_argument("--minimo", type=int, default=60, help="Partidos iniciales usados solo para entrenar")
+    p.add_argument("--minimo", type=int, default=None,
+                   help="Partidos iniciales usados solo para entrenar (por defecto 60, o 0 si hay temporada anterior en la base)")
     p.set_defaults(func=cmd_evaluar)
+
+    p = sub.add_parser("goleadores", parents=[comunes], help="Máximos goleadores de selecciones (base de datos)")
+    p.add_argument("--equipo", help="Solo una selección")
+    p.add_argument("-n", type=int, default=25)
+    p.set_defaults(func=cmd_goleadores)
 
     p = sub.add_parser("equipos", parents=[comunes], help="Lista los equipos")
     p.set_defaults(func=cmd_equipos)
@@ -411,14 +475,42 @@ def registrar(subparsers, datos_por_defecto):
 
 
 def _ejecutar(args, datos_por_defecto):
-    ruta = args.datos or datos_por_defecto()
-    try:
-        partidos = cargar_partidos(ruta)
-    except (OSError, ValueError) as e:
-        salir(f"Error al cargar datos: {e}")
-    if not args.datos:
-        print(f"(datos: {ruta})")
+    usar_base = (args.datos and base.es_base(args.datos)) or (not args.datos and base.disponible())
+    if usar_base:
+        try:
+            con = base.conectar(args.datos)
+            torneo = base.resolver_torneo(args.torneo) if args.torneo else None
+            liga = None
+            if not torneo:
+                liga = "selecciones" if (args.liga or "").lower() == "selecciones" else base.resolver_competicion(args.liga or "espana")
+            temporada = args.temporada
+            if temporada is None and args.comando == "h2h":
+                temporada = "todas"  # el historial completo es lo útil en un cara a cara
+            partidos, descripcion = cargar_desde_base(con, liga, temporada, torneo)
+            args.previos = []
+            actual = descripcion.split(" · ")[1]
+            if liga in base.COMPETICIONES and ":" not in actual and actual != "todas":
+                anterior = con.execute("SELECT MAX(temporada) FROM futbol_partidos WHERE competicion = ? AND temporada < ?",
+                                       (liga, actual)).fetchone()[0]
+                if anterior:
+                    args.previos = jugados(cargar_desde_base(con, liga, anterior)[0])
+        except (OSError, ValueError) as e:
+            salir(f"Error al cargar datos: {e}")
+        if liga in base.COMPETICIONES:
+            nombre, pais, *_ = base.COMPETICIONES[liga]
+            descripcion = f"{nombre} ({pais}) · {descripcion.split(' · ')[1]}"
+        print(f"(base de datos: {descripcion} · {len(partidos):,} partidos)")
+        args.conexion = con
+    else:
+        ruta = args.datos or datos_por_defecto()
+        try:
+            partidos = cargar_partidos(ruta)
+        except (OSError, ValueError) as e:
+            salir(f"Error al cargar datos: {e}")
+        if not args.datos:
+            print(f"(datos: {ruta})")
+        args.conexion = None
     partidos = _filtrar(partidos, args)
-    if not jugados(partidos) and args.comando != "equipos":
+    if not jugados(partidos) and args.comando not in ("equipos", "goleadores"):
         salir("No hay partidos jugados con los filtros indicados.")
     args.func(partidos, args)

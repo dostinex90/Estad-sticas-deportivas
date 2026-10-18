@@ -4,6 +4,49 @@ Programa en Python para analizar partidos de **fútbol (soccer)** y de la **NFL*
 
 Solo necesita Python 3.9 o posterior. No usa librerías externas.
 
+## Base de datos incluida
+
+El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.sqlite.gz`, con todo lo que se puede recopilar de fuentes abiertas. Se descomprime sola la primera vez que se usa.
+
+| Contenido | Volumen | Periodo |
+|---|---|---|
+| Partidos de clubes de 38 ligas de 27 países, con resultado, descanso, tiros, tiros a puerta, córners, faltas, tarjetas, cuotas 1X2 y de más/menos 2.5 goles, y el Elo previo de cada equipo | 238.858 partidos | 2000 – septiembre de 2026 |
+| Temporada 2026-27 en curso (resultados recientes y calendario pendiente) de las 8 ligas principales y Brasil | 3.082 partidos | 2026-27 |
+| Partidos de selecciones nacionales en 225 torneos, con sede, campo neutral y ganador de la tanda de penaltis | 49.945 partidos | 1872 – 2026 |
+| Goles de selecciones con autor, minuto, penalti y autogol | 47.914 goles | 1916 – 2026 |
+| Partidos de la NFL con líneas de apuestas, descanso entre partidos, clima, estadio, quarterbacks y entrenadores | 7.548 partidos | 1999 – 2026 |
+| Estadísticas de cada equipo en cada partido de la NFL: yardas, EPA, pérdidas de balón, sacks, penalizaciones, goles de campo y más (unas 130 columnas) | 14.707 registros | 1999 – 2026 |
+
+```bash
+python3 -m analisis_deportivo base        # qué contiene: ligas, temporadas, cobertura de tiros y cuotas
+python3 -m analisis_deportivo recopilar   # vuelve a descargarlo todo para actualizarla (~1 minuto)
+```
+
+Cuando la base existe, todos los comandos la usan. Se elige qué analizar con estas opciones:
+
+- **`--liga`**: código (`SP1`, `E0`, `D1`...), alias en español (`espana`, `inglaterra`, `alemania`, `mexico`, `argentina`, `brasil`, `mls`...) o `selecciones`. Por defecto, `espana`.
+- **`--torneo`**: un torneo de selecciones, con alias como `mundial`, `eurocopa`, `copa-america`, `eliminatorias`, `nations-league`, `copa-oro` o `amistosos`.
+- **`-t/--temporada`**: una temporada (`2025-26`), un rango (`2015-16:2025-26`) o `todas`. En selecciones son años (`2018:2026`). Por defecto, la más reciente con partidos jugados.
+
+```bash
+python3 -m analisis_deportivo futbol tabla -l inglaterra -t 2003-04
+python3 -m analisis_deportivo futbol h2h Barcelona "Real Madrid"            # los 48 clásicos desde 2000
+python3 -m analisis_deportivo futbol liga -l alemania -t todas              # 26 temporadas de Bundesliga
+python3 -m analisis_deportivo futbol tabla --torneo mundial -t 2022
+python3 -m analisis_deportivo futbol goleadores --torneo mundial -t todas
+python3 -m analisis_deportivo futbol predecir Argentina France -l selecciones --neutral
+python3 -m analisis_deportivo nfl estadisticas -t 2025 --orden "Dif.pérd"
+```
+
+Para predecir una temporada, los modelos de fútbol también usan la temporada anterior. Así los pronósticos de principio de temporada no dependen solo de unas pocas jornadas.
+
+**Limitaciones de las fuentes:**
+
+- Faltan algunas temporadas o partes de ellas: por ejemplo, LaLiga 2006-07 y parte de la Premier League 2003-05.
+- Las ligas no europeas no traen tiros ni córners.
+- Los nombres de clubes siguen la nomenclatura de football-data.co.uk ("Ath Madrid", "Man United").
+- Los goleadores de selecciones cubren sobre todo partidos oficiales, no todos los amistosos.
+
 ## Inicio rápido
 
 ```bash
@@ -18,7 +61,7 @@ python3 -m analisis_deportivo nfl clasificacion --vista playoffs
 python3 -m analisis_deportivo nfl equipo Chiefs
 ```
 
-Por defecto, cada deporte usa el **último archivo descargado** y, si no hay ninguno, los datos de ejemplo de `datos/`. Para usar otro archivo, añade `--datos RUTA` a cualquier comando. Los nombres de equipo pueden ser parciales: `betis`, `Chiefs` o `KC`.
+Por defecto se usa la **base de datos incluida**. Si no existe, se usa el último archivo descargado y, si tampoco hay ninguno, los datos de ejemplo de `datos/`. Para usar otro archivo, añade `--datos RUTA` a cualquier comando. Los nombres de equipo pueden ser parciales: `betis`, `Chiefs` o `KC`.
 
 ## Fútbol
 
@@ -33,8 +76,9 @@ Por defecto, cada deporte usa el **último archivo descargado** y, si no hay nin
 | `predecir LOCAL VISITANTE [--neutral] [--cuotas 1 X 2]` | 1X2, doble oportunidad, más/menos goles, marcan ambos, hándicap, marcadores más probables y valor esperado frente a las cuotas que indiques |
 | `pronosticos [-n N]` | Pronóstico de los partidos pendientes del archivo |
 | `evaluar` | Validación histórica del modelo (ver más abajo) |
+| `goleadores [--equipo X]` | Máximos goleadores de selecciones y reparto de los goles por minuto (requiere la base) |
 
-Opciones comunes: `--datos`, más `--desde AAAA-MM-DD` y `--hasta AAAA-MM-DD` para filtrar fechas.
+Opciones comunes: `--liga`, `--torneo` y `--temporada` (con la base), `--datos`, y `--desde AAAA-MM-DD` y `--hasta AAAA-MM-DD` para filtrar fechas.
 
 El **informe de equipo** incluye:
 
@@ -72,6 +116,7 @@ Las estadísticas de juego y las cuotas aparecen solo si el archivo las trae. Lo
 | `pronosticos [--semana N]` | Pronósticos de la próxima semana comparados con las líneas del mercado |
 | `simular [-n N]` | Simulación Monte Carlo del resto de la temporada: victorias esperadas y probabilidad de playoffs, de ganar la división y de ser primero de conferencia |
 | `evaluar` | Validación semana a semana frente a las casas de apuestas |
+| `estadisticas [--orden COLUMNA]` | Tabla de los 32 equipos con yardas, yardas permitidas, EPA por jugada en ataque y defensa, diferencial de pérdidas, sacks, juego de pase y de carrera, jugadas explosivas y penalizaciones (requiere la base) |
 
 Opciones comunes: `--datos` y `-t/--temporada` (por defecto, la más reciente del archivo).
 
@@ -87,6 +132,7 @@ El **informe de equipo** incluye:
 - Récord, victorias pitagóricas y "suerte" (victorias reales menos pitagóricas).
 - Elo, SRS, ofensa y defensa ajustadas, y dificultad del calendario jugado y del restante.
 - Récords en más de 15 situaciones: local, visitante, división, conferencia, partidos ajustados, palizas, prórroga, como favorito o underdog, tras la semana de descanso, en semana corta, bajo techo, con frío, con viento, contra equipos con récord ganador y en playoffs. Cada una con su récord contra el spread y su over/under.
+- Estadísticas de juego por partido, en ataque y en defensa, con su puesto en la liga: yardas, EPA, pérdidas, primeros downs, jugadas explosivas, sacks, penalizaciones y goles de campo (requiere la base).
 - Récord por quarterback titular.
 - Partido a partido con la línea, el ATS y el over/under.
 - Próximos partidos con su probabilidad de victoria.
@@ -96,6 +142,7 @@ El **resumen de liga** incluye:
 - Porcentaje de victorias locales y márgenes más frecuentes (los "números clave", como 3 y 7).
 - Porcentaje de partidos ajustados, palizas y prórrogas.
 - Mercado de apuestas: con qué frecuencia gana y cubre el favorito, y error medio del spread y del total.
+- Qué decide los partidos: con qué frecuencia gana el equipo que domina cada estadística. En 2025, el que tuvo mejor EPA por jugada ganó el 82 % de los partidos, y el que perdió menos balones, el 78 %.
 - Puntos según condiciones: bajo techo, al aire libre, con frío, con viento y en partidos divisionales.
 
 ## Modelos
@@ -119,6 +166,15 @@ El **resumen de liga** incluye:
 Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de análisis, no como garantía.
 
 ## Fuentes de datos
+
+La base de datos combina:
+
+- **Football-Data.co.uk y ClubElo**, recopilados por [xgabora/Club-Football-Match-Data-2000-2025](https://github.com/xgabora/Club-Football-Match-Data-2000-2025): partidos de clubes.
+- **[openfootball](https://github.com/openfootball/football.json)** (dominio público): temporada en curso.
+- **[martj42/international_results](https://github.com/martj42/international_results)** (CC0): selecciones y goleadores.
+- **[nflverse](https://github.com/nflverse)**: partidos de la NFL ([nfldata](https://github.com/nflverse/nfldata)) y estadísticas de equipo por partido ([nflverse-data](https://github.com/nflverse/nflverse-data), CC-BY 4.0).
+
+Para analizar un archivo suelto se puede usar `descargar` y `--datos`:
 
 - **football-data.co.uk:** resultados, descanso, tiros, córners, faltas, tarjetas y cuotas. Es la fuente preferida de `descargar futbol`.
 - **openfootball (football.json):** resultados y descanso, incluidos los partidos pendientes. Se usa si football-data.co.uk no está disponible.
@@ -146,9 +202,10 @@ temporada,semana,fecha,local,visitante,puntos_local,puntos_visitante,linea,total
 
 ```
 analisis_deportivo/
-  cli.py, comun.py, descargas.py
+  cli.py, comun.py, descargas.py, base.py (base de datos SQLite)
   futbol/  datos.py · analisis.py · modelos.py · cli.py
-  nfl/     datos.py · equipos.py · analisis.py · modelos.py · cli.py
+  nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
+datos/base_deportiva.sqlite.gz   base de datos completa (comprimida)
 datos/                  ejemplos simulados (regenerables con scripts/generar_ejemplos.py)
 datos/descargas/        datos reales descargados (ignorados por git)
 tests/
