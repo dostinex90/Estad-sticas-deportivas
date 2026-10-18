@@ -51,11 +51,6 @@ jobs:
       - name: Generar la web
         run: python scripts/generar_sitio.py sitio
 
-      - name: Preparar GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - name: Subir la web
         uses: actions/upload-pages-artifact@v3
         with:
@@ -70,6 +65,8 @@ jobs:
           path: datos/base_deportiva.sqlite.gz
           retention-days: 30
 
+  # Publicar va en un trabajo aparte: si GitHub Pages no está activado (Settings → Pages →
+  # Source: GitHub Actions), solo falla este paso y los informes se actualizan igual.
   publicar:
     needs: actualizar
     runs-on: ubuntu-latest
