@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estadísticas deportivas</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script>
+    // Aplica el tema guardado antes de pintar para evitar parpadeos
+    try { const t = localStorage.getItem("tema"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="cabecera">
+    <div class="cabecera-fila">
+      <div class="marca">Estadísticas <span>deportivas</span></div>
+      <div class="segmentado" role="group" aria-label="Deporte">
+        <button type="button" data-deporte="futbol" aria-pressed="true">⚽ Fútbol</button>
+        <button type="button" data-deporte="nfl" aria-pressed="false">🏈 NFL</button>
+      </div>
+      <button type="button" class="boton-icono" id="tema" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema">🌓</button>
+    </div>
+  </header>
+  <main class="contenedor">
+    <div class="controles" id="controles"></div>
+    <nav class="pestanas" id="pestanas" role="tablist"></nav>
+    <section id="vista" aria-live="polite"></section>
+  </main>
+  <div class="tip" id="tip" role="tooltip"></div>
+  <script src="app.js"></script>
+</body>
+</html>

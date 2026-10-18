@@ -279,6 +279,33 @@ def cargar_desde_base(con, competicion=None, temporada=None, torneo=None):
     return sorted(partidos, key=lambda p: p.fecha), f"{competicion} · {temporada}"
 
 
+def cargar_para_analisis(con, liga=None, temporada=None, torneo=None):
+    """Carga una competición de la base como la usan el CLI y la web.
+
+    liga: código, alias o nombre ("espana" por defecto) o "selecciones"; torneo: torneo de selecciones.
+    Devuelve (partidos, descripción legible, previos, código de liga o None). `previos` son los partidos
+    jugados de la temporada anterior, que solo sirven para entrenar los modelos.
+    """
+    from .. import base
+
+    torneo = base.resolver_torneo(torneo) if torneo else None
+    codigo = None
+    if not torneo:
+        codigo = "selecciones" if (liga or "").lower() == "selecciones" else base.resolver_competicion(liga or "espana")
+    partidos, descripcion = cargar_desde_base(con, codigo, temporada, torneo)
+    actual = descripcion.split(" · ")[1]
+    previos = []
+    if codigo in base.COMPETICIONES and ":" not in actual and actual != "todas":
+        anterior = con.execute("SELECT MAX(temporada) FROM futbol_partidos WHERE competicion = ? AND temporada < ?",
+                               (codigo, actual)).fetchone()[0]
+        if anterior:
+            previos = jugados(cargar_desde_base(con, codigo, anterior)[0])
+    if codigo in base.COMPETICIONES:
+        nombre, pais, *_ = base.COMPETICIONES[codigo]
+        descripcion = f"{nombre} ({pais}) · {actual}"
+    return partidos, descripcion, previos, codigo
+
+
 def jugados(partidos):
     return [p for p in partidos if p.jugado]
 

@@ -62,6 +62,17 @@ def cmd_base(args):
     print("  Alias de torneos: " + ", ".join(base.TORNEOS))
 
 
+def cmd_web(args):
+    from .web import servidor
+
+    if not base.disponible():
+        sys.exit("La interfaz necesita la base de datos: python3 -m analisis_deportivo recopilar")
+    try:
+        servidor.iniciar(args.host, args.puerto, abrir=not args.no_abrir)
+    except OSError as e:
+        sys.exit(f"No se pudo iniciar el servidor en el puerto {args.puerto}: {e}. Prueba con --puerto 8001")
+
+
 def construir_parser():
     parser = argparse.ArgumentParser(
         prog="analisis_deportivo",
@@ -70,6 +81,12 @@ def construir_parser():
     sub = parser.add_subparsers(dest="deporte_cmd", required=True)
     futbol_cli.registrar(sub, lambda: descargas.datos_recientes("futbol_", descargas.EJEMPLO_FUTBOL))
     nfl_cli.registrar(sub, lambda: descargas.datos_recientes("nfl_", descargas.EJEMPLO_NFL))
+
+    p = sub.add_parser("web", help="Abre la interfaz gráfica en el navegador")
+    p.add_argument("--puerto", type=int, default=8000)
+    p.add_argument("--host", default="127.0.0.1", help="Usa 0.0.0.0 para acceder desde otros dispositivos de tu red")
+    p.add_argument("--no-abrir", action="store_true", help="No abrir el navegador automáticamente")
+    p.set_defaults(ejecutar=cmd_web)
 
     p = sub.add_parser("recopilar", help="Descarga todas las fuentes y construye la base de datos local")
     p.add_argument("--sin-comprimir", action="store_true", help="No generar la copia comprimida .gz")

@@ -284,6 +284,28 @@ def _openfootball_actual(con, avisar, hoy):
     return total
 
 
+def _unificar_nombres(con, avisar):
+    """La fuente escribe a veces un mismo club de dos formas ("Nott'm Forest" y "Nottm Forest").
+    Se unifican las variantes que solo difieren en signos, mayúsculas o tildes con la más frecuente."""
+    clave = lambda n: re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower())  # noqa: E731
+    variantes = defaultdict(Counter)
+    for columna in ("local", "visitante"):
+        for nombre, n in con.execute(f"SELECT {columna}, COUNT(*) FROM futbol_partidos GROUP BY 1"):
+            variantes[clave(nombre)][nombre] += n
+    cambios = 0
+    for conteo in variantes.values():
+        if len(conteo) < 2:
+            continue
+        principal = conteo.most_common(1)[0][0]
+        for nombre in conteo:
+            if nombre != principal:
+                for columna in ("local", "visitante"):
+                    cambios += con.execute(f"UPDATE futbol_partidos SET {columna} = ? WHERE {columna} = ?",
+                                           (principal, nombre)).rowcount
+    if cambios:
+        avisar(f"  Nombres de clubes unificados en {cambios} partidos")
+
+
 def _selecciones(con, avisar):
     resultados = _csv(URL_SELECCIONES.format("results"))
     penaltis = {(f["date"], f["home_team"], f["away_team"]): f["winner"] for f in _csv(URL_SELECCIONES.format("shootouts"))}
@@ -357,6 +379,7 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
     avisar("Completando la temporada en curso con openfootball...")
     n = _openfootball_actual(con, avisar, hoy)
     registrar("futbol_partidos (temporada en curso)", LICENCIAS["openfootball"], n)
+    _unificar_nombres(con, avisar)
     avisar("Descargando partidos de selecciones...")
     n_sel, n_gol = _selecciones(con, avisar)
     registrar("futbol_selecciones", LICENCIAS["selecciones"], n_sel)

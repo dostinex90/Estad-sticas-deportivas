@@ -6,7 +6,7 @@ from datetime import date
 from ..comun import barra, chispa, elegir_equipo, linea_pct, pct, racha_actual, racha_maxima, salir
 from . import analisis, modelos
 from .. import base
-from .datos import cargar_desde_base, cargar_partidos, equipos, jugados, pendientes
+from .datos import cargar_para_analisis, cargar_partidos, equipos, jugados, pendientes
 
 NOMBRES_RACHA = {"G": ("victoria", "victorias"), "E": ("empate", "empates"), "P": ("derrota", "derrotas")}
 NOMBRES_JUEGO = {
@@ -479,26 +479,12 @@ def _ejecutar(args, datos_por_defecto):
     if usar_base:
         try:
             con = base.conectar(args.datos)
-            torneo = base.resolver_torneo(args.torneo) if args.torneo else None
-            liga = None
-            if not torneo:
-                liga = "selecciones" if (args.liga or "").lower() == "selecciones" else base.resolver_competicion(args.liga or "espana")
             temporada = args.temporada
             if temporada is None and args.comando == "h2h":
                 temporada = "todas"  # el historial completo es lo útil en un cara a cara
-            partidos, descripcion = cargar_desde_base(con, liga, temporada, torneo)
-            args.previos = []
-            actual = descripcion.split(" · ")[1]
-            if liga in base.COMPETICIONES and ":" not in actual and actual != "todas":
-                anterior = con.execute("SELECT MAX(temporada) FROM futbol_partidos WHERE competicion = ? AND temporada < ?",
-                                       (liga, actual)).fetchone()[0]
-                if anterior:
-                    args.previos = jugados(cargar_desde_base(con, liga, anterior)[0])
+            partidos, descripcion, args.previos, _ = cargar_para_analisis(con, args.liga, temporada, args.torneo)
         except (OSError, ValueError) as e:
             salir(f"Error al cargar datos: {e}")
-        if liga in base.COMPETICIONES:
-            nombre, pais, *_ = base.COMPETICIONES[liga]
-            descripcion = f"{nombre} ({pais}) · {descripcion.split(' · ')[1]}"
         print(f"(base de datos: {descripcion} · {len(partidos):,} partidos)")
         args.conexion = con
     else:

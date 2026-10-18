@@ -4,6 +4,27 @@ Programa en Python para analizar partidos de **fútbol (soccer)** y de la **NFL*
 
 Solo necesita Python 3.9 o posterior. No usa librerías externas.
 
+## Interfaz web
+
+```bash
+python3 -m analisis_deportivo web
+```
+
+Abre en el navegador (http://localhost:8000) una interfaz con todo el programa: clasificaciones, informes de equipo, predicciones con gráficos, pronósticos, resúmenes de liga, cara a cara, rankings, goleadores, probabilidades de playoffs y estadísticas de la NFL. Lee los datos directamente de la base de datos.
+
+- **Menús:** se elige la competición (38 ligas, todas las selecciones o un torneo concreto) y la temporada.
+- **Tablas:** se puede hacer clic en un equipo para ver su informe y ordenar las tablas por columnas.
+- **Gráficos:** muestran el detalle al pasar el ratón.
+- **Tema:** hay modo claro y modo oscuro.
+- **Enlaces:** la dirección de la página guarda lo que estás viendo, así que puedes guardarla o compartirla.
+- **Opciones:**
+  - `--puerto 8001`: otro puerto.
+  - `--no-abrir`: no abre el navegador automáticamente.
+  - `--host 0.0.0.0`: permite abrirla desde el móvil u otro dispositivo de tu misma red, en `http://IP-de-tu-computadora:8000`.
+- **En GitHub Codespaces:** ejecuta el comando y abre el puerto 8000 que te ofrece la pestaña *Puertos*.
+
+No necesita instalar nada más que Python. Para detenerla, pulsa Ctrl+C en la terminal.
+
 ## Base de datos incluida
 
 El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.sqlite.gz`, con todo lo que se puede recopilar de fuentes abiertas. Se descomprime sola la primera vez que se usa.
@@ -215,6 +236,7 @@ temporada,semana,fecha,local,visitante,puntos_local,puntos_visitante,linea,total
 ```
 analisis_deportivo/
   cli.py, comun.py, descargas.py, base.py (base de datos SQLite)
+  web/     api.py (datos en JSON) · servidor.py · static/ (index.html, app.js, estilos.css)
   futbol/  datos.py · analisis.py · modelos.py · cli.py
   nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
 datos/base_deportiva.sqlite.gz   base de datos completa (comprimida)
