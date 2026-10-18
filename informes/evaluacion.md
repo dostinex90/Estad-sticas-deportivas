@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-18 22:57 UTC_
+_Actualizado automáticamente: 2026-10-18 23:11 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -143,19 +143,19 @@ Validación histórica del modelo (sin mirar el futuro)
 ```
 Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ══════════════════════════════════════════════════════════════════
-  Partidos evaluados: 87
-  Acierto ganador (combinado)        ████████████░░░░░░░░  62.1%
-  Acierto ganador (solo Elo)         ███████████░░░░░░░░░  57.5%
-  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  52.9%
-  Acierto del favorito del mercado   █████████████░░░░░░░  63.2%
-  Brier score: 0.224 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.639
-  Error medio del margen: 9.45 pts · del total: 11.53 pts
+  Partidos evaluados: 88
+  Acierto ganador (combinado)        ████████████░░░░░░░░  61.4%
+  Acierto ganador (solo Elo)         ███████████░░░░░░░░░  56.8%
+  Acierto ganador (solo ratings)     ██████████░░░░░░░░░░  52.3%
+  Acierto del favorito del mercado   ████████████░░░░░░░░  62.5%
+  Brier score: 0.229 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.650
+  Error medio del margen: 9.48 pts · del total: 11.60 pts
 
 ── Frente a las casas de apuestas ──────────────────────────────
-  Error medio del margen: modelo 9.45 pts vs mercado 9.47 pts
-  Acierto contra el spread           ███████████░░░░░░░░░  55.6%  (81)
+  Error medio del margen: modelo 9.48 pts vs mercado 9.52 pts
+  Acierto contra el spread           ███████████░░░░░░░░░  56.1%  (82)
   ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  54.2%  (24)
-  Error medio del total: modelo 11.53 vs mercado 10.39
-  Acierto over/under                 ████████░░░░░░░░░░░░  39.1%  (87)
+  Error medio del total: modelo 11.60 vs mercado 10.47
+  Acierto over/under                 ████████░░░░░░░░░░░░  39.8%  (88)
   Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.
 ```
