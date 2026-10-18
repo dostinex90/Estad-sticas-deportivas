@@ -1,11 +1,11 @@
 """Modelos predictivos de fútbol.
 
 * ModeloPoisson: fuerzas de ataque y defensa ajustadas por rival (modelo de Maher),
-  con ventaja de local, ponderación temporal, contracción hacia la media y la corrección
-  de Dixon-Coles para marcadores bajos (rho estimado por máxima verosimilitud). Las fuerzas se
-  estiman con una mezcla de goles y tiros a puerta ("xG aproximado") y los goles esperados se
+  con ventaja de local, ponderación temporal, contracción hacia la media (hacia un nivel más
+  bajo para los equipos ascendidos) y la corrección de Dixon-Coles para marcadores bajos. Las fuerzas
+  se estiman con una mezcla de goles y tiros a puerta ("xG aproximado") y los goles esperados se
   combinan con los que implica el Elo previo de ClubElo; sin tiros o sin Elo usa solo los goles.
-  Pesos elegidos en 2018-19 a 2022-23 (ver experimentos/futbol_tiros_elo.py).
+  Parámetros elegidos con 2018-19 a 2022-23 (ver experimentos/).
 * EloFutbol: rating Elo con multiplicador por diferencia de goles (estilo World Football Elo).
 * evaluar: validación "walk-forward" que solo usa información anterior a cada partido.
 """
@@ -42,9 +42,15 @@ def _resolver3(a, b):
 
 
 class ModeloPoisson:
-    def __init__(self, vida_media_dias=240, previa=4.0, iteraciones=40, peso_tiros=0.7, peso_elo=0.7):
+    def __init__(self, vida_media_dias=240, previa=4.0, iteraciones=40, rho=-0.08,
+                 fuerza_nuevos=(0.85, 1.2), dias_nuevo=150, peso_tiros=0.7, peso_elo=0.7):
         """vida_media_dias: un partido de hace X días pesa la mitad que uno de hoy (None = sin decaimiento).
         previa: partidos ficticios "de equipo medio" que estabilizan equipos con pocos datos.
+        rho: corrección de Dixon-Coles fija (None = estimarla por máxima verosimilitud en cada ajuste;
+        el valor fijo, elegido con 5 ligas y 5 temporadas, es más estable).
+        fuerza_nuevos: (ataque, defensa) hacia los que se contrae a los equipos que no estaban al principio
+        de los datos (ascendidos); también se usan para equipos sin ningún partido.
+        dias_nuevo: un equipo cuyo primer partido llega tantos días después del inicio de los datos es nuevo.
         peso_tiros: 0-1, cuánto pesan los tiros a puerta (convertidos a goles con la tasa de la liga)
             frente a los goles al estimar ataque y defensa ("xG aproximado"). Sin tiros se usan goles.
         peso_elo: 0-1, mezcla geométrica de los goles esperados con los que implica el Elo previo
@@ -52,6 +58,9 @@ class ModeloPoisson:
         self.vida_media_dias = vida_media_dias
         self.previa = previa
         self.iteraciones = iteraciones
+        self.rho_fijo = rho
+        self.fuerza_nuevos = tuple(fuerza_nuevos)
+        self.dias_nuevo = dias_nuevo
         self.peso_tiros = peso_tiros
         self.peso_elo = peso_elo
         self.ataque = {}
@@ -60,6 +69,7 @@ class ModeloPoisson:
         self.media_visitante = 1.1
         self.rho = 0.0
         self.partidos_usados = 0
+        self._por_defecto = (1.0, 1.0)
         self.elo_coef = None  # (intercepto local, intercepto visitante, pendiente por 100 puntos de Elo)
         self.elo_ultimo = {}  # equipo -> último Elo previo conocido
 
@@ -121,6 +131,16 @@ class ModeloPoisson:
         if not jug:
             raise ValueError("No hay partidos jugados para ajustar el modelo.")
         referencia = referencia or max(p.fecha for p in jug)
+        # Equipos que aparecen tarde en los datos (p. ej. ascendidos tras la temporada previa)
+        inicio = min(p.fecha for p in jug)
+        primero = {}
+        for p in jug:
+            for e in (p.local, p.visitante):
+                if e not in primero or p.fecha < primero[e]:
+                    primero[e] = p.fecha
+        nuevos = {e for e, f in primero.items() if (f - inicio).days > self.dias_nuevo}
+        varias_temporadas = (referencia - inicio).days > self.dias_nuevo
+        self._por_defecto = self.fuerza_nuevos if varias_temporadas else (1.0, 1.0)
         # Los partidos casi sin peso (muy antiguos) no aportan y ralentizan el ajuste
         datos = [(p, w) for p in jug if (w := self._peso(p, referencia)) >= 0.02]
         if not datos:
@@ -133,13 +153,17 @@ class ModeloPoisson:
         self.media_visitante = max(self.media_visitante, 0.05)
 
         equipos = {p.local for p, _ in datos} | {p.visitante for p, _ in datos}
+        a_n, d_n = self.fuerza_nuevos
+        obj_att = {e: a_n if e in nuevos else 1.0 for e in equipos}
+        obj_dfn = {e: d_n if e in nuevos else 1.0 for e in equipos}
         neutra = (self.media_local + self.media_visitante) / 2
         base = {id(p): (neutra, neutra) if p.neutral else (self.media_local, self.media_visitante) for p, _ in datos}
         obj = self._objetivos(datos)
-        att = {e: 1.0 for e in equipos}
-        dfn = {e: 1.0 for e in equipos}
+        att = dict(obj_att)
+        dfn = dict(obj_dfn)
         k = self.previa
         for _ in range(self.iteraciones):
+            previo = att
             num, den = defaultdict(float), defaultdict(float)
             for p, w in datos:
                 bl, bv = base[id(p)]
@@ -148,7 +172,7 @@ class ModeloPoisson:
                 den[p.local] += w * bl * dfn[p.visitante]
                 num[p.visitante] += w * gv
                 den[p.visitante] += w * bv * dfn[p.local]
-            att = {e: (num[e] + k) / (den[e] + k) for e in equipos}
+            att = {e: (num[e] + k * obj_att[e]) / (den[e] + k) for e in equipos}
             m = sum(att.values()) / len(att)
             att = {e: v / m for e, v in att.items()}
 
@@ -160,9 +184,11 @@ class ModeloPoisson:
                 den[p.local] += w * bv * att[p.visitante]
                 num[p.visitante] += w * gl
                 den[p.visitante] += w * bl * att[p.local]
-            dfn = {e: (num[e] + k) / (den[e] + k) for e in equipos}
+            dfn = {e: (num[e] + k * obj_dfn[e]) / (den[e] + k) for e in equipos}
             m = sum(dfn.values()) / len(dfn)
             dfn = {e: v / m for e, v in dfn.items()}
+            if max(abs(att[e] - previo[e]) for e in equipos) < 1e-7:
+                break  # convergido: más iteraciones no cambian las fuerzas
 
         self.ataque, self.defensa = att, dfn
         self.partidos_usados = len(datos)
@@ -174,13 +200,14 @@ class ModeloPoisson:
                     self.elo_ultimo[p.local] = p.elo_local
                 if p.elo_visitante is not None:
                     self.elo_ultimo[p.visitante] = p.elo_visitante
-        self.rho = self._estimar_rho(datos)
+        self.rho = self._estimar_rho(datos) if self.rho_fijo is None else self.rho_fijo
         return self
 
     def _estimar_rho(self, datos):
         mejor, mejor_ll = 0.0, -math.inf
+        # tau = 1 fuera de los marcadores 0-0, 1-0, 0-1 y 1-1: el resto no influye en rho
         lambdas = [(self.goles_esperados(p.local, p.visitante, p.neutral, p.elo_local, p.elo_visitante), p, w)
-                   for p, w in datos]
+                   for p, w in datos if p.goles_local <= 1 and p.goles_visitante <= 1]
         for paso in range(-25, 16):
             rho = paso / 100
             ll = 0.0
@@ -196,8 +223,9 @@ class ModeloPoisson:
 
     def goles_esperados(self, local, visitante, neutral=False, elo_local=None, elo_visitante=None):
         """Goles esperados (local, visitante). El Elo previo, si no se da, es el último conocido del equipo."""
-        att_l, def_l = self.ataque.get(local, 1.0), self.defensa.get(local, 1.0)
-        att_v, def_v = self.ataque.get(visitante, 1.0), self.defensa.get(visitante, 1.0)
+        a0, d0 = self._por_defecto  # equipos sin partidos en los datos
+        att_l, def_l = self.ataque.get(local, a0), self.defensa.get(local, d0)
+        att_v, def_v = self.ataque.get(visitante, a0), self.defensa.get(visitante, d0)
         if neutral:
             base = (self.media_local + self.media_visitante) / 2
             lam, mu = base * att_l * def_v, base * att_v * def_l
