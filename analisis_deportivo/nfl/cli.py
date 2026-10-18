@@ -169,8 +169,9 @@ def cmd_equipo(juegos, args):
     proximos = [j for j in temporada if not j.jugado and j.participa(equipo)][:4]
     if proximos:
         _seccion("Próximos partidos")
+        ctx = modelos.contexto_qb(juegos)
         for j in proximos:
-            pr = modelos.predecir(elo, ratings, j.local, j.visitante, j.neutral)
+            pr = modelos.predecir_juego(elo, ratings, j, ctx)
             p_eq = pr["prob_local"] if j.local == equipo else 1 - pr["prob_local"]
             m_eq = pr["margen"] if j.local == equipo else -pr["margen"]
             print(f"  Sem. {j.semana:<3} {j.fecha}  {j.marcador():<12} prob. victoria {100 * p_eq:4.1f}%  margen {m_eq:+.1f}")
@@ -324,8 +325,9 @@ def cmd_pronosticos(juegos, args):
     elo, ratings = modelos.ajustar_modelos(juegos, args.temporada)
     _titulo(f"Pronósticos semana {semana} — {args.temporada}")
     print(f"  {'Partido':<12}{'Fecha':<12}{'Prob. local':>12}{'Modelo':>10}{'Mercado':>10}{'Dif.':>7}{'Total':>7}{'Mercado':>9}")
+    ctx = modelos.contexto_qb(juegos)
     for j in partidos:
-        pr = modelos.predecir(elo, ratings, j.local, j.visitante, j.neutral)
+        pr = modelos.predecir_juego(elo, ratings, j, ctx)
         mercado = "" if j.linea is None else f"{-j.linea or 0.0:+.1f}"
         dif = "" if j.linea is None else f"{pr['margen'] - j.linea:+.1f}"
         tl = "" if j.total_linea is None else f"{j.total_linea:.1f}"
@@ -368,7 +370,7 @@ def cmd_evaluar(juegos, args):
     print(linea_pct("Acierto ganador (solo ratings)", pct(m["aciertos_ratings"], n), 34))
     if m.get("n_fav"):
         print(linea_pct("Acierto del favorito del mercado", pct(m["aciertos_mercado"], m["n_fav"]), 34))
-    print(f"  Brier score: {m['brier'] / n:.3f} (0.25 = lanzar una moneda; menor es mejor)")
+    print(f"  Brier score: {m['brier'] / n:.3f} (0.25 = lanzar una moneda; menor es mejor) · log-loss {m['logloss'] / n:.3f}")
     print(f"  Error medio del margen: {m['error_margen'] / n:.2f} pts · del total: {m['error_total'] / n:.2f} pts")
     if m.get("n_linea"):
         k = m["n_linea"]

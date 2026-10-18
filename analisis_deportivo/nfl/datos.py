@@ -8,7 +8,8 @@ Formatos admitidos (detección automática):
 Los partidos sin marcador se conservan como pendientes.
 """
 
-from dataclasses import dataclass
+import sqlite3
+from dataclasses import dataclass, replace
 from datetime import date
 from typing import Optional
 
@@ -45,6 +46,11 @@ class Juego:
     entrenador_visitante: str = ""
     estadio: str = ""
     id: str = ""
+    # EPA de pase y dropbacks (pases + sacks) de cada equipo; solo se usan como historial del QB
+    epa_pase_local: Optional[float] = None
+    epa_pase_visitante: Optional[float] = None
+    jugadas_pase_local: Optional[int] = None
+    jugadas_pase_visitante: Optional[int] = None
 
     @property
     def jugado(self):
@@ -176,10 +182,26 @@ def cargar_juegos(ruta):
     return sorted(juegos, key=lambda j: (j.fecha, j.local))
 
 
+def _pase_por_partido(con):
+    """{(game_id, equipo): (EPA de pase, dropbacks)} de nfl_estadisticas_equipo, si existe."""
+    try:
+        filas = con.execute("SELECT game_id, team, passing_epa, attempts, sacks_suffered FROM nfl_estadisticas_equipo").fetchall()
+    except sqlite3.Error:
+        return {}
+    return {(g, normalizar(t)): (e or 0.0, (a or 0) + (s or 0)) for g, t, e, a, s in filas if t}
+
+
 def cargar_desde_base(con):
     """Carga todos los partidos de la tabla nfl_partidos de la base SQLite."""
     filas = [{k: ("" if f[k] is None else str(f[k])) for k in f.keys()} for f in con.execute("SELECT * FROM nfl_partidos")]
-    return sorted(_desde_nflverse(filas), key=lambda j: (j.fecha, j.local))
+    juegos = _desde_nflverse(filas)
+    pase = _pase_por_partido(con)
+    if pase:
+        nada = (None, None)
+        juegos = [replace(j, epa_pase_local=pase.get((j.id, j.local), nada)[0], jugadas_pase_local=pase.get((j.id, j.local), nada)[1],
+                          epa_pase_visitante=pase.get((j.id, j.visitante), nada)[0],
+                          jugadas_pase_visitante=pase.get((j.id, j.visitante), nada)[1]) for j in juegos]
+    return sorted(juegos, key=lambda j: (j.fecha, j.local))
 
 
 def jugados(juegos):

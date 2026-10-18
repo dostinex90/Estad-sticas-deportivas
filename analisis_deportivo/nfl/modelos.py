@@ -4,29 +4,40 @@
   entre temporadas, ventaja de campo).
 * RatingsNFL: ratings ofensivo y defensivo ajustados por rival (mínimos cuadrados con
   regularización), de los que salen el SRS, el spread y el total esperados.
-* predecir: combina ambos modelos; la probabilidad de victoria sale de una normal con
-  desviación típica de ~13.5 puntos (dispersión histórica del margen en la NFL).
+* ContextoQB / ajuste_juego: ajustes previos al partido (QB titular distinto del habitual,
+  valor del QB según su EPA de pase previo, semana de descanso).
+* predecir: combina ambos modelos (+ ajustes); la probabilidad de victoria sale de una normal
+  sobre el margen esperado. Parámetros ajustados con 2012-2019 (ver experimentos/nfl_ajuste.py).
 * simular_temporada: Monte Carlo de los partidos pendientes → probabilidades de playoffs.
 * evaluar: validación semana a semana sin usar información futura.
 """
 
 import math
 import random
-from collections import defaultdict
+from collections import Counter, defaultdict, deque
 
 from ..comun import media, normal_cdf
 from . import analisis
 from .equipos import conferencia, division
 
-DESVIACION_MARGEN = 13.5
+DESVIACION_MARGEN = 13.5  # dispersión histórica del margen y del total (spread, over/under)
+DESVIACION_PROB = 12.25  # desviación con la que el margen combinado da la prob. de victoria mejor calibrada
+PESO_ELO = 0.4
+FACTOR_PLAYOFF = 1.3  # en playoffs las diferencias entre equipos pesan más
+PUNTOS_BYE = 1.0  # ventaja por venir de semana de descanso (13+ días)
+PUNTOS_CAMBIO_QB = 2.0  # penalización por titular distinto del QB habitual
+PESO_VALOR_QB = 0.5  # fracción de la diferencia de EPA por partido entre el titular y el habitual
 
 
 class EloNFL:
-    def __init__(self, k=20, ventaja_campo=48, regresion=1 / 3, inicial=1500):
+    def __init__(self, k=20, ventaja_campo=84, regresion=1 / 3, inicial=1500, mov=3.0):
+        """mov: constante del multiplicador por margen de victoria (mayor = menos corrección por
+        autocorrelación de favoritos que ganan por mucho)."""
         self.k = k
         self.ventaja_campo = ventaja_campo
         self.regresion = regresion
         self.inicial = inicial
+        self.mov = mov
         self.rating = {}
         self.historial = defaultdict(list)  # equipo -> [(temporada, semana, rating)]
         self._temporada = None
@@ -55,7 +66,7 @@ class EloNFL:
         esperado = 1 / (1 + 10 ** (-dif / 400))
         real = 1.0 if j.margen > 0 else 0.0 if j.margen < 0 else 0.5
         dif_ganador = dif if j.margen > 0 else -dif
-        multiplicador = math.log(abs(j.margen) + 1) * 2.2 / (dif_ganador * 0.001 + 2.2) if j.margen else 1.0
+        multiplicador = math.log(abs(j.margen) + 1) * self.mov / (dif_ganador * 0.001 + self.mov) if j.margen else 1.0
         delta = self.k * multiplicador * (real - esperado)
         self.rating[j.local] = self._r(j.local) + delta
         self.rating[j.visitante] = self._r(j.visitante) - delta
@@ -73,7 +84,7 @@ class EloNFL:
 
 
 class RatingsNFL:
-    def __init__(self, peso_temporada_anterior=0.3, regularizacion=2.0, iteraciones=60):
+    def __init__(self, peso_temporada_anterior=0.15, regularizacion=4.0, iteraciones=60):
         """peso_temporada_anterior: cuánto cuenta cada partido de la temporada previa (se
         multiplica por temporada hacia atrás). regularizacion: partidos ficticios contra un
         rival medio que estabilizan los ratings al principio de la temporada."""
@@ -144,17 +155,75 @@ class RatingsNFL:
         return sorted(((e, self.ofensa[e], self.defensa[e], self.srs(e)) for e in self.ofensa), key=lambda f: -f[3])
 
 
-def predecir(elo, ratings, local, visitante, neutral=False, peso_elo=0.5):
+class ContextoQB:
+    """Historial de QB titulares previo a cada partido: el habitual de cada equipo (el más
+    frecuente en sus últimos `ventana` partidos) y el EPA de pase por dropback de cada QB en sus
+    titularidades anteriores, encogido hacia `previo` con `m0` dropbacks ficticios."""
+
+    def __init__(self, ventana=8, m0=150, previo=-0.05, jugadas=35):
+        self.ultimos = defaultdict(lambda: deque(maxlen=ventana))
+        self.epa = defaultdict(float)
+        self.dropbacks = defaultdict(float)
+        self.m0, self.previo, self.jugadas = m0, previo, jugadas
+
+    def agregar(self, j):
+        for eq, qb, epa, db in ((j.local, j.qb_local, j.epa_pase_local, j.jugadas_pase_local),
+                                (j.visitante, j.qb_visitante, j.epa_pase_visitante, j.jugadas_pase_visitante)):
+            if qb:
+                self.ultimos[eq].append(qb)
+                self.epa[qb] += epa or 0.0
+                self.dropbacks[qb] += db or 0
+
+    def habitual(self, equipo):
+        hist = self.ultimos.get(equipo)
+        return Counter(hist).most_common(1)[0][0] if hist else None
+
+    def valor(self, qb):
+        """EPA de pase esperado por dropback del QB."""
+        return (self.epa[qb] + self.m0 * self.previo) / (self.dropbacks[qb] + self.m0)
+
+    def ajuste(self, equipo, qb):
+        """Puntos que pierde (negativo) o gana el equipo por su titular frente al habitual."""
+        habitual = self.habitual(equipo)
+        if not (habitual and qb and qb != habitual):
+            return 0.0
+        return -PUNTOS_CAMBIO_QB + PESO_VALOR_QB * self.jugadas * (self.valor(qb) - self.valor(habitual))
+
+
+def contexto_qb(juegos, antes_de=None):
+    """ContextoQB con los partidos jugados (anteriores a la fecha `antes_de`, si se indica)."""
+    ctx = ContextoQB()
+    for j in sorted((j for j in juegos if j.jugado), key=lambda j: j.fecha):
+        if antes_de is not None and j.fecha >= antes_de:
+            break
+        ctx.agregar(j)
+    return ctx
+
+
+def ajuste_juego(j, contexto=None):
+    """Puntos de ventaja extra para el local con información previa al partido (descanso y QB)."""
+    bye = (1.0 if (j.descanso_local or 0) >= 13 else 0.0) - (1.0 if (j.descanso_visitante or 0) >= 13 else 0.0)
+    a = PUNTOS_BYE * bye
+    if contexto is not None:
+        a += contexto.ajuste(j.local, j.qb_local) - contexto.ajuste(j.visitante, j.qb_visitante)
+    return a
+
+
+def predecir(elo, ratings, local, visitante, neutral=False, peso_elo=PESO_ELO, ajuste=0.0, playoff=False):
+    """ajuste: puntos extra para el local (ver ajuste_juego); playoff: aplica FACTOR_PLAYOFF."""
     pl, pv = ratings.puntos(local, visitante, neutral)
     margen_ratings = pl - pv
     margen_elo = elo.margen(local, visitante, neutral)
-    margen = peso_elo * margen_elo + (1 - peso_elo) * margen_ratings
+    margen = peso_elo * margen_elo + (1 - peso_elo) * margen_ratings + ajuste
+    if playoff:
+        margen *= FACTOR_PLAYOFF
     total = pl + pv
     return {
         "margen": margen,
         "margen_elo": margen_elo,
         "margen_ratings": margen_ratings,
-        "prob_local": normal_cdf(margen, 0, DESVIACION_MARGEN),
+        "ajuste": ajuste,
+        "prob_local": normal_cdf(margen, 0, DESVIACION_PROB),
         "prob_elo": elo.prob_local(local, visitante, neutral),
         "total": total,
         "puntos_local": (total + margen) / 2,
@@ -181,6 +250,11 @@ def ajustar_modelos(juegos, temporada):
     return elo, ratings
 
 
+def predecir_juego(elo, ratings, j, contexto=None):
+    """predecir() para un partido del calendario, con sus ajustes previos."""
+    return predecir(elo, ratings, j.local, j.visitante, j.neutral, ajuste=ajuste_juego(j, contexto), playoff=j.es_playoff)
+
+
 def simular_temporada(juegos, temporada, simulaciones=5000, semilla=None):
     """Simula los partidos pendientes de temporada regular. Devuelve, por equipo, la
     probabilidad de playoffs, de ganar la división, de ser 1º de conferencia y las victorias medias."""
@@ -190,7 +264,8 @@ def simular_temporada(juegos, temporada, simulaciones=5000, semilla=None):
     pendientes = [j for j in reg if not j.jugado]
     base = analisis.clasificacion(juegos, temporada)
     equipos = list(base)
-    probs = [(j, predecir(elo, ratings, j.local, j.visitante, j.neutral)["prob_local"]) for j in pendientes]
+    ctx = contexto_qb(juegos)
+    probs = [(j, predecir_juego(elo, ratings, j, ctx)["prob_local"]) for j in pendientes]
 
     contador = {e: defaultdict(float) for e in equipos}
     for _ in range(simulaciones):
@@ -233,7 +308,8 @@ def evaluar(juegos, temporada):
     if not any(j.temporada < temporada for j in jug):
         print("  Aviso: sin temporada anterior en los datos, las primeras semanas parten de cero.")
     elo = EloNFL()
-    idx = 0
+    ctx = ContextoQB()
+    idx = idx_qb = 0
     m = defaultdict(float)
     semanas = sorted({(j.tipo != "REG", j.semana) for j in objetivo})
     for clave in semanas:
@@ -248,11 +324,16 @@ def evaluar(juegos, temporada):
         ratings = RatingsNFL().ajustar(previos, temporada)
         elo._nueva_temporada(temporada)
         for j in de_semana:
-            pr = predecir(elo, ratings, j.local, j.visitante, j.neutral)
+            while idx_qb < len(jug) and jug[idx_qb].fecha < j.fecha:  # QB: hasta el día anterior
+                ctx.agregar(jug[idx_qb])
+                idx_qb += 1
+            pr = predecir_juego(elo, ratings, j, ctx)
             if j.margen == 0:
                 continue
             gana_local = j.margen > 0
+            p = min(max(pr["prob_local"], 1e-12), 1 - 1e-12)
             m["n"] += 1
+            m["logloss"] -= math.log(p if gana_local else 1 - p)
             m["aciertos"] += (pr["margen"] > 0) == gana_local
             m["aciertos_elo"] += (pr["margen_elo"] > 0) == gana_local
             m["aciertos_ratings"] += (pr["margen_ratings"] > 0) == gana_local
