@@ -149,19 +149,31 @@ El **resumen de liga** incluye:
 
 **Fútbol**
 
-- **Poisson con corrección Dixon-Coles.** Calcula una fuerza de ataque y una de defensa para cada equipo, ajustadas por la calidad de sus rivales. Tiene en cuenta la ventaja de jugar en casa y da más peso a los partidos recientes (un partido de hace 240 días pesa la mitad). También acerca a la media a los equipos con pocos datos. La corrección de Dixon-Coles mejora la estimación de los marcadores bajos; su parámetro se estima con los propios datos.
-- **Elo.** Un rating que sube o baja después de cada partido, y más cuanto mayor es la diferencia de goles.
+- **Poisson con corrección Dixon-Coles.** Calcula una fuerza de ataque y una de defensa para cada equipo, ajustadas por la calidad de sus rivales. Tiene en cuenta la ventaja de jugar en casa y da más peso a los partidos recientes (un partido de hace 240 días pesa la mitad). También acerca a la media a los equipos con pocos datos; a los recién ascendidos, hacia un nivel algo inferior a la media.
+- **"xG aproximado".** Si los datos traen tiros a puerta, las fuerzas se estiman con una mezcla de goles (30 %) y tiros a puerta convertidos a goles (70 %). Los tiros reflejan mejor el nivel real que los goles, que tienen mucha suerte.
+- **Elo de ClubElo.** Si los datos traen el Elo previo al partido, los goles esperados se combinan con los que implica ese Elo.
+- Sin tiros ni Elo (ligas no europeas, archivos CSV propios), el modelo usa solo los goles.
+- **Elo propio.** Un rating que sube o baja después de cada partido, y más cuanto mayor es la diferencia de goles.
 
 **NFL**
 
 - **Elo** al estilo FiveThirtyEight: tiene en cuenta el margen de victoria y la ventaja de campo, y acerca a los equipos a la media un tercio entre temporadas.
-- **Ratings de ofensa y defensa** ajustados por la calidad de los rivales. De ellos salen el SRS, el spread esperado y el total de puntos esperado. La ventaja de campo se estima con los datos, y la temporada anterior cuenta un 30 % para estabilizar las primeras semanas.
-- **Predicción.** Es la media de los dos modelos. La probabilidad de victoria se calcula con una distribución normal de 13.5 puntos de desviación, que es la dispersión típica del margen final en la NFL.
+- **Ratings de ofensa y defensa** ajustados por la calidad de los rivales. De ellos salen el SRS, el spread esperado y el total de puntos esperado. La ventaja de campo se estima con los datos.
+- **Ajustes previos al partido:**
+  - Quarterback titular: −2 puntos si no es el habitual, más la diferencia de rendimiento (EPA por dropback) entre el titular y el habitual, calculada solo con sus partidos anteriores.
+  - Semana de descanso: +1 punto.
+  - Playoffs: el margen se amplía ×1.3.
+- **Predicción.** Combina Elo (40 %) y ratings (60 %). La probabilidad de victoria sale de una distribución normal de 12.25 puntos de desviación.
 
 **Validación.** El comando `evaluar` predice cada jornada o semana usando solo los partidos anteriores, como si fuera en tiempo real. Después compara el resultado con una referencia ingenua y con las casas de apuestas.
 
-- **NFL, datos reales:** el modelo acierta el ganador en el 62–68 % de los partidos de 2023, 2024 y 2025. El favorito de las casas de apuestas acierta entre el 66 % y el 70 %.
-- **La Liga 2025-26:** el modelo mejora a la referencia en todas las métricas. El RPS, la medida habitual para predicciones de 1X2 donde menos es mejor, baja de 0.225 a 0.212.
+**Mejoras hechas con agentes de IA.** Cuatro agentes probaron mejoras por separado. Ajustaron los parámetros solo con las temporadas de entrenamiento y midieron el resultado en temporadas que no habían visto. Después, otros agentes intentaron refutar cada mejora repitiendo las mediciones y buscando fugas de información:
+
+- **Fútbol** (validación 2023-24 a 2025-26, Premier, LaLiga, Serie A, Bundesliga y Ligue 1; 5.255 partidos): el RPS baja de 0.2012 a 0.1987 y mejora en las cinco ligas. El RPS es la medida habitual para predicciones de 1X2; menos es mejor. Las casas de apuestas están en 0.1934.
+- **NFL** (validación 2020–2025, 1.688 partidos): el Brier baja de 0.2228 a 0.2187. Es la medida de error de las probabilidades; menos es mejor, y 0.25 equivale a tirar una moneda. Mejora en 5 de 6 temporadas, y casi toda la ganancia viene del ajuste por quarterback titular.
+- **Descartado:** un modelo NFL basado en EPA por jugada. No mejoraba al actual.
+
+Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py` y `nfl_ajuste.py`.
 
 Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de análisis, no como garantía.
 

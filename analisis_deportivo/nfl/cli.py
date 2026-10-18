@@ -282,8 +282,8 @@ def cmd_ranking(juegos, args):
     print(f"\n  Ventaja de campo estimada: {ratings.ventaja_campo:+.1f} pts · media de la liga {ratings.media:.1f} pts por equipo")
 
 
-def _mostrar_prediccion(elo, ratings, local, visitante, neutral, linea=None, total_linea=None):
-    pr = modelos.predecir(elo, ratings, local, visitante, neutral)
+def _mostrar_prediccion(elo, ratings, local, visitante, neutral, linea=None, total_linea=None, pr=None):
+    pr = pr or modelos.predecir(elo, ratings, local, visitante, neutral)
     sede = "campo neutral" if neutral else f"en {local}"
     _titulo(f"{nombre(visitante)} @ {nombre(local)} ({sede})")
     favorito = local if pr["margen"] > 0 else visitante
@@ -312,7 +312,16 @@ def cmd_predecir(juegos, args):
     local = _equipo(args.local, juegos)
     visitante = _equipo(args.visitante, juegos)
     elo, ratings = modelos.ajustar_modelos(juegos, args.temporada)
-    _mostrar_prediccion(elo, ratings, local, visitante, args.neutral, args.linea, args.total)
+    # Si el partido está en el calendario, se usan sus ajustes previos (descanso, QB titular, playoffs)
+    programado = next((j for j in juegos if j.temporada == args.temporada and not j.jugado
+                       and j.local == local and j.visitante == visitante), None)
+    pr = None
+    if programado and not args.neutral:
+        pr = modelos.predecir_juego(elo, ratings, programado, modelos.contexto_qb(juegos))
+        print(f"  (partido del calendario: semana {programado.semana}, {programado.fecha}; incluye descanso y QB titular)")
+        args.linea = programado.linea if args.linea is None else args.linea
+        args.total = programado.total_linea if args.total is None else args.total
+    _mostrar_prediccion(elo, ratings, local, visitante, args.neutral, args.linea, args.total, pr)
     print("\n  Orientativo: combina Elo y ratings ajustados por rival; no incluye lesiones ni clima.")
 
 
