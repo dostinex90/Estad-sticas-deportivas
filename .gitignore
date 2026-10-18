@@ -4,3 +4,4 @@ __pycache__/
 datos/descargas/
 datos/base_deportiva.sqlite
 datos/*.nuevo
+.claude/worktrees/
