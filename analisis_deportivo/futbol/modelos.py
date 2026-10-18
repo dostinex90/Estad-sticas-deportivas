@@ -2,7 +2,10 @@
 
 * ModeloPoisson: fuerzas de ataque y defensa ajustadas por rival (modelo de Maher),
   con ventaja de local, ponderación temporal, contracción hacia la media y la corrección
-  de Dixon-Coles para marcadores bajos (rho estimado por máxima verosimilitud).
+  de Dixon-Coles para marcadores bajos (rho estimado por máxima verosimilitud). Las fuerzas se
+  estiman con una mezcla de goles y tiros a puerta ("xG aproximado") y los goles esperados se
+  combinan con los que implica el Elo previo de ClubElo; sin tiros o sin Elo usa solo los goles.
+  Pesos elegidos en 2018-19 a 2022-23 (ver experimentos/futbol_tiros_elo.py).
 * EloFutbol: rating Elo con multiplicador por diferencia de goles (estilo World Football Elo).
 * evaluar: validación "walk-forward" que solo usa información anterior a cada partido.
 """
@@ -27,24 +30,91 @@ def _tau(i, j, lam, mu, rho):
     return 1.0
 
 
+def _resolver3(a, b):
+    """Resuelve el sistema lineal 3x3 a·x = b (Cramer); None si es singular."""
+    def det(m):
+        return (m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+                + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]))
+    d = det(a)
+    if abs(d) < 1e-12:
+        return None
+    return [det([[b[i] if j == c else a[i][j] for j in range(3)] for i in range(3)]) / d for c in range(3)]
+
+
 class ModeloPoisson:
-    def __init__(self, vida_media_dias=240, previa=4.0, iteraciones=40):
+    def __init__(self, vida_media_dias=240, previa=4.0, iteraciones=40, peso_tiros=0.7, peso_elo=0.7):
         """vida_media_dias: un partido de hace X días pesa la mitad que uno de hoy (None = sin decaimiento).
-        previa: partidos ficticios "de equipo medio" que estabilizan equipos con pocos datos."""
+        previa: partidos ficticios "de equipo medio" que estabilizan equipos con pocos datos.
+        peso_tiros: 0-1, cuánto pesan los tiros a puerta (convertidos a goles con la tasa de la liga)
+            frente a los goles al estimar ataque y defensa ("xG aproximado"). Sin tiros se usan goles.
+        peso_elo: 0-1, mezcla geométrica de los goles esperados con los que implica el Elo previo
+            (ClubElo). Sin Elo se usa solo el Poisson."""
         self.vida_media_dias = vida_media_dias
         self.previa = previa
         self.iteraciones = iteraciones
+        self.peso_tiros = peso_tiros
+        self.peso_elo = peso_elo
         self.ataque = {}
         self.defensa = {}
         self.media_local = 1.4
         self.media_visitante = 1.1
         self.rho = 0.0
         self.partidos_usados = 0
+        self.elo_coef = None  # (intercepto local, intercepto visitante, pendiente por 100 puntos de Elo)
+        self.elo_ultimo = {}  # equipo -> último Elo previo conocido
 
     def _peso(self, partido, referencia):
         if not self.vida_media_dias:
             return 1.0
         return 0.5 ** ((referencia - partido.fecha).days / self.vida_media_dias)
+
+    def _objetivos(self, datos):
+        """Goles "efectivos" de cada partido: mezcla de goles y tiros a puerta convertidos a goles."""
+        a = self.peso_tiros
+        con_tiros = [(p, w) for p, w in datos if "tiros_puerta" in p.estadisticas]
+        tiros = sum(w * sum(p.estadisticas["tiros_puerta"]) for p, w in con_tiros)
+        if not a or not tiros:
+            return {id(p): (p.goles_local, p.goles_visitante) for p, _ in datos}
+        conversion = sum(w * p.total_goles for p, w in con_tiros) / tiros
+        obj = {}
+        for p, _ in datos:
+            tp = p.estadisticas.get("tiros_puerta")
+            if tp is None:
+                obj[id(p)] = (p.goles_local, p.goles_visitante)
+            else:
+                obj[id(p)] = ((1 - a) * p.goles_local + a * conversion * tp[0],
+                              (1 - a) * p.goles_visitante + a * conversion * tp[1])
+        return obj
+
+    def _ajustar_elo(self, datos):
+        """Regresión de Poisson ponderada: log(goles) = c + b·(diferencia de Elo / 100), por Newton."""
+        filas = [(p, w, (p.elo_local - p.elo_visitante) / 100) for p, w in datos
+                 if p.elo_local is not None and p.elo_visitante is not None and not p.neutral]
+        if len(filas) < 30:
+            return None
+        cl, cv, b = math.log(self.media_local), math.log(self.media_visitante), 0.0
+        for _ in range(8):
+            g = [0.0, 0.0, 0.0]
+            h = [[0.0] * 3 for _ in range(3)]
+            for p, w, x in filas:
+                ml, mv = math.exp(cl + b * x), math.exp(cv - b * x)
+                rl, rv = w * (p.goles_local - ml), w * (p.goles_visitante - mv)
+                g[0] += rl
+                g[1] += rv
+                g[2] += x * (rl - rv)
+                h[0][0] += w * ml
+                h[1][1] += w * mv
+                h[0][2] += w * ml * x
+                h[1][2] -= w * mv * x
+                h[2][2] += w * x * x * (ml + mv)
+            h[2][0], h[2][1] = h[0][2], h[1][2]
+            paso = _resolver3(h, g)
+            if paso is None:
+                return None
+            cl, cv, b = cl + paso[0], cv + paso[1], b + paso[2]
+            if max(map(abs, paso)) < 1e-7:
+                break
+        return cl, cv, b
 
     def ajustar(self, partidos, referencia=None):
         jug = [p for p in partidos if p.jugado]
@@ -65,6 +135,7 @@ class ModeloPoisson:
         equipos = {p.local for p, _ in datos} | {p.visitante for p, _ in datos}
         neutra = (self.media_local + self.media_visitante) / 2
         base = {id(p): (neutra, neutra) if p.neutral else (self.media_local, self.media_visitante) for p, _ in datos}
+        obj = self._objetivos(datos)
         att = {e: 1.0 for e in equipos}
         dfn = {e: 1.0 for e in equipos}
         k = self.previa
@@ -72,9 +143,10 @@ class ModeloPoisson:
             num, den = defaultdict(float), defaultdict(float)
             for p, w in datos:
                 bl, bv = base[id(p)]
-                num[p.local] += w * p.goles_local
+                gl, gv = obj[id(p)]
+                num[p.local] += w * gl
                 den[p.local] += w * bl * dfn[p.visitante]
-                num[p.visitante] += w * p.goles_visitante
+                num[p.visitante] += w * gv
                 den[p.visitante] += w * bv * dfn[p.local]
             att = {e: (num[e] + k) / (den[e] + k) for e in equipos}
             m = sum(att.values()) / len(att)
@@ -83,9 +155,10 @@ class ModeloPoisson:
             num, den = defaultdict(float), defaultdict(float)
             for p, w in datos:
                 bl, bv = base[id(p)]
-                num[p.local] += w * p.goles_visitante
+                gl, gv = obj[id(p)]
+                num[p.local] += w * gv
                 den[p.local] += w * bv * att[p.visitante]
-                num[p.visitante] += w * p.goles_local
+                num[p.visitante] += w * gl
                 den[p.visitante] += w * bl * att[p.local]
             dfn = {e: (num[e] + k) / (den[e] + k) for e in equipos}
             m = sum(dfn.values()) / len(dfn)
@@ -93,12 +166,21 @@ class ModeloPoisson:
 
         self.ataque, self.defensa = att, dfn
         self.partidos_usados = len(datos)
+        self.elo_coef, self.elo_ultimo = None, {}
+        if self.peso_elo:
+            self.elo_coef = self._ajustar_elo(datos)
+            for p in sorted(jug, key=lambda q: q.fecha):
+                if p.elo_local is not None:
+                    self.elo_ultimo[p.local] = p.elo_local
+                if p.elo_visitante is not None:
+                    self.elo_ultimo[p.visitante] = p.elo_visitante
         self.rho = self._estimar_rho(datos)
         return self
 
     def _estimar_rho(self, datos):
         mejor, mejor_ll = 0.0, -math.inf
-        lambdas = [(self.goles_esperados(p.local, p.visitante, p.neutral), p, w) for p, w in datos]
+        lambdas = [(self.goles_esperados(p.local, p.visitante, p.neutral, p.elo_local, p.elo_visitante), p, w)
+                   for p, w in datos]
         for paso in range(-25, 16):
             rho = paso / 100
             ll = 0.0
@@ -112,23 +194,37 @@ class ModeloPoisson:
                 mejor, mejor_ll = rho, ll
         return mejor
 
-    def goles_esperados(self, local, visitante, neutral=False):
+    def goles_esperados(self, local, visitante, neutral=False, elo_local=None, elo_visitante=None):
+        """Goles esperados (local, visitante). El Elo previo, si no se da, es el último conocido del equipo."""
         att_l, def_l = self.ataque.get(local, 1.0), self.defensa.get(local, 1.0)
         att_v, def_v = self.ataque.get(visitante, 1.0), self.defensa.get(visitante, 1.0)
         if neutral:
             base = (self.media_local + self.media_visitante) / 2
-            return base * att_l * def_v, base * att_v * def_l
-        return self.media_local * att_l * def_v, self.media_visitante * att_v * def_l
+            lam, mu = base * att_l * def_v, base * att_v * def_l
+        else:
+            lam, mu = self.media_local * att_l * def_v, self.media_visitante * att_v * def_l
+        if self.elo_coef and self.peso_elo:
+            el = elo_local if elo_local is not None else self.elo_ultimo.get(local)
+            ev = elo_visitante if elo_visitante is not None else self.elo_ultimo.get(visitante)
+            if el is not None and ev is not None:
+                cl, cv, b = self.elo_coef
+                if neutral:
+                    cl = cv = (cl + cv) / 2
+                x = (el - ev) / 100
+                w = self.peso_elo
+                lam = lam ** (1 - w) * math.exp(cl + b * x) ** w
+                mu = mu ** (1 - w) * math.exp(cv - b * x) ** w
+        return lam, mu
 
-    def matriz(self, local, visitante, neutral=False):
-        lam, mu = self.goles_esperados(local, visitante, neutral)
+    def matriz(self, local, visitante, neutral=False, elo_local=None, elo_visitante=None):
+        lam, mu = self.goles_esperados(local, visitante, neutral, elo_local, elo_visitante)
         m = [[poisson(i, lam) * poisson(j, mu) * _tau(i, j, lam, mu, self.rho) for j in range(MAX_GOLES + 1)]
              for i in range(MAX_GOLES + 1)]
         total = sum(map(sum, m))
         return [[v / total for v in fila] for fila in m], lam, mu
 
-    def predecir(self, local, visitante, neutral=False):
-        m, lam, mu = self.matriz(local, visitante, neutral)
+    def predecir(self, local, visitante, neutral=False, elo_local=None, elo_visitante=None):
+        m, lam, mu = self.matriz(local, visitante, neutral, elo_local, elo_visitante)
         rango = range(MAX_GOLES + 1)
         celdas = [(i, j, m[i][j]) for i in rango for j in rango]
         p1 = sum(v for i, j, v in celdas if i > j)
@@ -253,7 +349,7 @@ def evaluar(partidos, minimo=60, previos=(), **opciones_modelo):
         n = len(entrenamiento)
         freq = [sum(p.resultado_1x2 == r for p in entrenamiento) / n for r in "1X2"]
         for p in (q for q in jug if q.fecha == fecha):
-            pr = modelo.predecir(p.local, p.visitante, p.neutral)
+            pr = modelo.predecir(p.local, p.visitante, p.neutral, p.elo_local, p.elo_visitante)
             probs = [pr["p1"], pr["px"], pr["p2"]]
             _acumular(res["modelo"], probs, p.resultado_1x2)
             _acumular(res["referencia"], freq, p.resultado_1x2)

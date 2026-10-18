@@ -167,7 +167,7 @@ def cmd_equipo(partidos, args):
     if proximos:
         _seccion("Próximos partidos")
         for p in proximos:
-            pr = mp.predecir(p.local, p.visitante, p.neutral)
+            pr = mp.predecir(p.local, p.visitante, p.neutral, p.elo_local, p.elo_visitante)
             print(f"  {p.fecha}  {p.local} vs {p.visitante}   1 {100 * pr['p1']:.0f}% · X {100 * pr['px']:.0f}% · 2 {100 * pr['p2']:.0f}%")
 
 
@@ -334,7 +334,7 @@ def cmd_pronosticos(partidos, args):
     _titulo(f"Pronósticos de los próximos {min(args.n, len(pend))} partidos")
     print(f"  {'Fecha':<11}{'Partido':<46}{'1':>6}{'X':>6}{'2':>6}{'+2.5':>7}{'AM':>6}  Marcador")
     for p in pend[: args.n]:
-        pr = mp.predecir(p.local, p.visitante, p.neutral)
+        pr = mp.predecir(p.local, p.visitante, p.neutral, p.elo_local, p.elo_visitante)
         i, j, _ = pr["marcadores"][0]
         nombre = f"{p.local} vs {p.visitante}"[:45]
         print(f"  {str(p.fecha):<11}{nombre:<46}{100 * pr['p1']:>5.0f}%{100 * pr['px']:>5.0f}%{100 * pr['p2']:>5.0f}%"
