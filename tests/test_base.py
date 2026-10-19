@@ -101,3 +101,48 @@ class TestEstadisticasNFL(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestFootballData(unittest.TestCase):
+    """football-data.co.uk completa resultados pendientes y añade partidos sin duplicar."""
+
+    CSV = (
+        "Div,Date,Time,HomeTeam,AwayTeam,FTHG,FTAG,FTR,HTHG,HTAG,HS,AS,HST,AST,HF,AF,HC,AC,HY,AY,HR,AR,AvgH,AvgD,AvgA\n"
+        "E0,16/08/2025,15:00,Arsenal,Chelsea,2,1,H,1,0,15,9,6,3,10,12,7,4,1,2,0,0,1.9,3.6,4.1\n"
+        "E0,23/08/2025,15:00,Nott'm Forest,Arsenal,0,3,A,0,1,8,17,2,7,11,9,3,8,2,1,0,0,4.5,3.8,1.8\n"
+        "E0,30/08/2025,17:30,Chelsea,Nott'm Forest,1,1,D,0,0,14,6,5,2,9,13,9,2,3,2,0,1,1.6,4.0,5.5\n"
+    ).encode()
+
+    def setUp(self):
+        import urllib.error
+
+        self.con = sqlite3.connect(":memory:")
+        self.addCleanup(self.con.close)
+        self.con.executescript(base.ESQUEMA)
+        cols = "competicion, temporada, fecha, local, visitante, goles_local, goles_visitante, fuente"
+        self.con.executemany(f"INSERT INTO futbol_partidos ({cols}) VALUES (?,?,?,?,?,?,?,?)", [
+            ("E0", "2025-26", "2025-08-16", "Arsenal", "Chelsea", 2, 1, "clubes"),            # ya está completo
+            ("E0", "2025-26", "2025-08-24", "Nottm Forest", "Arsenal", None, None, "openfootball"),  # pendiente, otra fecha
+            ("E0", "2024-25", "2025-03-01", "Nottm Forest", "Chelsea", 1, 0, "clubes"),
+        ])
+        original = base._bajar
+
+        def falso(url):
+            if "mmz4281/2526/E0" in url:
+                return self.CSV
+            raise urllib.error.HTTPError(url, 404, "no", None, None)
+
+        base._bajar = falso
+        self.addCleanup(setattr, base, "_bajar", original)
+
+    def test_completa_y_anade(self):
+        avisos = []
+        n = base._football_data(self.con, avisos.append, date(2025, 10, 1))
+        filas = self.con.execute("SELECT fecha, local, visitante, goles_local, goles_visitante, tiros_local, fuente "
+                                 "FROM futbol_partidos WHERE temporada = '2025-26' ORDER BY fecha").fetchall()
+        self.assertEqual(len(filas), 3)  # 1 existente + 1 completado + 1 nuevo, sin duplicados
+        self.assertEqual(filas[0][6], "clubes")  # el partido completo no se toca
+        self.assertEqual(filas[1][1:6], ("Nottm Forest", "Arsenal", 0, 3, 8))  # nombre canónico y estadísticas
+        self.assertEqual(filas[2][1:5], ("Chelsea", "Nottm Forest", 1, 1))
+        self.assertEqual(n, 2)
+        self.assertIn("+1 partidos nuevos, 1 resultados completados", avisos[-1])

@@ -94,6 +94,7 @@ TORNEOS = {
 LICENCIAS = {
     "clubes": "Football-Data.co.uk y ClubElo, recopilado por xgabora/Club-Football-Match-Data-2000-2025",
     "openfootball": "openfootball/football.json (dominio público, CC0)",
+    "football_data": "Football-Data.co.uk (resultados, estadísticas y cuotas)",
     "selecciones": "martj42/international_results (CC0)",
     "nfl_partidos": "nflverse/nfldata (Lee Sharpe)",
     "nfl_equipos": "nflverse/nflverse-data (CC-BY 4.0)",
@@ -196,6 +197,140 @@ def _clubes(con, avisar):
     return len(datos)
 
 
+URL_FD_TEMPORADA = "https://www.football-data.co.uk/mmz4281/{temporada}/{codigo}.csv"
+URL_FD_NUEVAS = "https://www.football-data.co.uk/new/{codigo}.csv"
+NUEVAS_FD = {"ARG", "BRA", "USA", "MEX", "JAP", "CHN", "SWE", "NOR", "FIN", "IRL", "AUT", "SUI", "DEN", "POL", "ROM", "RUS"}
+
+
+def _texto_csv(contenido):
+    for codificacion in ("utf-8-sig", "latin-1"):
+        try:
+            return contenido.decode(codificacion)
+        except UnicodeDecodeError:
+            continue
+    return contenido.decode("latin-1", "replace")
+
+
+def _fecha_fd(texto):
+    for formato in ("%d/%m/%Y", "%d/%m/%y"):
+        try:
+            return datetime.strptime(texto.strip(), formato).date()
+        except ValueError:
+            pass
+    return None
+
+
+def _fila_fd(codigo, f):
+    """Convierte una fila de football-data.co.uk (ligas principales o 'new') en una fila de futbol_partidos."""
+    fecha = _fecha_fd(f.get("Date") or "")
+    local = (f.get("HomeTeam") or f.get("Home") or "").strip()
+    visitante = (f.get("AwayTeam") or f.get("Away") or "").strip()
+    if not fecha or not local or not visitante:
+        return None
+    i = lambda c: _num(f.get(c), int)  # noqa: E731
+    r = lambda *cs: next((v for v in (_num(f.get(c)) for c in cs) if v), None)  # noqa: E731
+    return (
+        codigo, temporada_de(fecha, COMPETICIONES[codigo][4]), fecha.isoformat(), (f.get("Time") or "").strip() or None,
+        local, visitante, i("FTHG") if f.get("FTHG") is not None else i("HG"), i("FTAG") if f.get("FTAG") is not None else i("AG"),
+        i("HTHG"), i("HTAG"), i("HS"), i("AS"), i("HST"), i("AST"), i("HF"), i("AF"), i("HC"), i("AC"),
+        i("HY"), i("AY"), i("HR"), i("AR"),
+        r("AvgH", "BbAvH", "AvgCH", "B365H", "PSH"), r("AvgD", "BbAvD", "AvgCD", "B365D", "PSD"),
+        r("AvgA", "BbAvA", "AvgCA", "B365A", "PSA"), r("MaxH", "BbMxH", "MaxCH"), r("MaxD", "BbMxD", "MaxCD"),
+        r("MaxA", "BbMxA", "MaxCA"), r("Avg>2.5", "BbAv>2.5"), r("Avg<2.5", "BbAv<2.5"), None, None, "football-data",
+    )
+
+
+def _temporadas_a_completar(con, codigo, actual):
+    """Temporadas que faltan o están incompletas en la base, más la actual y la anterior."""
+    filas = con.execute("SELECT temporada, local, visitante, goles_local FROM futbol_partidos WHERE competicion = ?",
+                        (codigo,)).fetchall()
+    por_temp = defaultdict(Counter)
+    for temp, l, v, g in filas:
+        if g is not None:
+            por_temp[temp][l] += 1
+            por_temp[temp][v] += 1
+    inicio = int(min(por_temp, default=actual)[:4])
+    fin = int(actual[:4])
+    resultado = []
+    for anio in range(min(inicio, 2000), fin + 1):
+        temp = f"{anio}-{str(anio + 1)[2:]}"
+        conteo = por_temp.get(temp)
+        completa = conteo and len(set(conteo.values())) == 1 and min(conteo.values()) >= 2 * (len(conteo) - 1)
+        if not completa or anio >= fin - 1:
+            resultado.append(anio)
+    return resultado
+
+
+def _football_data(con, avisar, hoy):
+    """Completa la base con football-data.co.uk: la temporada en curso (se actualiza dos veces por semana,
+    con estadísticas y cuotas) y las temporadas que faltan o están incompletas. Empareja cada partido por
+    (competición, temporada, local, visitante): si ya existe sin resultado lo completa; si no existe lo añade."""
+    columnas = ("competicion, temporada, fecha, hora, local, visitante, goles_local, goles_visitante, descanso_local, "
+                "descanso_visitante, tiros_local, tiros_visitante, tiros_puerta_local, tiros_puerta_visitante, faltas_local, "
+                "faltas_visitante, corners_local, corners_visitante, amarillas_local, amarillas_visitante, rojas_local, "
+                "rojas_visitante, cuota_local, cuota_empate, cuota_visitante, cuota_max_local, cuota_max_empate, "
+                "cuota_max_visitante, cuota_mas_2_5, cuota_menos_2_5, elo_local, elo_visitante, fuente")
+    descargas, añadidos, completados, fallos = 0, 0, 0, 0
+
+    # Nombre canónico de cada club (la variante más usada) para no duplicar partidos por grafías distintas
+    usos = defaultdict(Counter)
+    for columna in ("local", "visitante"):
+        for nombre, n in con.execute(f"SELECT {columna}, COUNT(*) FROM futbol_partidos GROUP BY 1"):
+            usos[_clave_nombre(nombre)][nombre] += n
+    canonico = {k: c.most_common(1)[0][0] for k, c in usos.items()}
+
+    def incorporar(codigo, filas, clave_fecha):
+        nonlocal añadidos, completados
+        filas = [f[:4] + (canonico.get(_clave_nombre(f[4]), f[4]), canonico.get(_clave_nombre(f[5]), f[5])) + f[6:]
+                 for f in filas if f]
+        existentes = {}
+        for rowid, temp, fecha, l, v, g in con.execute(
+                "SELECT rowid, temporada, fecha, local, visitante, goles_local FROM futbol_partidos WHERE competicion = ?", (codigo,)):
+            existentes[(temp, fecha if clave_fecha else "", l, v)] = (rowid, g)
+        for fila in filas:
+            if not fila:
+                continue
+            clave = (fila[1], fila[2] if clave_fecha else "", fila[4], fila[5])
+            previo = existentes.get(clave)
+            if previo is None:
+                con.execute(f"INSERT INTO futbol_partidos ({columnas}) VALUES ({','.join('?' * 33)})", fila)
+                existentes[clave] = (None, fila[6])
+                añadidos += 1
+            elif previo[1] is None and fila[6] is not None and previo[0] is not None:
+                con.execute(f"UPDATE futbol_partidos SET ({columnas}) = ({','.join('?' * 33)}) WHERE rowid = ?",
+                            (*fila, previo[0]))
+                completados += 1
+
+    for codigo, info in COMPETICIONES.items():
+        try:
+            if codigo in NUEVAS_FD:
+                try:
+                    contenido = _bajar(URL_FD_NUEVAS.format(codigo=codigo))
+                except urllib.error.HTTPError:
+                    continue
+                descargas += 1
+                filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
+                incorporar(codigo, filas, clave_fecha=True)  # ligas con más de dos cruces por temporada
+                continue
+            for anio in _temporadas_a_completar(con, codigo, temporada_de(hoy)):
+                url = URL_FD_TEMPORADA.format(temporada=f"{anio % 100:02d}{(anio + 1) % 100:02d}", codigo=codigo)
+                try:
+                    contenido = _bajar(url)
+                except urllib.error.HTTPError:
+                    continue  # la liga no existe en esa temporada
+                descargas += 1
+                filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
+                incorporar(codigo, filas, clave_fecha=codigo.startswith("SC"))  # en Escocia se repiten cruces
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            fallos += 1
+            if fallos == 1:
+                avisar(f"  football-data.co.uk no disponible ({e}); se sigue con las demás fuentes")
+            if fallos >= 3:
+                break
+    avisar(f"  football-data.co.uk: {descargas} archivos, +{añadidos} partidos nuevos, {completados} resultados completados")
+    return añadidos + completados
+
+
 def _mapear_nombres(of_partidos, existentes):
     """Aprende la equivalencia de nombres openfootball → football-data con los partidos que
     aparecen en ambas fuentes (misma fecha y mismo marcador)."""
@@ -267,11 +402,20 @@ def _openfootball_actual(con, avisar, hoy):
             continue
         existentes = con.execute(
             "SELECT fecha, local, visitante, goles_local, goles_visitante FROM futbol_partidos "
-            "WHERE competicion = ? AND temporada = ? AND fuente = 'clubes'", (codigo, temporada)).fetchall()
-        ultima = max((e[0] for e in existentes), default="")
-        mapa = _mapear_nombres([p[:5] for p in partidos if p[3] is not None], existentes)
-        ya = {(e[0], e[1]) for e in existentes}
-        nuevos = [p for p in partidos if p[0] >= ultima and (p[0], mapa.get(p[1], p[1])) not in ya]
+            "WHERE competicion = ? AND temporada = ?", (codigo, temporada)).fetchall()
+        mapa = _mapear_nombres([p[:5] for p in partidos if p[3] is not None], [e for e in existentes if e[3] is not None])
+        # En una liga a doble vuelta cada pareja local-visitante se juega una vez por temporada
+        pendientes_previos = {(e[1], e[2]) for e in existentes if e[3] is None}
+        ya = {(e[1], e[2]) for e in existentes} | {(e[0], e[1]) for e in existentes}
+        nuevos = []
+        for p in partidos:
+            l, v = mapa.get(p[1], p[1]), mapa.get(p[2], p[2])
+            if (l, v) in pendientes_previos and p[3] is not None:  # otra fuente lo tiene sin resultado
+                con.execute("UPDATE futbol_partidos SET goles_local = ?, goles_visitante = ?, descanso_local = ?, "
+                            "descanso_visitante = ? WHERE competicion = ? AND temporada = ? AND local = ? AND visitante = ?",
+                            (p[3], p[4], p[5], p[6], codigo, temporada, l, v))
+            elif (l, v) not in ya and (p[0], l) not in ya:
+                nuevos.append(p)
         for fecha, l, v, gl, gv, hl, hv, hora in nuevos:
             con.execute(
                 "INSERT INTO futbol_partidos (competicion, temporada, fecha, hora, local, visitante, goles_local, "
@@ -284,10 +428,15 @@ def _openfootball_actual(con, avisar, hoy):
     return total
 
 
+def _clave_nombre(nombre):
+    """Clave que ignora signos, mayúsculas y tildes ("Nott'm Forest" y "Nottm Forest" coinciden)."""
+    return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode().lower())
+
+
 def _unificar_nombres(con, avisar):
     """La fuente escribe a veces un mismo club de dos formas ("Nott'm Forest" y "Nottm Forest").
     Se unifican las variantes que solo difieren en signos, mayúsculas o tildes con la más frecuente."""
-    clave = lambda n: re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", n).encode("ascii", "ignore").decode().lower())  # noqa: E731
+    clave = _clave_nombre
     variantes = defaultdict(Counter)
     for columna in ("local", "visitante"):
         for nombre, n in con.execute(f"SELECT {columna}, COUNT(*) FROM futbol_partidos GROUP BY 1"):
@@ -376,6 +525,9 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
 
     avisar("Descargando partidos de clubes...")
     registrar("futbol_partidos", LICENCIAS["clubes"], _clubes(con, avisar))
+    avisar("Completando con football-data.co.uk (temporada en curso y huecos históricos)...")
+    n = _football_data(con, avisar, hoy)
+    registrar("futbol_partidos (football-data.co.uk)", LICENCIAS["football_data"], n)
     avisar("Completando la temporada en curso con openfootball...")
     n = _openfootball_actual(con, avisar, hoy)
     registrar("futbol_partidos (temporada en curso)", LICENCIAS["openfootball"], n)
