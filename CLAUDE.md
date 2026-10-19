@@ -75,7 +75,8 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
 - **Fechas con día y mes intercambiados:** xgabora trae así las 16 ligas "new" (MLS, Brasil, Suecia...) en los días 1 a 12 de cada mes. `fechas_intercambiadas` lo detecta por liga (con esas fechas los equipos juegan a menudo dos días seguidos) y `_clubes` las gira. `verificar_datos.py` da error si vuelve a aparecer.
 - **Clubes con dos nombres muy distintos** (cambio de nombre a mitad de temporada): `ALIAS_CLUBES` en `base.py`.
 - **football-data.co.uk:** solo un 404 marca una temporada como inexistente (archivo `.none` en la caché); otros errores son pasajeros y se reintenta al día siguiente.
-- **Temporadas:** las europeas van de julio a junio. En 2020 el corte es el 15 de agosto por la pandemia. Las ligas de calendario anual (ARG, BRA, USA…) usan el año.
+- **Temporadas:** las europeas van de julio a junio. En 2020 el corte es el 15 de agosto por la pandemia, salvo en Escocia, Bélgica y Rusia (1 de agosto) y México (1 de julio), que ya habían empezado la 2020-21 (`CORTE_2020`). Las ligas de calendario anual (ARG, BRA, USA…) usan el año; el Brasileirão 2020 terminó en febrero de 2021 y la liga china 2021 en enero de 2022 (`INICIO_ANUAL`).
+- **NBA Cup:** desde 2023-24, 2 partidos de cada equipo no están en el calendario hasta diciembre; la simulación los juega contra un rival medio para llegar a 82.
 - **Temporadas incompletas reales:** Ligue 1 y Eredivisie 2019-20 (canceladas), NFL 2022 (271 partidos) y NBA 2011-12 (990), 2012-13 (1229), 2019-20 (1059) y 2020-21 (1080).
 - **NBA:** la fuente tiene un PHX-GS de 2019-20 con fecha errónea; `verificar_datos.py` solo da error por dos partidos el mismo día en las dos últimas temporadas.
 - **La temporada en curso puede ir días por detrás:** los pronósticos omiten los partidos pasados sin resultado.

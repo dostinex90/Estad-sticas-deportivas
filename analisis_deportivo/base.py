@@ -20,10 +20,12 @@ Tablas:
 import csv
 import difflib
 import gzip
+import http.client
 import io
 import re
 import shutil
 import sqlite3
+import time
 import unicodedata
 import urllib.error
 import urllib.request
@@ -111,12 +113,23 @@ LICENCIAS = {
 }
 
 
-def temporada_de(fecha, anual=False):
+# En 2020 la pandemia alargó las temporadas 2019-20 hasta agosto, pero estas ligas ya habían
+# terminado y empezaron la 2020-21 antes del 15 de agosto
+CORTE_2020 = {"SC0": date(2020, 8, 1), "B1": date(2020, 8, 1), "RUS": date(2020, 8, 1), "MEX": date(2020, 7, 1)}
+# Ligas de calendario anual cuya temporada terminó a principios del año siguiente:
+# (liga, año) -> fecha desde la que empieza la temporada de ese año
+INICIO_ANUAL = {("BRA", 2021): date(2021, 3, 1), ("CHN", 2022): date(2022, 2, 1)}
+
+
+def temporada_de(fecha, anual=False, codigo=None):
     """'2025-26' para ligas europeas (empiezan en julio) o '2025' para ligas de calendario anual."""
     if anual:
-        return str(fecha.year)
-    # En 2020 la pandemia alargó las temporadas 2019-20 hasta agosto
-    corte = date(fecha.year, 8, 15) if fecha.year == 2020 else date(fecha.year, 7, 1)
+        inicio = INICIO_ANUAL.get((codigo, fecha.year))
+        return str(fecha.year - 1 if inicio and fecha < inicio else fecha.year)
+    if fecha.year == 2020:
+        corte = CORTE_2020.get(codigo, date(2020, 8, 15))
+    else:
+        corte = date(fecha.year, 7, 1)
     inicio = fecha.year if fecha >= corte else fecha.year - 1
     return f"{inicio}-{str(inicio + 1)[2:]}"
 
@@ -138,10 +151,18 @@ def resolver_torneo(texto):
 
 # ── Descarga ──────────────────────────────────────────────────────────────────
 
-def _bajar(url):
+def _bajar(url, intentos=3):
+    """Descarga una URL. Si la conexión se corta a medias se reintenta: un archivo grande
+    cortado hacía fallar toda la actualización."""
     peticion = urllib.request.Request(url, headers={"User-Agent": "analisis-deportivo/1.0"})
-    with urllib.request.urlopen(peticion, timeout=120) as r:
-        return r.read()
+    for intento in range(intentos):
+        try:
+            with urllib.request.urlopen(peticion, timeout=120) as r:
+                return r.read()
+        except (http.client.HTTPException, ConnectionError, TimeoutError):
+            if intento == intentos - 1:
+                raise
+            time.sleep(5 * (intento + 1))
 
 
 def _csv(url):
@@ -237,7 +258,7 @@ def _clubes(con, avisar):
     for codigo, filas_liga in por_liga.items():
         anual = COMPETICIONES[codigo][4]
         fechas = [date.fromisoformat(f["MatchDate"]) for f in filas_liga]
-        partidos = [(d, temporada_de(d, anual), f["HomeTeam"].strip(), f["AwayTeam"].strip()) for d, f in zip(fechas, filas_liga)]
+        partidos = [(d, temporada_de(d, anual, codigo), f["HomeTeam"].strip(), f["AwayTeam"].strip()) for d, f in zip(fechas, filas_liga)]
         if fechas_intercambiadas(partidos):
             fechas = [_girar_fecha(d) for d in fechas]
             corregidas.append(codigo)
@@ -253,7 +274,7 @@ def _fila_clubes(codigo, f, fecha):
     i = lambda c: _num(f.get(c), int)  # noqa: E731
     r = lambda c: _num(f.get(c))  # noqa: E731
     return (
-        codigo, temporada_de(fecha, COMPETICIONES[codigo][4]), fecha.isoformat(), f["MatchTime"] or None,
+        codigo, temporada_de(fecha, COMPETICIONES[codigo][4], codigo), fecha.isoformat(), f["MatchTime"] or None,
         f["HomeTeam"].strip(), f["AwayTeam"].strip(), i("FTHome"), i("FTAway"), i("HTHome"), i("HTAway"),
         i("HomeShots"), i("AwayShots"), i("HomeTarget"), i("AwayTarget"), i("HomeFouls"), i("AwayFouls"),
         i("HomeCorners"), i("AwayCorners"), i("HomeYellow"), i("AwayYellow"), i("HomeRed"), i("AwayRed"),
@@ -298,7 +319,7 @@ def _fila_fd(codigo, f):
     i = lambda c: _num(f.get(c), int)  # noqa: E731
     r = lambda *cs: next((v for v in (_num(f.get(c)) for c in cs) if v), None)  # noqa: E731
     return (
-        codigo, temporada_de(fecha, COMPETICIONES[codigo][4]), fecha.isoformat(), (f.get("Time") or "").strip() or None,
+        codigo, temporada_de(fecha, COMPETICIONES[codigo][4], codigo), fecha.isoformat(), (f.get("Time") or "").strip() or None,
         local, visitante, i("FTHG") if f.get("FTHG") is not None else i("HG"), i("FTAG") if f.get("FTAG") is not None else i("AG"),
         i("HTHG"), i("HTAG"), i("HS"), i("AS"), i("HST"), i("AST"), i("HF"), i("AF"), i("HC"), i("AC"),
         i("HY"), i("AY"), i("HR"), i("AR"),

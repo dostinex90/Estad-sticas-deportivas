@@ -33,6 +33,9 @@ PUNTOS_B2B = 1.5  # penalización por jugar el segundo de dos días seguidos
 # explica el azar de los partidos, unos 3 puntos de fuerza (ver experimentos/nba_incertidumbre.py).
 INCERTIDUMBRE_FUERZA = 3.0
 ELO_POR_PUNTO = 28  # 28 puntos Elo ≈ 1 punto de margen
+# Desde 2023-24, 2 partidos de cada equipo (los de la NBA Cup de diciembre) no tienen rival en el
+# calendario hasta que termina la fase de grupos
+PARTIDOS_TEMPORADA = 82
 
 
 class EloNBA:
@@ -257,6 +260,16 @@ def simular_temporada(partidos, temporada, simulaciones=5000, semilla=None):
     neto = {e: ratings.neto(e) for e in equipos}
     incertidumbre = INCERTIDUMBRE_FUERZA * math.sqrt(len(pendientes) / len(reg)) if reg else 0.0
     cache = {}
+    # Partidos que aún no están en el calendario: se juegan contra un rival medio en campo neutral
+    faltan, contra_media = {}, {}
+    if pendientes and temporada >= 2024:
+        jugados = defaultdict(int)
+        for p in reg:
+            jugados[p.local] += 1
+            jugados[p.visitante] += 1
+        faltan = {e: PARTIDOS_TEMPORADA - jugados[e] for e in equipos if jugados[e] < PARTIDOS_TEMPORADA}
+        contra_media = {e: sum(predecir(elo, ratings, e, o, neutral=True)["margen"] for o in equipos if o != e)
+                        / (len(equipos) - 1) for e in faltan}
 
     def duelo(a, b):
         """Prob. de que gane `a` jugando en casa contra `b` (con la fuerza de esta simulación)."""
@@ -274,6 +287,9 @@ def simular_temporada(partidos, temporada, simulaciones=5000, semilla=None):
             ganador = p.local if rng.random() < prob else p.visitante
             if ganador in victorias:
                 victorias[ganador] += 1
+        for e, n in faltan.items():
+            prob = normal_cdf(contra_media[e] + extra[e], 0, DESVIACION_PROB)
+            victorias[e] += sum(rng.random() < prob for _ in range(n))
         azar = {e: rng.random() for e in equipos}
         clave = lambda e: (-victorias[e], -neto[e], azar[e])  # noqa: E731
         finalistas = []

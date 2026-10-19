@@ -34,6 +34,13 @@ class TestBase(unittest.TestCase):
         self.assertEqual(base.temporada_de(date(2026, 5, 20)), "2025-26")
         self.assertEqual(base.temporada_de(date(2020, 7, 20)), "2019-20")  # temporada alargada por la pandemia
         self.assertEqual(base.temporada_de(date(2026, 5, 20), anual=True), "2026")
+        # Ligas que la pandemia desplazó de otra forma
+        self.assertEqual(base.temporada_de(date(2020, 8, 8), codigo="SC0"), "2020-21")
+        self.assertEqual(base.temporada_de(date(2020, 8, 8), codigo="E0"), "2019-20")
+        self.assertEqual(base.temporada_de(date(2020, 7, 25), codigo="MEX"), "2020-21")
+        self.assertEqual(base.temporada_de(date(2021, 2, 25), anual=True, codigo="BRA"), "2020")
+        self.assertEqual(base.temporada_de(date(2021, 6, 1), anual=True, codigo="BRA"), "2021")
+        self.assertEqual(base.temporada_de(date(2022, 1, 12), anual=True, codigo="CHN"), "2021")
 
     def test_resolver(self):
         self.assertEqual(base.resolver_competicion("espana"), "SP1")
