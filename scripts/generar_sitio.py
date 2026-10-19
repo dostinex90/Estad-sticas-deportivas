@@ -1,7 +1,7 @@
 """Genera la versión web estática (carpeta sitio/) que se publica en GitHub Pages.
 
 Una web estática no puede ejecutar Python, así que se calculan de antemano las respuestas
-de la API para la temporada actual de las ligas principales y de la NFL (incluidas las
+de la API para la temporada actual de las ligas principales, de la NFL y de la NBA (incluidas las
 predicciones de todos los partidos posibles) y se guardan como archivos JSON. La interfaz
 es la misma que la de `python3 -m analisis_deportivo web`, en modo estático.
 
@@ -100,6 +100,27 @@ def nfl(sitio):
     print(f"  NFL {temporada}: {len(codigos)} equipos")
 
 
+def nba(sitio, dias=14):
+    opciones = api.nba_opciones({})
+    temporada = opciones["temporadas"][0]
+    t = temporada["valor"]
+    q = {"temporada": str(t)}
+    sitio.guardar("nba/opciones", {**opciones, "temporadas": [temporada]})
+    for ruta in ("clasificacion", "ranking", "liga", "simular", "estadisticas"):
+        sitio.guardar(f"nba/{ruta}/{t}", api.ejecutar(f"nba/{ruta}", q))
+    pron = api.nba_pronosticos(q)
+    fechas = pron["fechas"][:dias]  # solo los próximos días con partidos, para no generar cientos de archivos
+    sitio.guardar(f"nba/pronosticos/{t}", {**pron, "fechas": fechas})
+    for fecha in fechas:
+        sitio.guardar(f"nba/pronosticos/{t}-{fecha}", {**api.nba_pronosticos({**q, "fecha": fecha}), "fechas": fechas})
+    codigos = [e["codigo"] for e in opciones["equipos"]]
+    for equipo in codigos:
+        sitio.guardar(f"nba/equipo/{t}/{equipo}", api.nba_equipo({**q, "equipo": equipo}))
+    for local, visitante in itertools.permutations(codigos, 2):
+        sitio.guardar(f"nba/predecir/{t}/{local}__{visitante}", api.nba_predecir({**q, "local": local, "visitante": visitante}))
+    print(f"  NBA {temporada['texto']}: {len(codigos)} equipos")
+
+
 def generar(destino):
     if destino.exists():
         shutil.rmtree(destino)
@@ -116,6 +137,7 @@ def generar(destino):
     print("Generando la web estática...")
     futbol(sitio, api.futbol_opciones({}))
     nfl(sitio)
+    nba(sitio)
     tam = sum(f.stat().st_size for f in destino.rglob("*") if f.is_file())
     print(f"Web generada en {destino}: {sitio.archivos:,} archivos de datos, {tam / 1e6:.1f} MB ({sello})")
 
