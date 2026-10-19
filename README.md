@@ -73,6 +73,8 @@ El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.s
 | Goles de selecciones con autor, minuto, penalti y autogol | 47.914 goles | 1916 – 2026 |
 | Partidos de la NFL con líneas de apuestas, descanso entre partidos, clima, estadio, quarterbacks y entrenadores | 7.548 partidos | 1999 – 2026 |
 | Estadísticas de cada equipo en cada partido de la NFL: yardas, EPA, pérdidas de balón, sacks, penalizaciones, goles de campo y más (unas 130 columnas) | 14.707 registros | 1999 – 2026 |
+| Parte oficial de lesionados de la NFL de cada semana (Out, Doubtful, Questionable) | 35.356 bajas | 2012 – 2026 |
+| % de jugadas (snaps) que jugó cada jugador de la NFL en cada partido | 301.608 registros | 2013 – 2026 |
 | Partidos de la NBA (temporada regular, final de la NBA Cup, play-in y playoffs) con prórrogas y sede, y el calendario de la temporada en curso | 33.390 partidos | 2001-02 – 2026-27 |
 | Estadísticas de cada equipo en cada partido de la NBA: tiros de campo, triples, tiros libres, rebotes, asistencias, robos, tapones, pérdidas, faltas y puntos en la pintura | 64.352 registros | 2001-02 – 2025-26 |
 | Minutos y valoración (Game Score) de cada jugador de la NBA en cada partido | 404.702 registros | 2011-12 – 2025-26 |
@@ -247,6 +249,7 @@ Algunos términos:
 - **Ajustes previos al partido:**
   - Quarterback titular: −2 puntos si no es el habitual, más la diferencia de rendimiento (EPA por dropback) entre el titular y el habitual, calculada solo con sus partidos anteriores.
   - Semana de descanso: +1 punto.
+  - Lesionados: cada jugador del parte oficial de lesionados resta puntos según su posición y cuánto juega normalmente.
   - Playoffs: el margen se amplía ×1.3.
 - **Predicción.** Combina Elo (40 %) y ratings (60 %). La probabilidad de victoria sale de una distribución normal de 12.25 puntos de desviación.
 
@@ -265,10 +268,11 @@ Algunos términos:
 
 - **Fútbol** (validación 2023-24 a 2025-26, Premier, LaLiga, Serie A, Bundesliga y Ligue 1; 5.255 partidos): el RPS baja de 0.2012 a 0.1987 y mejora en las cinco ligas. El RPS es la medida habitual para predicciones de 1X2; menos es mejor. Las casas de apuestas están en 0.1934.
 - **NFL** (validación 2020–2025, 1.688 partidos): el Brier baja de 0.2228 a 0.2187. Es la medida de error de las probabilidades; menos es mejor, y 0.25 equivale a tirar una moneda. Mejora en 5 de 6 temporadas, y casi toda la ganancia viene del ajuste por quarterback titular.
+- **NFL, lesionados:** con el parte oficial de lesionados de cada semana el Brier baja otra vez, de 0.2187 a 0.2175, y los aciertos pasan del 64,4 % al 64,9 %. Cada baja resta puntos según su posición y cuánto juega normalmente (su % de jugadas en sus últimos 4 partidos): un receptor o corredor titular, unos 0,8-0,9 puntos; un linebacker, 0,7; un defensa de la secundaria, 0,4; un liniero ofensivo, 0,3. La línea defensiva y los tight ends no mejoraban la predicción y no cuentan.
 - **Descartado:** un modelo NFL basado en EPA por jugada. No mejoraba al actual.
 - **NBA** (parámetros ajustados con 2012-13 a 2018-19; validación 2021-22 a 2025-26, 6.605 partidos): el Brier baja de 0.2211, el del Elo de FiveThirtyEight con sus parámetros publicados, a 0.2153, y el acierto del ganador sube del 64.7 % al 66.0 %. El ajuste por jugadores disponibles lo baja a 0.2131 (acierto 66.4 %). Ambos mejoran en las cinco temporadas. Si se supiera exactamente quién juega (con un parte de lesionados), bajaría a 0.2102. La base no tiene líneas de apuestas de la NBA, así que no se compara con el mercado.
 
-Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py`, `nfl_ajuste.py`, `nba_ajuste.py`, `nba_incertidumbre.py` y `nba_jugadores.py`.
+Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py`, `nfl_ajuste.py`, `nfl_lesiones.py`, `nba_ajuste.py`, `nba_incertidumbre.py` y `nba_jugadores.py`.
 
 Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de análisis, no como garantía.
 
@@ -280,7 +284,7 @@ La base de datos combina:
 - **Football-Data.co.uk y ClubElo**, recopilados por [xgabora/Club-Football-Match-Data-2000-2025](https://github.com/xgabora/Club-Football-Match-Data-2000-2025): partidos de clubes.
 - **[openfootball](https://github.com/openfootball/football.json)** (dominio público): temporada en curso.
 - **[martj42/international_results](https://github.com/martj42/international_results)** (CC0): selecciones y goleadores.
-- **[nflverse](https://github.com/nflverse)**: partidos de la NFL ([nfldata](https://github.com/nflverse/nfldata)) y estadísticas de equipo por partido ([nflverse-data](https://github.com/nflverse/nflverse-data), CC-BY 4.0).
+- **[nflverse](https://github.com/nflverse)**: partidos de la NFL ([nfldata](https://github.com/nflverse/nfldata)) estadísticas de equipo por partido, parte de lesionados y snaps por jugador ([nflverse-data](https://github.com/nflverse/nflverse-data), CC-BY 4.0).
 - **[sportsdataverse/hoopR-nba-data](https://github.com/sportsdataverse/hoopR-nba-data)** (datos de ESPN): partidos de la NBA desde 2001-02, calendario de la temporada en curso y estadísticas de equipo por partido. Los traslados y cambios de nombre (New Jersey → Brooklyn, Seattle → Oklahoma City, Hornets → Pelicans) se unifican con el identificador de franquicia de ESPN.
 
 Para analizar un archivo suelto se puede usar `descargar` y `--datos`:
@@ -314,7 +318,7 @@ analisis_deportivo/
   cli.py, comun.py, descargas.py, base.py (base de datos SQLite)
   web/     api.py (datos en JSON) · servidor.py · static/ (index.html, app.js, estilos.css)
   futbol/  datos.py · analisis.py · modelos.py · cli.py
-  nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
+  nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py · cli.py
   nba/     datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py · cli.py
 datos/base_deportiva.sqlite.gz   base de datos completa (comprimida)
 datos/                  ejemplos simulados (regenerables con scripts/generar_ejemplos.py)

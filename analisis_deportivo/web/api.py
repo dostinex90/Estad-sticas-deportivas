@@ -21,6 +21,7 @@ from ..nba.datos import NOMBRE_TIPO as NBA_TIPO, cargar_desde_base as nba_cargar
 from ..nba.equipos import CONFERENCIAS, DIVISIONES as NBA_DIVISIONES, division as nba_division, nombre as nba_nombre
 from ..nfl import analisis as na
 from ..nfl import estadisticas as ne
+from ..nfl import jugadores as nj
 from ..nfl import modelos as nm
 from ..nfl.datos import cargar_desde_base as nfl_cargar, temporadas as nfl_temporadas
 from ..nfl.equipos import DIVISIONES, conferencia, division, nombre as nfl_nombre
@@ -478,6 +479,17 @@ def _pred_nfl(pr):
             "puntos_local": _r(pr["puntos_local"], 1), "puntos_visitante": _r(pr["puntos_visitante"], 1)}
 
 
+def _bajas_nfl(bajas):
+    """Bajas del parte de lesionados que más pesan, con los puntos que vale cada una."""
+    res = []
+    for b in bajas:
+        v = -nj.puntos(b)
+        if v >= 0.2:
+            duda = ", en duda" if b[2] == "Questionable" else ""
+            res.append({"nombre": f"{b[0]} ({b[1]}{duda})", "puntos": _r(v, 1)})
+    return res[:5]
+
+
 def nfl_predecir(q):
     t = _temporada_nfl(q)
     local, visitante = _nfl_equipo(q.get("local")), _nfl_equipo(q.get("visitante"))
@@ -496,7 +508,9 @@ def nfl_predecir(q):
     res = {"temporada": t, "local": local, "visitante": visitante, "nombre_local": nfl_nombre(local),
            "nombre_visitante": nfl_nombre(visitante), "neutral": neutral,
            "programado": {"semana": programado.semana, "fecha": str(programado.fecha)} if programado else None,
-           **_pred_nfl(pr), "linea": None, "total_linea": None}
+           **_pred_nfl(pr), "linea": None, "total_linea": None,
+           "bajas_local": _bajas_nfl(programado.bajas_local) if programado and not neutral else [],
+           "bajas_visitante": _bajas_nfl(programado.bajas_visitante) if programado and not neutral else []}
     if linea not in (None, ""):
         linea = float(linea)
         res["linea"] = linea
@@ -519,7 +533,8 @@ def nfl_pronosticos(q):
     for j in [j for j in pend if j.semana == semana]:
         pr = nm.predecir_juego(elo, ratings, j, ctx)
         filas.append({"fecha": str(j.fecha), "local": j.local, "visitante": j.visitante, **_pred_nfl(pr),
-                      "linea": j.linea, "total_linea": j.total_linea})
+                      "linea": j.linea, "total_linea": j.total_linea,
+                      "bajas_local": _bajas_nfl(j.bajas_local), "bajas_visitante": _bajas_nfl(j.bajas_visitante)})
     return {"temporada": t, "semana": semana, "semanas": sorted({j.semana for j in pend}), "filas": filas}
 
 

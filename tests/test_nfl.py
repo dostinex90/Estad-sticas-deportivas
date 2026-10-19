@@ -119,3 +119,29 @@ class TestCarga(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestBajas(unittest.TestCase):
+    def test_bajas_con_snaps_anteriores(self):
+        import sqlite3
+        from analisis_deportivo.nfl import jugadores
+
+        juegos = [J(1, "KC", "DEN", 27, 20, id="g1"), J(2, "DEN", "KC", 24, 21, id="g2"), J(3, "KC", "BUF", 20, 23, id="g3")]
+        con = sqlite3.connect(":memory:")
+        con.execute("CREATE TABLE nfl_snaps (game_id, player, position, offense_pct, defense_pct)")
+        con.execute("CREATE TABLE nfl_lesiones (season, week, team, full_name, position, report_status)")
+        con.executemany("INSERT INTO nfl_snaps VALUES (?,?,?,?,?)", [
+            ("g1", "Travis Kelce", "TE", 0.9, 0), ("g1", "Xavier Worthy", "WR", 0.8, 0), ("g2", "Xavier Worthy", "WR", 0.6, 0),
+            ("g3", "Xavier Worthy", "WR", 1.0, 0)])
+        con.executemany("INSERT INTO nfl_lesiones VALUES (?,?,?,?,?,?)", [
+            (2025, 1, "KC", "Xavier Worthy", "WR", "Out"),  # sin snaps anteriores: no cuenta
+            (2025, 3, "KC", "Xavier Worthy Jr.", "WR", "Out"),  # solo cuentan g1 y g2, no el propio g3
+            (2025, 3, "KC", "Travis Kelce", "TE", "Questionable"),
+            (2025, 3, "BUF", "Josh Allen", "QB", "Out")])  # los QB los cubre el ajuste por QB titular
+        bajas = jugadores.bajas_por_partido(con, juegos)
+        self.assertNotIn(("g1", "KC"), bajas)
+        self.assertEqual(bajas[("g3", "KC")][0], ("Xavier Worthy Jr.", "WR", "Out", 0.7))
+        self.assertAlmostEqual(jugadores.ajuste(bajas[("g3", "KC")]), 0.7 * jugadores.PESOS["WR"])  # los TE no tienen peso
+        self.assertNotIn(("g3", "BUF"), bajas)
+        j = J(3, "KC", "BUF", None, None, bajas_local=bajas[("g3", "KC")])
+        self.assertAlmostEqual(modelos.ajuste_juego(j), 0.7 * jugadores.PESOS["WR"])

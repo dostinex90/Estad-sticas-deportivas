@@ -9,6 +9,8 @@ Tablas:
   nfl_partidos              NFL desde 1999 (resultado, líneas de apuestas, clima, QB, entrenadores).
   nfl_estadisticas_equipo   Estadísticas de cada equipo en cada partido NFL (yardas, pérdidas,
                             sacks, EPA, penalizaciones, goles de campo...).
+  nfl_lesiones              Parte de lesionados NFL de cada semana desde 2012 (Out, Doubtful, Questionable).
+  nfl_snaps                 % de jugadas que jugó cada jugador NFL en cada partido, desde 2013.
   nba_partidos              NBA desde 2001-02 (resultado, prórrogas, fase, sede) y calendario pendiente.
   nba_estadisticas_equipo   Estadísticas de cada equipo en cada partido NBA (tiros, rebotes,
                             asistencias, pérdidas...).
@@ -40,6 +42,8 @@ URL_SELECCIONES = "https://raw.githubusercontent.com/martj42/international_resul
 URL_OPENFOOTBALL = "https://raw.githubusercontent.com/openfootball/football.json/master/{temporada}/{codigo}.json"
 URL_NFL_PARTIDOS = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 URL_NFL_EQUIPOS = "https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{}.csv"
+URL_NFL_JUGADORES = "https://github.com/nflverse/nflverse-data/releases/download/{0}/{0}_{1}.csv"  # injuries, snap_counts
+PRIMERA_NFL_JUGADORES = 2012
 URL_NBA_PARTIDOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_{}.csv"
 URL_NBA_EQUIPOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_team_boxscores/team_box_{}.csv"
 URL_NBA_JUGADORES = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_player_boxscores/player_box_{}.csv"
@@ -665,6 +669,31 @@ def _nfl(con, avisar, hoy):
     return len(partidos), len(filas)
 
 
+def _nfl_jugadores(con, avisar, hoy):
+    """Parte de lesionados y snaps por jugador (para el ajuste por bajas de nfl/jugadores.py)."""
+    from .nfl.jugadores import ESTADOS, grupo
+
+    lesiones, snaps = [], []
+    for temporada in range(PRIMERA_NFL_JUGADORES, hoy.year + 1):
+        for tipo in ("injuries", "snap_counts"):
+            try:
+                filas = _csv(URL_NFL_JUGADORES.format(tipo, temporada))
+            except (urllib.error.URLError, OSError):
+                continue
+            if tipo == "injuries":
+                lesiones += [(_num(f["season"], int), _num(f["week"], int), f["team"], f["full_name"], f["position"],
+                              f["report_status"]) for f in filas if f["report_status"] in ESTADOS and grupo(f["position"])]
+            else:
+                snaps += [(f["game_id"], f["player"], f["position"], _num(f["offense_pct"], float) or 0.0,
+                           _num(f["defense_pct"], float) or 0.0) for f in filas if grupo(f["position"])]
+    con.execute("CREATE TABLE nfl_lesiones (season INTEGER, week INTEGER, team TEXT, full_name TEXT, position TEXT, report_status TEXT)")
+    con.executemany("INSERT INTO nfl_lesiones VALUES (?,?,?,?,?,?)", lesiones)
+    con.execute("CREATE TABLE nfl_snaps (game_id TEXT, player TEXT, position TEXT, offense_pct REAL, defense_pct REAL)")
+    con.executemany("INSERT INTO nfl_snaps VALUES (?,?,?,?,?)", snaps)
+    avisar(f"  NFL: {len(lesiones):,} bajas en partes de lesionados y {len(snaps):,} registros de snaps por jugador")
+    return len(lesiones), len(snaps)
+
+
 def _tipo_nba(f):
     """REG, COPA (final de la NBA Cup, no cuenta en la clasificación), PLAYIN o PO; None si no se usa."""
     if f["season_type"] == "3":
@@ -783,6 +812,9 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
     n_p, n_e = _nfl(con, avisar, hoy)
     registrar("nfl_partidos", LICENCIAS["nfl_partidos"], n_p)
     registrar("nfl_estadisticas_equipo", LICENCIAS["nfl_equipos"], n_e)
+    n_l, n_s = _nfl_jugadores(con, avisar, hoy)
+    registrar("nfl_lesiones", LICENCIAS["nfl_equipos"], n_l)
+    registrar("nfl_snaps", LICENCIAS["nfl_equipos"], n_s)
     avisar("Descargando NBA...")
     n_p, n_e, n_j = _nba(con, avisar, hoy)
     registrar("nba_partidos", LICENCIAS["nba"], n_p)

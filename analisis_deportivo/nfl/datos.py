@@ -14,6 +14,7 @@ from datetime import date
 from typing import Optional
 
 from ..comun import entero_opcional, leer_csv, real_opcional
+from . import jugadores
 from .equipos import conferencia, division, normalizar
 
 PLAYOFFS = {"WC", "DIV", "CON", "SB"}
@@ -51,6 +52,9 @@ class Juego:
     epa_pase_visitante: Optional[float] = None
     jugadas_pase_local: Optional[int] = None
     jugadas_pase_visitante: Optional[int] = None
+    # Jugadores de baja según el parte de lesionados: ((nombre, posición, estado, % de snaps habitual), ...)
+    bajas_local: tuple = ()
+    bajas_visitante: tuple = ()
 
     @property
     def jugado(self):
@@ -201,6 +205,10 @@ def cargar_desde_base(con):
         juegos = [replace(j, epa_pase_local=pase.get((j.id, j.local), nada)[0], jugadas_pase_local=pase.get((j.id, j.local), nada)[1],
                           epa_pase_visitante=pase.get((j.id, j.visitante), nada)[0],
                           jugadas_pase_visitante=pase.get((j.id, j.visitante), nada)[1]) for j in juegos]
+    bajas = jugadores.bajas_por_partido(con, juegos)
+    if bajas:
+        juegos = [replace(j, bajas_local=bajas.get((j.id, j.local), ()), bajas_visitante=bajas.get((j.id, j.visitante), ()))
+                  for j in juegos]
     return sorted(juegos, key=lambda j: (j.fecha, j.local))
 
 

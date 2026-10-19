@@ -5,7 +5,8 @@
 * RatingsNFL: ratings ofensivo y defensivo ajustados por rival (mínimos cuadrados con
   regularización), de los que salen el SRS, el spread y el total esperados.
 * ContextoQB / ajuste_juego: ajustes previos al partido (QB titular distinto del habitual,
-  valor del QB según su EPA de pase previo, semana de descanso).
+  valor del QB según su EPA de pase previo, semana de descanso, jugadores de baja según el
+  parte de lesionados: ver jugadores.py).
 * predecir: combina ambos modelos (+ ajustes); la probabilidad de victoria sale de una normal
   sobre el margen esperado. Parámetros ajustados con 2012-2019 (ver experimentos/nfl_ajuste.py).
 * simular_temporada: Monte Carlo de los partidos pendientes → probabilidades de playoffs.
@@ -17,7 +18,7 @@ import random
 from collections import Counter, defaultdict, deque
 
 from ..comun import media, normal_cdf
-from . import analisis
+from . import analisis, jugadores
 from .equipos import conferencia, division
 
 DESVIACION_MARGEN = 13.5  # dispersión histórica del margen y del total (spread, over/under)
@@ -201,9 +202,10 @@ def contexto_qb(juegos, antes_de=None):
 
 
 def ajuste_juego(j, contexto=None):
-    """Puntos de ventaja extra para el local con información previa al partido (descanso y QB)."""
+    """Puntos de ventaja extra para el local con información previa al partido (descanso, QB y
+    jugadores de baja en el parte de lesionados)."""
     bye = (1.0 if (j.descanso_local or 0) >= 13 else 0.0) - (1.0 if (j.descanso_visitante or 0) >= 13 else 0.0)
-    a = PUNTOS_BYE * bye
+    a = PUNTOS_BYE * bye + jugadores.ajuste(j.bajas_local) - jugadores.ajuste(j.bajas_visitante)
     if contexto is not None:
         a += contexto.ajuste(j.local, j.qb_local) - contexto.ajuste(j.visitante, j.qb_visitante)
     return a

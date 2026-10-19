@@ -25,7 +25,7 @@ analisis_deportivo/
   comun.py        utilidades compartidas
   descargas.py    descarga de archivos sueltos
   futbol/         datos.py · analisis.py · modelos.py (Poisson + Dixon-Coles, tiros a puerta, Elo) · cli.py
-  nfl/            datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py (Elo + ratings + ajuste por QB) · cli.py
+  nfl/            datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py (bajas) · modelos.py (Elo + ratings + QB + bajas) · cli.py
   nba/            datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py (Elo + ratings + descanso + jugadores) · cli.py (solo con la base)
   web/            api.py (JSON) · servidor.py (http.server) · static/ (index.html, app.js, estilos.css; JS sin dependencias)
 scripts/          generar_informes.py · generar_sitio.py (web estática) · verificar_datos.py · generar_ejemplos.py
@@ -49,6 +49,7 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
 - `futbol_goleadores_selecciones`
 - `nfl_partidos`
 - `nfl_estadisticas_equipo`
+- `nfl_lesiones` (parte de lesionados desde 2012, solo Out/Doubtful/Questionable) y `nfl_snaps` (% de jugadas por jugador y partido, desde 2013)
 - `nba_partidos` (temporada = año en que termina: 2026 es la 2025-26; tipo REG, COPA, PLAYIN o PO)
 - `nba_estadisticas_equipo`
 - `nba_jugadores_partido` (desde 2011-12; id y jugador como enteros para ocupar menos) y `nba_jugadores` (nombres)
@@ -63,7 +64,7 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
 
 **Otras fuentes:**
 - Selecciones: martj42/international_results.
-- NFL: nflverse (`games.csv` y estadísticas de equipo por partido).
+- NFL: nflverse (`games.csv`, estadísticas de equipo por partido, `injuries` y `snap_counts`). Lesionados y snaps se emparejan por nombre normalizado (`nfl/jugadores.py::clave_nombre`).
 - NBA: sportsdataverse-data (releases `espn_nba_schedules` y `espn_nba_team_boxscores`, datos de ESPN). Los equipos se identifican por el id de franquicia de ESPN (`nba/equipos.py::POR_ID`), así NJ/BKN, SEA/OKC y NOH/NO son el mismo. Se descartan pretemporada, partidos de las estrellas y aplazados. La final de la NBA Cup (COPA) no cuenta en la clasificación. 2019-20 desde el 30 de julio (burbuja) se marca como campo neutral.
 
 **Problemas conocidos y cómo se resuelven** (no los rompas):
@@ -102,8 +103,9 @@ La actualización diaria **no publica** si encuentra errores. Si cambias `base.p
   - Elo con K=20, ventaja de campo 84, regresión de 1/3 y mov=3.
   - `RatingsNFL`: ofensa y defensa ajustadas por rival.
   - Mezcla: 40 % Elo, 60 % ratings, con desviación de 12.25.
-  - Ajustes previos al partido: QB titular, semana de descanso (bye) y playoffs ×1.3.
-  - **Validación 2020-2025: Brier 0.2187.** Línea base original: 0.2228.
+  - Ajustes previos al partido: QB titular, semana de descanso (bye), bajas y playoffs ×1.3.
+  - Bajas (`nfl/jugadores.py`): parte oficial de lesionados (se publica antes del partido) × % de snaps habitual (media de las últimas 4 apariciones del último año, solo partidos anteriores) × peso por posición: OL −0.26, WR −0.88, RB −0.82, LB −0.72, DB −0.43 puntos; Questionable −0.07; QB (ya cubierto), DL y TE sin peso. Ajustado en 2013-2019 (ridge sobre el residuo) en `experimentos/nfl_lesiones.py`.
+  - **Validación 2020-2025: Brier 0.2175** (0.2187 sin bajas). Línea base original: 0.2228.
   - Un modelo basado en EPA por jugada se probó y no mejoraba.
 - **NBA:**
   - Elo con K=15, ventaja de campo 70, regresión de 1/4 y multiplicador por margen de FiveThirtyEight.

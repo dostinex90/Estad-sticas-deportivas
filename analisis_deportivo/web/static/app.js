@@ -611,10 +611,11 @@ const vistasNFL = {
       <div class="campo"><label for="c-total">Total</label><input id="c-total" type="number" step="0.5" placeholder="p. ej. 47.5" value="${esc(estado.p.total || "")}" style="width:110px"></div>
       <label class="casilla"><input type="checkbox" id="c-neutral" ${estado.p.neutral ? "checked" : ""}> Campo neutral</label>`}</div>
       <h1 class="titulo-vista">${esc(d.nombre_visitante)} @ ${esc(d.nombre_local)}</h1>
-      <p class="descripcion">${d.programado ? `Partido del calendario: semana ${d.programado.semana}, ${d.programado.fecha} (incluye descanso y QB titular)` : "Partido hipotético"}</p><div class="rejilla">`;
+      <p class="descripcion">${d.programado ? `Partido del calendario: semana ${d.programado.semana}, ${d.programado.fecha} (incluye descanso, QB titular y lesionados)` : "Partido hipotético"}</p><div class="rejilla">`;
     html += tarjeta("Probabilidad de victoria", barraProb([{ valor: d.prob_local, etiqueta: d.local, color: COLOR.local }, { valor: 1 - d.prob_local, etiqueta: d.visitante, color: COLOR.visitante }])
       + `<div class="cifras" style="margin-top:12px">${cifra(`${num(d.puntos_local, 1)} - ${num(d.puntos_visitante, 1)}`, `Marcador esperado (${d.local}-${d.visitante})`)}${cifra(`${esc(fav)} -${num(Math.abs(d.margen), 1)}`, "Spread del modelo")}${cifra(num(d.total, 1), "Total de puntos esperado")}</div>
-      <p class="nota">Elo: ${signo(d.margen_elo)} · ratings: ${signo(d.margen_ratings)} (ventaja del local en puntos)</p>`);
+      <p class="nota">Elo: ${signo(d.margen_elo)} · ratings: ${signo(d.margen_ratings)} (ventaja del local en puntos)</p>`
+      + textoBajas(d.local, d.bajas_local) + textoBajas(d.visitante, d.bajas_visitante));
     if (d.linea != null || d.total_linea != null) {
       let m = "";
       if (d.linea != null) m += `<p>Mercado: <b>${d.linea > 0 ? d.local : d.visitante} -${Math.abs(d.linea)}</b> · diferencia con el modelo ${signo(d.margen - d.linea)} pts para el local</p>`
@@ -623,7 +624,7 @@ const vistasNFL = {
       html += tarjeta("Contra el mercado", m);
     }
     return {
-      html: html + `</div><p class="nota">Combina Elo y ratings ajustados por rival. No incluye lesiones (salvo el QB) ni clima.</p>`,
+      html: html + `</div><p class="nota">Combina Elo y ratings ajustados por rival, el QB titular y el parte oficial de lesionados (cuánto juega normalmente cada baja). No incluye el clima.</p>`,
       tras() {
         $("#c-local").onchange = (e) => ir({}, { local: e.target.value, linea: "", total: "" });
         $("#c-visit").onchange = (e) => ir({}, { visitante: e.target.value, linea: "", total: "" });
@@ -644,8 +645,10 @@ const vistasNFL = {
         return `<div style="padding:10px 0;border-bottom:1px solid var(--grid)">
           <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="fuerte">${esc(p.visitante)} @ ${esc(p.local)}</span>
           <span class="descripcion" style="margin:0">${p.fecha} · modelo ${signo(modelo)}${mercado != null ? ` · mercado ${signo(mercado)}` : ""} · total ${num(p.total, 1)}${p.total_linea != null ? ` (mercado ${p.total_linea})` : ""}</span></div>
-          ${barraProb([{ valor: p.prob_local, etiqueta: p.local, color: COLOR.local }, { valor: 1 - p.prob_local, etiqueta: p.visitante, color: COLOR.visitante }])}</div>`;
-      }).join(""))}`;
+          ${barraProb([{ valor: p.prob_local, etiqueta: p.local, color: COLOR.local }, { valor: 1 - p.prob_local, etiqueta: p.visitante, color: COLOR.visitante }])}
+          ${textoBajas(p.visitante, p.bajas_visitante)}${textoBajas(p.local, p.bajas_local)}</div>`;
+      }).join(""))}
+      <p class="nota">Bajas: jugadores del parte oficial de lesionados (Out, Doubtful o en duda) y los puntos que cuesta cada uno, según cuánto juega normalmente. El parte de cada semana se publica unos días antes del partido.</p>`;
     return { html, tras() { $("#c-sem").onchange = (e) => ir({}, { semana: e.target.value }); } };
   },
 

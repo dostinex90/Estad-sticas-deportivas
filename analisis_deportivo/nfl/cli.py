@@ -4,7 +4,7 @@ import argparse
 
 from ..comun import barra, chispa, elegir_equipo, linea_pct, normal_cdf, pct, salir
 from .. import base
-from . import analisis, estadisticas, modelos
+from . import analisis, estadisticas, jugadores, modelos
 from .datos import NOMBRE_TIPO, cargar_desde_base, cargar_juegos, equipos, jugados, temporadas
 from .equipos import DIVISIONES, conferencia, division, nombre
 
@@ -322,7 +322,19 @@ def cmd_predecir(juegos, args):
         args.linea = programado.linea if args.linea is None else args.linea
         args.total = programado.total_linea if args.total is None else args.total
     _mostrar_prediccion(elo, ratings, local, visitante, args.neutral, args.linea, args.total, pr)
-    print("\n  Orientativo: combina Elo y ratings ajustados por rival; no incluye lesiones ni clima.")
+    if pr is not None:
+        for eq, bajas in ((local, programado.bajas_local), (visitante, programado.bajas_visitante)):
+            texto = _texto_bajas(bajas)
+            if texto:
+                print(f"  Bajas {eq}: {texto}")
+    print("\n  Orientativo: combina Elo y ratings ajustados por rival, QB titular y parte de lesionados; no incluye el clima.")
+
+
+def _texto_bajas(bajas, n=5):
+    """Bajas del parte de lesionados que más pesan, con los puntos que cuesta cada una."""
+    lista = [f"{b[0]} ({b[1]}{', duda' if b[2] == 'Questionable' else ''}) {jugadores.puntos(b):+.1f}"
+             for b in bajas if -jugadores.puntos(b) >= 0.2]
+    return ", ".join(lista[:n])
 
 
 def cmd_pronosticos(juegos, args):
@@ -333,17 +345,24 @@ def cmd_pronosticos(juegos, args):
     partidos = [j for j in pend if j.semana == semana]
     elo, ratings = modelos.ajustar_modelos(juegos, args.temporada)
     _titulo(f"Pronósticos semana {semana} — {args.temporada}")
-    print(f"  {'Partido':<12}{'Fecha':<12}{'Prob. local':>12}{'Modelo':>10}{'Mercado':>10}{'Dif.':>7}{'Total':>7}{'Mercado':>9}")
+    print(f"  {'Partido':<12}{'Fecha':<12}{'Prob. local':>12}{'Modelo':>10}{'Mercado':>10}{'Dif.':>7}{'Total':>7}{'Mercado':>9}{'Bajas':>7}")
     ctx = modelos.contexto_qb(juegos)
     for j in partidos:
         pr = modelos.predecir_juego(elo, ratings, j, ctx)
         mercado = "" if j.linea is None else f"{-j.linea or 0.0:+.1f}"
         dif = "" if j.linea is None else f"{pr['margen'] - j.linea:+.1f}"
         tl = "" if j.total_linea is None else f"{j.total_linea:.1f}"
+        bajas = jugadores.ajuste(j.bajas_local) - jugadores.ajuste(j.bajas_visitante)
         print(f"  {j.marcador():<12}{str(j.fecha):<12}{100 * pr['prob_local']:>11.1f}%{-pr['margen']:>+10.1f}{mercado:>10}"
-              f"{dif:>7}{pr['total']:>7.1f}{tl:>9}")
+              f"{dif:>7}{pr['total']:>7.1f}{tl:>9}{bajas:>+7.1f}")
     print("\n  Spreads desde el punto de vista del local (negativo = local favorito).")
     print("  Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).")
+    print("  Bajas = puntos que gana (+) o pierde (−) el local por los lesionados de ambos equipos (parte oficial).")
+    for j in partidos:
+        for eq, bajas in ((j.local, j.bajas_local), (j.visitante, j.bajas_visitante)):
+            texto = _texto_bajas(bajas, 3)
+            if texto:
+                print(f"    {j.marcador():<12} bajas {eq}: {texto}")
 
 
 def cmd_simular(juegos, args):
