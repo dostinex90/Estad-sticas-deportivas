@@ -1,17 +1,20 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-10-19 12:30 UTC_
+_Actualizado automáticamente: 2026-10-19 16:20 UTC_
 
 ## Pronósticos de la próxima semana
 
 ```
 Pronósticos semana 6 — 2026
 ═══════════════════════════
-  Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado
-  WAS @ SF    2026-10-19         81.6%     -11.0      -7.5   +3.5   51.2     51.5
+  Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
+  WAS @ SF    2026-10-19         80.7%     -10.6      -7.5   +3.1   51.2     51.5   -0.4
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
+  Bajas = puntos que gana (+) o pierde (−) el local por los lesionados de ambos equipos (parte oficial).
+    WAS @ SF     bajas SF: Deebo Samuel Sr. (WR) -0.5, Marques Sigle (S) -0.4
+    WAS @ SF     bajas WAS: Jacory Croskey-Merritt (RB) -0.4
 ```
 
 ## Probabilidades de playoffs
@@ -41,20 +44,20 @@ Simulación de la temporada 2026 (5000 simulaciones, 180 partidos pendientes)
 
 ── NFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  San Francisco 49ers              13.2  ████████████████████  99.6%     89.1%     57.7%
-  Minnesota Vikings                12.3  ███████████████████░  96.8%     71.5%     29.9%
-  Seattle Seahawks                 10.3  ████████████████░░░░  78.7%     10.0%      3.7%
+  San Francisco 49ers              13.2  ████████████████████  99.6%     89.0%     57.4%
+  Minnesota Vikings                12.3  ███████████████████░  96.8%     71.5%     30.1%
+  Seattle Seahawks                 10.3  ████████████████░░░░  78.7%     10.1%      3.8%
   Carolina Panthers                 9.2  ███████████████░░░░░  75.1%     71.7%      1.6%
-  Detroit Lions                     9.9  █████████████░░░░░░░  67.0%     14.1%      3.3%
+  Detroit Lions                     9.9  █████████████░░░░░░░  67.0%     14.1%      3.4%
   Chicago Bears                     9.8  ████████████░░░░░░░░  61.2%      8.1%      2.0%
   Green Bay Packers                 9.3  ██████████░░░░░░░░░░  51.9%      6.3%      1.3%
-  New York Giants                   7.7  ████████░░░░░░░░░░░░  40.6%     38.9%      0.1%
+  New York Giants                   7.7  ████████░░░░░░░░░░░░  40.5%     38.9%      0.1%
   Philadelphia Eagles               7.4  ███████░░░░░░░░░░░░░  33.6%     30.9%      0.1%
-  Dallas Cowboys                    7.0  █████░░░░░░░░░░░░░░░  23.9%     20.9%      0.0%
+  Dallas Cowboys                    7.0  █████░░░░░░░░░░░░░░░  23.8%     20.9%      0.0%
   Los Angeles Rams                  8.1  █████░░░░░░░░░░░░░░░  22.9%      0.9%      0.1%
   Atlanta Falcons                   6.9  ███░░░░░░░░░░░░░░░░░  17.0%     12.8%      0.0%
   New Orleans Saints                6.6  ███░░░░░░░░░░░░░░░░░  12.9%     10.2%      0.0%
-  Washington Commanders             6.2  ██░░░░░░░░░░░░░░░░░░  10.1%      9.3%      0.0%
+  Washington Commanders             6.2  ██░░░░░░░░░░░░░░░░░░  10.2%      9.4%      0.0%
   Tampa Bay Buccaneers              5.7  █░░░░░░░░░░░░░░░░░░░   6.4%      5.2%      0.0%
   Arizona Cardinals                 6.1  ░░░░░░░░░░░░░░░░░░░░   2.4%      0.0%      0.0%
 
