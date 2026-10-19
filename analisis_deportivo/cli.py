@@ -1,4 +1,4 @@
-"""Punto de entrada: python -m analisis_deportivo {futbol|nfl|descargar} ..."""
+"""Punto de entrada: python -m analisis_deportivo {futbol|nfl|nba|web|recopilar|base|descargar} ..."""
 
 import argparse
 import os
@@ -6,6 +6,7 @@ import sys
 
 from . import base, descargas
 from .futbol import cli as futbol_cli
+from .nba import cli as nba_cli
 from .nfl import cli as nfl_cli
 
 
@@ -58,6 +59,11 @@ def cmd_base(args):
     if r["nfl_estadisticas"]:
         n, desde, hasta = r["nfl_estadisticas"]
         print(f"  NFL: {n:,} registros de estadísticas por equipo y partido {desde}-{hasta}")
+    if r["nba"]:
+        n, desde, hasta, pend = r["nba"]
+        print(f"  NBA: {n:,} partidos {desde - 1}-{str(desde)[2:]} a {hasta - 1}-{str(hasta)[2:]} ({pend} pendientes)")
+        n, desde, hasta = r["nba_estadisticas"]
+        print(f"  NBA: {n:,} registros de estadísticas por equipo y partido")
     print("\n  Alias de competiciones: " + ", ".join(v[2] for v in base.COMPETICIONES.values()))
     print("  Alias de torneos: " + ", ".join(base.TORNEOS))
 
@@ -76,11 +82,12 @@ def cmd_web(args):
 def construir_parser():
     parser = argparse.ArgumentParser(
         prog="analisis_deportivo",
-        description="Análisis estadístico y predicción de partidos de fútbol y de la NFL.",
+        description="Análisis estadístico y predicción de partidos de fútbol, de la NFL y de la NBA.",
     )
     sub = parser.add_subparsers(dest="deporte_cmd", required=True)
     futbol_cli.registrar(sub, lambda: descargas.datos_recientes("futbol_", descargas.EJEMPLO_FUTBOL))
     nfl_cli.registrar(sub, lambda: descargas.datos_recientes("nfl_", descargas.EJEMPLO_NFL))
+    nba_cli.registrar(sub)
 
     p = sub.add_parser("web", help="Abre la interfaz gráfica en el navegador")
     p.add_argument("--puerto", type=int, default=8000)

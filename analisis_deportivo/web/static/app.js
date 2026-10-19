@@ -23,6 +23,12 @@ function rutaEstatica(ruta, p) {
     if (que === "equipo") return `futbol/equipo/${liga}/${slug(p.equipo)}`;
     if (que === "predecir") return `futbol/predecir/${liga}/${slug(p.local)}__${slug(p.visitante)}`;
     if (que === "h2h") { const [a, b] = [p.a, p.b].sort(); return `futbol/h2h/${liga}/${slug(a)}__${slug(b)}`; }
+  } else if (deporte === "nba") {
+    const t = p.temporada;
+    if (["clasificacion", "ranking", "liga", "simular", "estadisticas"].includes(que)) return `nba/${que}/${t}`;
+    if (que === "pronosticos") return `nba/pronosticos/${t}${p.fecha ? "-" + p.fecha : ""}`;
+    if (que === "equipo") return `nba/equipo/${t}/${p.equipo}`;
+    if (que === "predecir") return `nba/predecir/${t}/${p.local}__${p.visitante}`;
   } else {
     const t = p.temporada;
     if (["clasificacion", "ranking", "liga", "simular", "estadisticas"].includes(que)) return `nfl/${que}/${t}`;
@@ -212,9 +218,11 @@ const VISTAS = {
            ["liga", "Liga"], ["h2h", "Cara a cara"], ["ranking", "Ranking"], ["goleadores", "Goleadores"]],
   nfl: [["clasificacion", "Clasificación"], ["equipo", "Equipo"], ["predecir", "Predicción"], ["pronosticos", "Pronósticos"],
         ["simular", "Playoffs"], ["ranking", "Ranking"], ["estadisticas", "Estadísticas"], ["liga", "Liga"]],
+  nba: [["clasificacion", "Clasificación"], ["equipo", "Equipo"], ["predecir", "Predicción"], ["pronosticos", "Pronósticos"],
+        ["simular", "Playoffs"], ["ranking", "Ranking"], ["estadisticas", "Estadísticas"], ["liga", "Liga"]],
 };
 let estado = { deporte: "futbol", vista: "tabla", p: {} };
-let opciones = { futbol: null, nfl: null };
+let opciones = { futbol: null, nfl: null, nba: null };
 let cacheEquipos = {};
 
 function leerHash() {
@@ -281,6 +289,12 @@ function controlesNFL() {
   const o = opciones.nfl;
   $("#controles").innerHTML = selector("c-temp", "Temporada", o.temporadas.map(String), estado.p.temporada || o.temporadas[0]) + avisoEstatico();
   $("#c-temp").onchange = (e) => ir({}, { temporada: e.target.value, semana: "" });
+}
+
+function controlesNBA() {
+  const o = opciones.nba;
+  $("#controles").innerHTML = selector("c-temp", "Temporada", o.temporadas, estado.p.temporada || o.temporadas[0].valor) + avisoEstatico();
+  $("#c-temp").onchange = (e) => ir({}, { temporada: e.target.value, fecha: "" });
 }
 
 function pintarPestanas() {
@@ -697,6 +711,189 @@ const vistasNFL = {
   },
 };
 
+// ── Vistas de la NBA ────────────────────────────────────────────────────────
+const nbaTemp = () => estado.p.temporada || opciones.nba.temporadas[0].valor;
+const equiposNBA = () => opciones.nba.equipos.map((e) => ({ valor: e.codigo, texto: `${e.nombre} (${e.codigo})` }))
+  .sort((a, b) => a.texto.localeCompare(b.texto));
+const textoBajas = (equipo, bajas) => (bajas?.length
+  ? `<p class="nota" style="margin:4px 0 0">Bajas ${esc(equipo)}: ${bajas.map((b) => `${esc(b.nombre)} (${signo(b.puntos)})`).join(", ")}</p>` : "");
+const avisoNBA = (d) => (d.aviso ? `<p class="nota">${esc(d.aviso)}</p>` : "");
+
+const colsNBA = [
+  { clave: "pos", titulo: "#", fmt: (v) => v ?? "" },
+  { clave: "equipo", titulo: "Equipo", texto: true, fmt: (v, f) => `<span class="fuerte">${esc(v)}</span> <span class="ocultar-movil" style="color:var(--muted)">${esc(f.nombre)}</span>` },
+  { clave: "g", titulo: "Récord", fmt: (v, f) => `${f.g}-${f.p}` }, { clave: "pct", titulo: "PCT", fmt: (v) => num(v, 3) },
+  { clave: "pf_pp", titulo: "PF/p", fmt: (v) => num(v, 1), oculta: true }, { clave: "pc_pp", titulo: "PC/p", fmt: (v) => num(v, 1), oculta: true },
+  { clave: "dif_pp", titulo: "DIF/p", fmt: (v) => signo(v), claseCelda: (f) => clase(f.dif_pp) },
+  { clave: "local", titulo: "Local", oculta: true }, { clave: "visitante", titulo: "Visit.", oculta: true },
+  { clave: "conferencia", titulo: "Conf.", oculta: true }, { clave: "racha", titulo: "Racha" },
+  { clave: "ultimos", titulo: "Últ. 10", texto: true, fmt: (v) => forma(v), oculta: true },
+];
+
+const vistasNBA = {
+  async clasificacion() {
+    const modo = estado.p.modo || "conferencia";
+    const d = await api("nba/clasificacion", { temporada: nbaTemp() });
+    const filtro = selector("c-modo", "Vista", [{ valor: "conferencia", texto: "Por conferencias" }, { valor: "division", texto: "Por divisiones" }], modo);
+    let html = `<h1 class="titulo-vista">Clasificación ${d.temporada}</h1><div class="controles">${filtro}</div><div class="rejilla">`;
+    const filasClic = [];
+    if (modo === "division") {
+      d.divisiones.forEach((dv, i) => {
+        html += tarjeta(dv.division, tablaHTML(`t-div${i}`, colsNBA.filter((c) => !["pos", "pf_pp", "pc_pp", "local", "visitante", "conferencia"].includes(c.clave)), dv.filas, { clicable: true }));
+        filasClic.push([`t-div${i}`, dv.filas]);
+      });
+    } else {
+      d.conferencias.forEach((c, i) => {
+        html += tarjeta(c.conferencia, tablaHTML(`t-conf${i}`, colsNBA, c.filas, { clicable: true, corteTras: d.playin ? 6 : 8 }), "ancho");
+        filasClic.push([`t-conf${i}`, c.filas]);
+      });
+    }
+    html += `</div><p class="nota">${d.playin && modo !== "division" ? "1-6: playoffs directos · 7-10: play-in · " : ""}Haz clic en un equipo para ver su informe. Desempates simplificados.</p>`;
+    return {
+      html, tras() {
+        $("#c-modo").onchange = (e) => ir({}, { modo: e.target.value });
+        filasClic.forEach(([id, filas]) => document.querySelectorAll(`#${id} tbody tr`).forEach((tr) =>
+          (tr.onclick = () => ir({ vista: "equipo" }, { equipo: filas[tr.dataset.i].equipo }))));
+      },
+    };
+  },
+
+  async equipo() {
+    const equipo = estado.p.equipo || "LAL";
+    const d = await api("nba/equipo", { temporada: nbaTemp(), equipo });
+    const r = d.registro;
+    let html = `<div class="controles">${selector("c-equipo", "Equipo", equiposNBA(), d.equipo)}</div>
+      <h1 class="titulo-vista">${esc(d.nombre)}</h1><p class="descripcion">${esc(d.division)} · temporada ${d.temporada}</p>`;
+    if (r.jugados) {
+      html += `<div class="cifras" style="margin-bottom:16px">${cifra(`${r.texto}${r.puesto ? ` <span class="chip">${r.puesto}º conf.</span>` : ""}`, "Récord (temporada regular)")}${cifra(`${num(r.pf_pp, 1)} / ${num(r.pc_pp, 1)}`, "Puntos a favor / en contra por partido")}
+        ${cifra(signo(r.dif_pp), "Diferencia por partido")}${cifra(`${num(r.pitagoricas, 1)} <span class="chip">${signo(r.reales - r.pitagoricas, 1)}</span>`, "Victorias pitagóricas (suerte)")}${cifra(d.racha || "—", "Racha")}</div>`;
+    } else {
+      html += `<p class="nota">Aún no ha jugado esta temporada: los ratings vienen de las temporadas anteriores.</p>`;
+    }
+    html += `<div class="rejilla">` + tarjeta("Ratings", `<div class="cifras">${cifra(`${d.elo.rating} <span class="chip">${d.elo.puesto}º</span>`, "Elo")}${cifra(`${signo(d.neto.valor)} <span class="chip">${d.neto.puesto}º</span>`, "Rating neto (vs equipo medio)")}${cifra(signo(d.neto.ataque), "Ataque")}${cifra(signo(d.neto.defensa), "Defensa")}</div>`
+      + (d.elo.historial.length > 1 ? `<h3>Evolución del Elo esta temporada</h3>` + linea(d.elo.historial.map((v, i) => ({ x: String(i + 1), y: v, tip: `Partido ${i + 1}: ${v}` })), { fmtY: (v) => Math.round(v) }) : ""));
+    if (d.proximos.length) {
+      html += tarjeta("Próximos partidos", d.proximos.map((p) => `<p class="fuerte" style="margin:10px 0 0">${p.local ? "vs" : "@"} ${esc(p.rival)} <span class="descripcion">· ${p.fecha} · margen esperado ${signo(p.margen)}</span></p>`
+        + barraProb([{ valor: p.prob, etiqueta: d.equipo, color: COLOR.local }, { valor: 1 - p.prob, etiqueta: p.rival, color: COLOR.visitante }])).join(""));
+    }
+    if (d.jugadores) {
+      html += tarjeta("Jugadores de rotación", tablaHTML("t-jugb", [{ clave: "nombre", titulo: "Jugador", texto: true },
+        { clave: "minutos", titulo: "Min.", fmt: (v) => num(v, 1) }, { clave: "valoracion", titulo: "Valoración/36", fmt: (v) => num(v, 1), ayuda: "Game Score de Hollinger cada 36 minutos (unos 10 es un titular normal)" },
+        { clave: "jugo", titulo: "Último", texto: true, fmt: (v) => (v ? "jugó" : `<span class="negativo fuerte">no jugó</span>`) }], d.jugadores.filas)
+        + `<p class="nota">Ajuste por plantilla para su próximo partido: ${signo(d.jugadores.ajuste)} puntos frente a lo habitual. Se supone que juegan los mismos que en el último partido (si fue hace menos de 60 días).</p>`);
+    }
+    if (d.juego) {
+      const fmt = (v, f) => (f.metrica.includes("libres por") ? num(v, 2) : num(v, 1));
+      html += tarjeta("Estadísticas de juego (temporada regular)", tablaHTML("t-jb", [{ clave: "metrica", titulo: "", texto: true },
+        { clave: "ataque", titulo: "Equipo", fmt }, { clave: "puesto_ataque", titulo: "Puesto", fmt: (v) => `${v}º` },
+        { clave: "defensa", titulo: "Rival", fmt }, { clave: "puesto_defensa", titulo: "Puesto", fmt: (v) => `${v}º` }], d.juego.filas)
+        + `<p class="nota">Rating neto por 100 posesiones: ${signo(d.juego.neto)}. Rival = lo que permite (puesto 1 = el que menos concede).</p>`, "ancho");
+    }
+    if (d.splits.length) html += tarjeta("Récords por situación", tablaHTML("t-splb", [{ clave: "situacion", titulo: "Situación", texto: true }, { clave: "texto", titulo: "Récord" },
+      { clave: "pf_pp", titulo: "PF/p", fmt: (v) => num(v, 1) }, { clave: "pc_pp", titulo: "PC/p", fmt: (v) => num(v, 1) }], d.splits));
+    if (d.partidos.length) html += tarjeta("Partidos (del más reciente al más antiguo)", tablaHTML("t-ppb", [{ clave: "fecha", titulo: "Fecha", texto: true },
+      { clave: "rival", titulo: "Rival", texto: true, fmt: (v, f) => `${f.local ? "vs" : "@"} ${esc(v)}` }, { clave: "resultado", titulo: "", fmt: (v) => forma(v === "V" ? "G" : "P") },
+      { clave: "pf", titulo: "Marcador", fmt: (v, f) => `${f.pf}-${f.pc}${f.prorroga ? " (pró.)" : ""}` }, { clave: "fase", titulo: "Fase", texto: true, oculta: true }], d.partidos), "ancho");
+    return { html: html + "</div>", tras() { $("#c-equipo").onchange = (e) => ir({}, { equipo: e.target.value }); } };
+  },
+
+  async predecir() {
+    const local = estado.p.local || "BOS";
+    const visitante = estado.p.visitante && estado.p.visitante !== local ? estado.p.visitante : (local === "LAL" ? "BOS" : "LAL");
+    const d = await api("nba/predecir", { temporada: nbaTemp(), local, visitante, neutral: estado.p.neutral });
+    const fav = d.margen > 0 ? d.local : d.visitante;
+    let html = `<div class="controles">${selector("c-local", "Local", equiposNBA(), d.local)}${selector("c-visit", "Visitante", equiposNBA(), d.visitante)}
+      ${ESTATICO ? "" : `<label class="casilla"><input type="checkbox" id="c-neutral" ${estado.p.neutral ? "checked" : ""}> Campo neutral</label>`}</div>
+      <h1 class="titulo-vista">${esc(d.nombre_visitante)} @ ${esc(d.nombre_local)}</h1>
+      <p class="descripcion">${d.programado ? `Partido del calendario: ${d.programado.fecha} (incluye el descanso de cada equipo)` : "Partido hipotético"}</p><div class="rejilla">`;
+    html += tarjeta("Probabilidad de victoria", barraProb([{ valor: d.prob_local, etiqueta: d.local, color: COLOR.local }, { valor: 1 - d.prob_local, etiqueta: d.visitante, color: COLOR.visitante }])
+      + `<div class="cifras" style="margin-top:12px">${cifra(`${num(d.puntos_local, 0)} - ${num(d.puntos_visitante, 0)}`, `Marcador esperado (${d.local}-${d.visitante})`)}${cifra(`${esc(fav)} -${num(Math.abs(d.margen), 1)}`, "Spread del modelo")}${cifra(num(d.total, 1), "Total de puntos esperado")}</div>
+      <p class="nota">Elo: ${signo(d.margen_elo)} · ratings: ${signo(d.margen_ratings)} · descanso: ${signo(d.ajuste_descanso)} · jugadores: ${signo(d.ajuste_jugadores)} (ventaja del local en puntos) · moneyline justa ${esc(d.moneyline_local)} / ${esc(d.moneyline_visitante)}</p>`
+      + textoBajas(d.local, d.bajas_local) + textoBajas(d.visitante, d.bajas_visitante));
+    return {
+      html: html + `</div><p class="nota">Combina Elo, ratings ajustados por rival, descanso y jugadores disponibles. Sin parte de lesionados, supone que cada equipo juega con los mismos que en su partido anterior.</p>`,
+      tras() {
+        $("#c-local").onchange = (e) => ir({}, { local: e.target.value });
+        $("#c-visit").onchange = (e) => ir({}, { visitante: e.target.value });
+        $("#c-neutral")?.addEventListener("change", (e) => ir({}, { neutral: e.target.checked ? "1" : "" }));
+      },
+    };
+  },
+
+  async pronosticos() {
+    const d = await api("nba/pronosticos", { temporada: nbaTemp(), fecha: estado.p.fecha });
+    if (!d.filas.length) return { html: `<div class="error">No hay partidos pendientes en ${d.temporada}.</div>` };
+    const html = `<div class="controles">${selector("c-fecha", "Día", d.fechas, d.fecha)}</div>
+      <h1 class="titulo-vista">Pronósticos · ${d.fecha}</h1><p class="descripcion">Temporada ${d.temporada} · spread desde el punto de vista del local (negativo = favorito)</p>
+      ${tarjeta("", d.filas.map((p) => `<div style="padding:10px 0;border-bottom:1px solid var(--grid)">
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="fuerte">${esc(p.visitante)} @ ${esc(p.local)}</span>
+          <span class="descripcion" style="margin:0">spread ${signo(-p.margen)} · total ${num(p.total, 1)} · marcador ${num(p.puntos_visitante, 0)}-${num(p.puntos_local, 0)}${p.ajuste_descanso ? ` · ${p.ajuste_descanso < 0 ? "local" : "visitante"} en días seguidos` : ""}</span></div>
+          ${barraProb([{ valor: p.prob_local, etiqueta: p.local, color: COLOR.local }, { valor: 1 - p.prob_local, etiqueta: p.visitante, color: COLOR.visitante }])}
+          ${textoBajas(p.visitante, p.bajas_visitante)}${textoBajas(p.local, p.bajas_local)}</div>`).join(""))}
+      <p class="nota">Bajas: jugadores importantes que no jugaron el último partido de su equipo (entre paréntesis, los puntos que vale cada uno); se supone que tampoco juegan este.</p>`;
+    return { html, tras() { $("#c-fecha").onchange = (e) => ir({}, { fecha: e.target.value }); } };
+  },
+
+  async simular() {
+    const d = await api("nba/simular", { temporada: nbaTemp(), n: 2000 });
+    let html = `<h1 class="titulo-vista">Probabilidades de playoffs y de título ${d.temporada}</h1>
+      <p class="descripcion">${d.simulaciones.toLocaleString("es")} simulaciones de los ${d.pendientes} partidos pendientes${d.pendientes ? "" : " (temporada regular completa)"}, del play-in y de los playoffs</p><div class="rejilla">`;
+    d.conferencias.forEach((c) => {
+      html += tarjeta(c.conferencia, barras(c.filas.map((f) => ({ nombre: f.nombre, valor: f.campeon, texto: pct(f.campeon) })), { max: Math.max(...d.conferencias.flatMap((x) => x.filas.map((f) => f.campeon)), 0.01) })
+        + `<p class="nota">Probabilidad de ser campeón</p>`
+        + tablaHTML(`t-simb-${c.conferencia}`, [{ clave: "equipo", titulo: "Equipo", texto: true }, { clave: "victorias", titulo: "Vict. esp.", fmt: (v) => num(v, 1) },
+          { clave: "playoffs", titulo: "Playoffs", fmt: (v) => pct(v, 0) }, { clave: "top6", titulo: "Top 6", fmt: (v) => pct(v, 0), oculta: !d.playin },
+          { clave: "primero", titulo: "1º conf.", fmt: (v) => pct(v), oculta: true }, { clave: "final", titulo: "Final", fmt: (v) => pct(v) }], c.filas));
+    });
+    return { html: html + `</div><p class="nota">"Playoffs" incluye pasar el play-in (puestos 7-10). Desempates simplificados; no tiene en cuenta lesiones ni traspasos futuros.</p>` };
+  },
+
+  async ranking() {
+    const d = await api("nba/ranking", { temporada: nbaTemp() });
+    const filas = d.filas.map((f, i) => ({ ...f, pos: i + 1 }));
+    const cols = [{ clave: "pos", titulo: "#" }, { clave: "nombre", titulo: "Equipo", texto: true, fmt: (v) => `<span class="fuerte">${esc(v)}</span>` },
+      { clave: "registro", titulo: "Récord" }, { clave: "elo", titulo: "Elo", ordenable: true, fmt: (v) => num(v, 0) },
+      { clave: "neto", titulo: "Neto", ordenable: true, fmt: (v) => signo(v), claseCelda: (f) => clase(f.neto), ayuda: "Margen esperado frente a un equipo medio" },
+      { clave: "ataque", titulo: "Ataque", ordenable: true, fmt: (v) => signo(v), oculta: true }, { clave: "defensa", titulo: "Defensa", ordenable: true, fmt: (v) => signo(v), oculta: true },
+      { clave: "pitagoricas", titulo: "Pitag.", ordenable: true, fmt: (v) => (v == null ? "" : num(v, 1)), oculta: true }, { clave: "historial", titulo: "Elo", fmt: (v) => chispa(v), oculta: true }];
+    return {
+      html: `<h1 class="titulo-vista">Power ranking ${d.temporada}</h1><p class="descripcion">Ventaja de campo estimada: ${signo(d.ventaja_campo)} pts · haz clic en una columna para ordenar</p>${tarjeta("", tablaHTML("t-br", cols, filas))}`,
+      tras() { ordenarYRepintar("t-br", cols, filas); },
+    };
+  },
+
+  async estadisticas() {
+    const d = await api("nba/estadisticas", { temporada: nbaTemp() });
+    const filas = d.filas.map((f, i) => ({ ...f, pos: i + 1 }));
+    const o = (clave, titulo, fmt, ayuda, oculta = false) => ({ clave, titulo, fmt, ayuda, oculta, ordenable: true });
+    const cols = [{ clave: "pos", titulo: "#" }, { clave: "equipo", titulo: "Eq.", texto: true, fmt: (v, f) => `<span class="fuerte" title="${esc(f.nombre)}">${esc(v)}</span>` },
+      o("neto", "Neto", (v) => signo(v), "Puntos de diferencia por 100 posesiones"),
+      o("ataque", "Ataque", (v) => num(v, 1), "Puntos anotados por 100 posesiones"), o("defensa", "Defensa", (v) => num(v, 1), "Puntos permitidos por 100 posesiones (menos es mejor)"),
+      o("ritmo", "Ritmo", (v) => num(v, 1), "Posesiones por partido"), o("efg", "eFG%", (v) => num(v, 1), "Acierto de tiro contando el triple como 1.5"),
+      o("efg_rival", "eFG% rival", (v) => num(v, 1), "", true), o("perdidas", "% pérd.", (v) => num(v, 1), "Posesiones que acaban en pérdida", true),
+      o("rebote_of", "% reb. of.", (v) => num(v, 1), "Rebotes ofensivos capturados", true), o("libres", "TL/TC", (v) => num(v, 3), "Tiros libres anotados por tiro de campo", true),
+      o("pct_triple", "% triples", (v) => num(v, 1), "", true), o("tasa_triples", "Triples/tiros", (v) => num(v, 1), "% de tiros que son triples", true),
+      o("asistencias", "Asist.", (v) => num(v, 1), "", true)];
+    return {
+      html: `<h1 class="titulo-vista">Estadísticas de juego ${d.temporada}</h1><p class="descripcion">Temporada regular · haz clic en una columna para ordenar</p>${avisoNBA(d)}${tarjeta("", tablaHTML("t-estb", cols, filas))}`,
+      tras() { ordenarYRepintar("t-estb", cols, filas); },
+    };
+  },
+
+  async liga() {
+    const d = await api("nba/liga", { temporada: nbaTemp() });
+    let html = `<h1 class="titulo-vista">Resumen de la NBA ${d.temporada}</h1>${avisoNBA(d)}
+      <div class="cifras" style="margin-bottom:16px">${cifra(d.partidos, "Partidos")}${cifra(num(d.puntos_pp, 1), "Puntos por partido")}${cifra(signo(d.margen_local), "Margen medio del local")}${cifra(pct100(d.pct_prorroga), "Con prórroga")}</div><div class="rejilla">`;
+    html += tarjeta("Resultados", barras([["Gana el local", d.pct_gana_local], ["Decididos por ≤5 puntos", d.pct_ajustados], ["Decididos por 15+ puntos", d.pct_palizas],
+      ["Gana el que no jugó el día antes", d.pct_gana_descansado]].filter(([, v]) => v != null).map(([n, v]) => ({ nombre: n, valor: v })), { max: 100, fmt: (v) => pct100(v) }));
+    if (d.factores.length) html += tarjeta("Qué decide los partidos", barras(d.factores.map((f) => ({ nombre: f.metrica, valor: f.pct })), { max: 100, fmt: (v) => pct100(v) })
+      + `<p class="nota">% de partidos que gana el equipo que es mejor en cada estadística.</p>`);
+    html += tarjeta("Márgenes finales más frecuentes", columnas(d.margenes_frecuentes.map((m) => String(m.margen)), [{ nombre: "Partidos", valores: d.margenes_frecuentes.map((m) => m.partidos), clase: "col-1" }], { fmt: (v) => Math.round(v) })
+      + `<p class="nota">Más puntos: ${esc(d.mas_puntos.texto)} · Menos: ${esc(d.menos_puntos.texto)} · Mayor paliza: ${esc(d.mayor_paliza.texto)}</p>`);
+    return { html: html + "</div>" };
+  },
+};
+
 // ── Render principal ────────────────────────────────────────────────────────
 let turno = 0;
 async function render() {
@@ -704,10 +901,10 @@ async function render() {
   const vista = $("#vista");
   try {
     if (!opciones[estado.deporte]) opciones[estado.deporte] = await api(`${estado.deporte}/opciones`);
-    if (estado.deporte === "futbol") controlesFutbol(); else controlesNFL();
+    ({ futbol: controlesFutbol, nfl: controlesNFL, nba: controlesNBA })[estado.deporte]();
     pintarPestanas();
     vista.innerHTML = `<div class="cargando">Cargando…</div>`;
-    const fn = (estado.deporte === "futbol" ? vistasFutbol : vistasNFL)[estado.vista];
+    const fn = ({ futbol: vistasFutbol, nfl: vistasNFL, nba: vistasNBA })[estado.deporte][estado.vista];
     const res = await fn();
     if (mio !== turno) return; // el usuario ya cambió de vista
     vista.innerHTML = res.html;

@@ -1,6 +1,6 @@
-# Estadísticas deportivas: fútbol y NFL
+# Estadísticas deportivas: fútbol, NFL y NBA
 
-Programa en Python para analizar partidos de **fútbol (soccer)** y de la **NFL**: clasificaciones, informes completos de equipos, estadísticas de liga, rankings de fuerza, predicciones y validación de los modelos con datos históricos.
+Programa en Python para analizar partidos de **fútbol (soccer)**, de la **NFL** y de la **NBA**: clasificaciones, informes completos de equipos, estadísticas de liga, rankings de fuerza, predicciones y validación de los modelos con datos históricos.
 
 Solo necesita Python 3.9 o posterior. No usa librerías externas.
 
@@ -8,7 +8,7 @@ Solo necesita Python 3.9 o posterior. No usa librerías externas.
 
 👉 **https://dostinex90.github.io/Estad-sticas-deportivas/**
 
-Esta versión publicada se actualiza sola cada día. Incluye la temporada actual de 7 ligas (LaLiga, Premier League, Serie A, Bundesliga, Ligue 1, Primeira Liga y Eredivisie) y de la NFL:
+Esta versión publicada se actualiza sola cada día. Incluye la temporada actual de 7 ligas (LaLiga, Premier League, Serie A, Bundesliga, Ligue 1, Primeira Liga y Eredivisie), de la NFL y de la NBA:
 
 - Clasificaciones e informes de cada equipo.
 - Predicciones de cualquier partido entre dos equipos de la misma liga.
@@ -16,6 +16,7 @@ Esta versión publicada se actualiza sola cada día. Incluye la temporada actual
 - Cara a cara con todo el historial desde 2000.
 - Rankings.
 - NFL: probabilidades de playoffs y estadísticas de juego.
+- NBA: probabilidades de playoffs y de título, pronósticos día a día y estadísticas de juego.
 
 Para temporadas antiguas, las otras 31 ligas o selecciones, usa la interfaz completa (abajo).
 
@@ -27,7 +28,7 @@ La genera `scripts/generar_sitio.py`. Una web publicada no puede ejecutar Python
 python3 -m analisis_deportivo web
 ```
 
-Abre en el navegador (http://localhost:8000) una interfaz con todo el programa: clasificaciones, informes de equipo, predicciones con gráficos, pronósticos, resúmenes de liga, cara a cara, rankings, goleadores, probabilidades de playoffs y estadísticas de la NFL. Lee los datos directamente de la base de datos.
+Abre en el navegador (http://localhost:8000) una interfaz con todo el programa: clasificaciones, informes de equipo, predicciones con gráficos, pronósticos, resúmenes de liga, cara a cara, rankings, goleadores, probabilidades de playoffs y estadísticas de la NFL y de la NBA. Lee los datos directamente de la base de datos.
 
 - **Menús:** se elige la competición (38 ligas, todas las selecciones o un torneo concreto) y la temporada.
 - **Tablas:** se puede hacer clic en un equipo para ver su informe y ordenar las tablas por columnas.
@@ -50,7 +51,7 @@ El repositorio se actualiza solo en los servidores de GitHub. No usa IA ni consu
   1. Descarga los partidos nuevos (`recopilar`).
   2. Comprueba la integridad de los datos (`scripts/verificar_datos.py`): duplicados, fechas imposibles, temporadas incompletas y resultados atrasados. Si algo está mal, no publica nada.
   3. Pasa las pruebas.
-  4. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL, y la precisión de los modelos.
+  4. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL y de la NBA, y la precisión de los modelos.
   5. Si algo cambió, los guarda en el repositorio.
   6. Publica la versión web en GitHub Pages.
   7. La base actualizada queda como descarga del propio workflow durante 30 días.
@@ -72,6 +73,9 @@ El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.s
 | Goles de selecciones con autor, minuto, penalti y autogol | 47.914 goles | 1916 – 2026 |
 | Partidos de la NFL con líneas de apuestas, descanso entre partidos, clima, estadio, quarterbacks y entrenadores | 7.548 partidos | 1999 – 2026 |
 | Estadísticas de cada equipo en cada partido de la NFL: yardas, EPA, pérdidas de balón, sacks, penalizaciones, goles de campo y más (unas 130 columnas) | 14.707 registros | 1999 – 2026 |
+| Partidos de la NBA (temporada regular, final de la NBA Cup, play-in y playoffs) con prórrogas y sede, y el calendario de la temporada en curso | 33.390 partidos | 2001-02 – 2026-27 |
+| Estadísticas de cada equipo en cada partido de la NBA: tiros de campo, triples, tiros libres, rebotes, asistencias, robos, tapones, pérdidas, faltas y puntos en la pintura | 64.352 registros | 2001-02 – 2025-26 |
+| Minutos y valoración (Game Score) de cada jugador de la NBA en cada partido | 404.702 registros | 2011-12 – 2025-26 |
 
 ```bash
 python3 -m analisis_deportivo base        # qué contiene: ligas, temporadas, cobertura de tiros y cuotas
@@ -92,6 +96,8 @@ python3 -m analisis_deportivo futbol tabla --torneo mundial -t 2022
 python3 -m analisis_deportivo futbol goleadores --torneo mundial -t todas
 python3 -m analisis_deportivo futbol predecir Argentina France -l selecciones --neutral
 python3 -m analisis_deportivo nfl estadisticas -t 2025 --orden "Dif.pérd"
+python3 -m analisis_deportivo nba simular
+python3 -m analisis_deportivo nba equipo Lakers -t 2025-26
 ```
 
 Para predecir una temporada, los modelos de fútbol también usan la temporada anterior. Así los pronósticos de principio de temporada no dependen solo de unas pocas jornadas.
@@ -201,6 +207,29 @@ El **resumen de liga** incluye:
 - Qué decide los partidos: con qué frecuencia gana el equipo que domina cada estadística. En 2025, el que tuvo mejor EPA por jugada ganó el 82 % de los partidos, y el que perdió menos balones, el 78 %.
 - Puntos según condiciones: bajo techo, al aire libre, con frío, con viento y en partidos divisionales.
 
+## NBA
+
+Requiere la base de datos. Los equipos se escriben con su abreviatura de ESPN (`LAL`, `BOS`, `GS`, `NY`, `SA`, `UTAH`…) o con su nombre (`Lakers`, `celtics`). Las temporadas se escriben `2025-26` (también vale `2026`, el año en que termina). Por defecto se usa la más reciente; antes de que empiece, `liga`, `estadisticas` y `evaluar` muestran la anterior.
+
+| Comando | Qué muestra |
+|---|---|
+| `clasificacion [--vista conferencia\|division\|liga]` | Récord, PCT, puntos a favor y en contra por partido, local, visitante, conferencia, racha y últimos 10, con los cortes de playoffs (1-6) y play-in (7-10) |
+| `equipo EQUIPO` | Récord y puesto, victorias pitagóricas, Elo y rating neto, jugadores de rotación (y si jugaron el último partido), estadísticas de juego con su puesto en la liga, récords por situación (local, visitante, contra cada conferencia, partidos ajustados, prórrogas, dos días seguidos, playoffs...), últimos partidos y próximos con su probabilidad |
+| `h2h A B` | Historial entre dos equipos desde 2001-02, también en playoffs |
+| `liga [--solo-regular]` | Ventaja de jugar en casa, partidos ajustados y palizas, prórrogas, efecto de jugar dos días seguidos y qué estadísticas deciden los partidos |
+| `ranking` | Power ranking con Elo, rating neto, ataque, defensa y victorias pitagóricas |
+| `predecir LOCAL VISITANTE [--neutral] [--linea X] [--total Y]` | Marcador esperado, spread, total, probabilidad de victoria y moneyline justa. Si el partido está en el calendario, tiene en cuenta el descanso de cada equipo |
+| `pronosticos [--fecha AAAA-MM-DD] [--dias N]` | Pronósticos del próximo día (o días) con partidos, con las bajas importantes de cada equipo |
+| `simular [-n N]` | Simulación Monte Carlo del resto de la temporada, del play-in y de los playoffs: victorias esperadas y probabilidad de playoffs, de top 6, de ser primero, de llegar a la final y de ser campeón |
+| `evaluar` | Validación día a día sin datos futuros |
+| `estadisticas [--orden COLUMNA]` | Tabla de los 30 equipos con eficiencia ofensiva y defensiva (puntos por 100 posesiones), ritmo y los "cuatro factores" (acierto efectivo, pérdidas, rebote ofensivo y tiros libres) |
+
+Algunos términos:
+
+- **Rating neto**: cuántos puntos es mejor o peor un equipo que la media en campo neutral, ajustado por la dificultad de sus rivales.
+- **Posesiones**: cada vez que un equipo tiene el balón. Permiten comparar equipos que juegan a ritmos distintos.
+- **eFG%** (acierto efectivo): porcentaje de tiro contando el triple como 1.5 tiros, porque vale más.
+
 ## Modelos
 
 **Fútbol**
@@ -221,6 +250,15 @@ El **resumen de liga** incluye:
   - Playoffs: el margen se amplía ×1.3.
 - **Predicción.** Combina Elo (40 %) y ratings (60 %). La probabilidad de victoria sale de una distribución normal de 12.25 puntos de desviación.
 
+**NBA**
+
+- **Elo** al estilo FiveThirtyEight: K=15, ventaja de campo de 70 puntos Elo y regresión de una cuarta parte hacia la media entre temporadas. 28 puntos Elo equivalen a 1 punto de margen.
+- **Ratings de ataque y defensa** ajustados por la calidad de los rivales. Un partido de hace 90 días pesa la mitad, y los de la temporada anterior, la mitad más. La ventaja de campo se estima con los datos.
+- **Descanso:** el equipo que juega el segundo de dos días seguidos pierde 1.5 puntos.
+- **Jugadores disponibles:** cada jugador tiene un valor (la "valoración" Game Score de Hollinger por minuto: puntos, tiros, rebotes, asistencias, robos, tapones, faltas y pérdidas), calculado solo con sus partidos anteriores. Si un equipo juega sin jugadores importantes que suele tener, pierde puntos; si recupera a alguno, los gana. Como no hay parte de lesionados, se supone que juega con los mismos que en su partido anterior (salvo después del verano). Los pronósticos y el informe de equipo muestran esas bajas.
+- **Predicción.** Combina Elo (60 %) y ratings (40 %). La probabilidad de victoria sale de una distribución normal de 10 puntos de desviación.
+- **Simulación.** Juega muchas veces lo que queda de temporada, el play-in y los playoffs (series al mejor de 7). Como la fuerza real de cada equipo no se conoce con exactitud, en cada simulación varía al azar unos 3 puntos al empezar la temporada y menos a medida que avanza.
+
 **Validación.** El comando `evaluar` predice cada jornada o semana usando solo los partidos anteriores, como si fuera en tiempo real. Después compara el resultado con una referencia ingenua y con las casas de apuestas.
 
 **Mejoras hechas con agentes de IA.** Cuatro agentes probaron mejoras por separado. Ajustaron los parámetros solo con las temporadas de entrenamiento y midieron el resultado en temporadas que no habían visto. Después, otros agentes intentaron refutar cada mejora repitiendo las mediciones y buscando fugas de información:
@@ -228,8 +266,9 @@ El **resumen de liga** incluye:
 - **Fútbol** (validación 2023-24 a 2025-26, Premier, LaLiga, Serie A, Bundesliga y Ligue 1; 5.255 partidos): el RPS baja de 0.2012 a 0.1987 y mejora en las cinco ligas. El RPS es la medida habitual para predicciones de 1X2; menos es mejor. Las casas de apuestas están en 0.1934.
 - **NFL** (validación 2020–2025, 1.688 partidos): el Brier baja de 0.2228 a 0.2187. Es la medida de error de las probabilidades; menos es mejor, y 0.25 equivale a tirar una moneda. Mejora en 5 de 6 temporadas, y casi toda la ganancia viene del ajuste por quarterback titular.
 - **Descartado:** un modelo NFL basado en EPA por jugada. No mejoraba al actual.
+- **NBA** (parámetros ajustados con 2012-13 a 2018-19; validación 2021-22 a 2025-26, 6.605 partidos): el Brier baja de 0.2211, el del Elo de FiveThirtyEight con sus parámetros publicados, a 0.2153, y el acierto del ganador sube del 64.7 % al 66.0 %. El ajuste por jugadores disponibles lo baja a 0.2131 (acierto 66.4 %). Ambos mejoran en las cinco temporadas. Si se supiera exactamente quién juega (con un parte de lesionados), bajaría a 0.2102. La base no tiene líneas de apuestas de la NBA, así que no se compara con el mercado.
 
-Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py` y `nfl_ajuste.py`.
+Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py`, `nfl_ajuste.py`, `nba_ajuste.py`, `nba_incertidumbre.py` y `nba_jugadores.py`.
 
 Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de análisis, no como garantía.
 
@@ -242,6 +281,7 @@ La base de datos combina:
 - **[openfootball](https://github.com/openfootball/football.json)** (dominio público): temporada en curso.
 - **[martj42/international_results](https://github.com/martj42/international_results)** (CC0): selecciones y goleadores.
 - **[nflverse](https://github.com/nflverse)**: partidos de la NFL ([nfldata](https://github.com/nflverse/nfldata)) y estadísticas de equipo por partido ([nflverse-data](https://github.com/nflverse/nflverse-data), CC-BY 4.0).
+- **[sportsdataverse/hoopR-nba-data](https://github.com/sportsdataverse/hoopR-nba-data)** (datos de ESPN): partidos de la NBA desde 2001-02, calendario de la temporada en curso y estadísticas de equipo por partido. Los traslados y cambios de nombre (New Jersey → Brooklyn, Seattle → Oklahoma City, Hornets → Pelicans) se unifican con el identificador de franquicia de ESPN.
 
 Para analizar un archivo suelto se puede usar `descargar` y `--datos`:
 
@@ -275,6 +315,7 @@ analisis_deportivo/
   web/     api.py (datos en JSON) · servidor.py · static/ (index.html, app.js, estilos.css)
   futbol/  datos.py · analisis.py · modelos.py · cli.py
   nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
+  nba/     datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py · cli.py
 datos/base_deportiva.sqlite.gz   base de datos completa (comprimida)
 datos/                  ejemplos simulados (regenerables con scripts/generar_ejemplos.py)
 datos/descargas/        datos reales descargados (ignorados por git)

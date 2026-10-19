@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-19 02:56 UTC_
+_Actualizado automáticamente: 2026-10-19 09:59 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -144,19 +144,19 @@ Validación histórica del modelo (sin mirar el futuro)
 ```
 Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ══════════════════════════════════════════════════════════════════
-  Partidos evaluados: 90
-  Acierto ganador (combinado)        ████████████░░░░░░░░  62.2%
-  Acierto ganador (solo Elo)         ████████████░░░░░░░░  57.8%
-  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  53.3%
-  Acierto del favorito del mercado   █████████████░░░░░░░  63.3%
-  Brier score: 0.226 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.642
-  Error medio del margen: 9.38 pts · del total: 11.57 pts
+  Partidos evaluados: 91
+  Acierto ganador (combinado)        █████████████░░░░░░░  62.6%
+  Acierto ganador (solo Elo)         ████████████░░░░░░░░  58.2%
+  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  53.8%
+  Acierto del favorito del mercado   █████████████░░░░░░░  62.6%
+  Brier score: 0.225 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.640
+  Error medio del margen: 9.35 pts · del total: 11.62 pts
 
 ── Frente a las casas de apuestas ──────────────────────────────
-  Error medio del margen: modelo 9.38 pts vs mercado 9.43 pts
-  Acierto contra el spread           ███████████░░░░░░░░░  56.0%  (84)
-  ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  54.2%  (24)
-  Error medio del total: modelo 11.57 vs mercado 10.49
-  Acierto over/under                 ████████░░░░░░░░░░░░  40.0%  (90)
+  Error medio del margen: modelo 9.35 pts vs mercado 9.46 pts
+  Acierto contra el spread           ███████████░░░░░░░░░  56.5%  (85)
+  ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  56.0%  (25)
+  Error medio del total: modelo 11.62 vs mercado 10.57
+  Acierto over/under                 ████████░░░░░░░░░░░░  40.7%  (91)
   Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.
 ```

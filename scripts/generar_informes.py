@@ -64,8 +64,17 @@ def generar():
     ], sello)
     indice.append("- [NFL](nfl.md)")
 
+    escribir("nba.md", "NBA: pronósticos, playoffs y ranking", [
+        bloque("Pronósticos de los próximos días", ejecutar("nba", "pronosticos", "--dias", "3")),
+        bloque("Probabilidades de playoffs y de título", ejecutar("nba", "simular", "--semilla", "1")),
+        bloque("Clasificación por conferencias", ejecutar("nba", "clasificacion")),
+        bloque("Power ranking", ejecutar("nba", "ranking")),
+    ], sello)
+    indice.append("- [NBA](nba.md)")
+
     secciones = [bloque(f"{nombre} (temporada en curso)", ejecutar("futbol", "evaluar", "-l", alias)) for alias, nombre in LIGAS[:5]]
     secciones.append(bloque("NFL (temporada en curso)", ejecutar("nfl", "evaluar")))
+    secciones.append(bloque("NBA (temporada en curso o, si no ha empezado, la anterior)", ejecutar("nba", "evaluar")))
     escribir("evaluacion.md", "Precisión de los modelos", secciones, sello)
     indice.append("- [Precisión de los modelos (validación sin datos futuros)](evaluacion.md)")
 

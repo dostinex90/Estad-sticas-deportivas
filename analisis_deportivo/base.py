@@ -9,6 +9,11 @@ Tablas:
   nfl_partidos              NFL desde 1999 (resultado, líneas de apuestas, clima, QB, entrenadores).
   nfl_estadisticas_equipo   Estadísticas de cada equipo en cada partido NFL (yardas, pérdidas,
                             sacks, EPA, penalizaciones, goles de campo...).
+  nba_partidos              NBA desde 2001-02 (resultado, prórrogas, fase, sede) y calendario pendiente.
+  nba_estadisticas_equipo   Estadísticas de cada equipo en cada partido NBA (tiros, rebotes,
+                            asistencias, pérdidas...).
+  nba_jugadores_partido     Minutos y valoración (Game Score) de cada jugador NBA que jugó cada partido.
+  nba_jugadores             Nombre de cada jugador NBA.
   fuentes                   Origen, licencia y fecha de cada carga.
 """
 
@@ -35,6 +40,10 @@ URL_SELECCIONES = "https://raw.githubusercontent.com/martj42/international_resul
 URL_OPENFOOTBALL = "https://raw.githubusercontent.com/openfootball/football.json/master/{temporada}/{codigo}.json"
 URL_NFL_PARTIDOS = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 URL_NFL_EQUIPOS = "https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{}.csv"
+URL_NBA_PARTIDOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_{}.csv"
+URL_NBA_EQUIPOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_team_boxscores/team_box_{}.csv"
+URL_NBA_JUGADORES = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_player_boxscores/player_box_{}.csv"
+PRIMERA_NBA_JUGADORES = 2012  # 2011-12: da historial a las temporadas de validación del modelo (2021-22 en adelante)
 
 # código -> (nombre, país, alias en español, código openfootball, calendario anual)
 COMPETICIONES = {
@@ -98,6 +107,7 @@ LICENCIAS = {
     "selecciones": "martj42/international_results (CC0)",
     "nfl_partidos": "nflverse/nfldata (Lee Sharpe)",
     "nfl_equipos": "nflverse/nflverse-data (CC-BY 4.0)",
+    "nba": "sportsdataverse/hoopR-nba-data (datos de ESPN)",
 }
 
 
@@ -171,6 +181,19 @@ CREATE TABLE IF NOT EXISTS futbol_goleadores_selecciones (
     fecha TEXT, local TEXT, visitante TEXT, equipo TEXT, goleador TEXT, minuto INTEGER,
     autogol INTEGER, penalti INTEGER);
 CREATE INDEX IF NOT EXISTS ix_fg ON futbol_goleadores_selecciones (equipo, goleador);
+CREATE TABLE IF NOT EXISTS nba_partidos (
+    id TEXT, temporada INTEGER, tipo TEXT, ronda TEXT, fecha TEXT, local TEXT, visitante TEXT,
+    puntos_local INTEGER, puntos_visitante INTEGER, prorrogas INTEGER, neutral INTEGER, estadio TEXT, ciudad TEXT);
+CREATE INDEX IF NOT EXISTS ix_nbp ON nba_partidos (temporada, fecha);
+CREATE TABLE IF NOT EXISTS nba_estadisticas_equipo (
+    id TEXT, temporada INTEGER, tipo TEXT, fecha TEXT, equipo TEXT, rival TEXT, local INTEGER, puntos INTEGER,
+    tiros_campo INTEGER, intentos_campo INTEGER, triples INTEGER, intentos_triple INTEGER,
+    tiros_libres INTEGER, intentos_libres INTEGER, rebotes_ofensivos INTEGER, rebotes_defensivos INTEGER,
+    asistencias INTEGER, robos INTEGER, tapones INTEGER, perdidas INTEGER, faltas INTEGER,
+    puntos_pintura INTEGER, puntos_contraataque INTEGER);
+CREATE INDEX IF NOT EXISTS ix_nbe ON nba_estadisticas_equipo (temporada, equipo);
+CREATE TABLE IF NOT EXISTS nba_jugadores_partido (id INTEGER, equipo TEXT, jugador INTEGER, minutos INTEGER, valoracion REAL);
+CREATE TABLE IF NOT EXISTS nba_jugadores (jugador INTEGER PRIMARY KEY, nombre TEXT);
 """
 
 
@@ -642,6 +665,96 @@ def _nfl(con, avisar, hoy):
     return len(partidos), len(filas)
 
 
+def _tipo_nba(f):
+    """REG, COPA (final de la NBA Cup, no cuenta en la clasificación), PLAYIN o PO; None si no se usa."""
+    if f["season_type"] == "3":
+        return "PO"
+    if f["season_type"] == "5":
+        return "PLAYIN"
+    if f["season_type"] == "2":
+        return {"1": "REG", "39": "COPA"}.get(f["type_id"])  # 4 = partido de las estrellas
+    return None  # pretemporada
+
+
+def _nba(con, avisar, hoy):
+    from .nba.equipos import POR_ID
+
+    partidos = []
+    for temporada in range(2002, hoy.year + 2):  # la temporada 2026 es la 2025-26
+        try:
+            filas = _csv(URL_NBA_PARTIDOS.format(temporada))
+        except (urllib.error.URLError, OSError):
+            continue
+        for f in filas:
+            local, visitante, tipo = POR_ID.get(f["home_id"]), POR_ID.get(f["away_id"]), _tipo_nba(f)
+            estado = f["status_type_name"]
+            if not (local and visitante and tipo) or estado in ("STATUS_POSTPONED", "STATUS_CANCELED", "STATUS_SUSPENDED"):
+                continue
+            final = estado == "STATUS_FINAL"
+            periodos = _num(f.get("status_period"), int) or 4
+            # 2019-20 se terminó en la "burbuja" de Orlando, sin ventaja de campo
+            neutral = f["neutral_site"] == "true" or (temporada == 2020 and f["game_date"] >= "2020-07-30")
+            partidos.append((
+                f["game_id"], temporada, tipo, f.get("notes_headline") or None, f["game_date"], local, visitante,
+                _num(f["home_score"], int) if final else None, _num(f["away_score"], int) if final else None,
+                max(0, periodos - 4) if final else None, int(neutral), f.get("venue_full_name") or None,
+                f.get("venue_address_city") or None,
+            ))
+    con.executemany(f"INSERT INTO nba_partidos VALUES ({','.join('?' * 13)})", partidos)
+    if partidos:
+        avisar(f"  NBA: {len(partidos):,} partidos (temporadas {partidos[0][1] - 1}-{str(partidos[0][1])[2:]} "
+               f"a {partidos[-1][1] - 1}-{str(partidos[-1][1])[2:]})")
+
+    tipos = {p[0]: p[2] for p in partidos}
+    estadisticas = []
+    for temporada in range(2002, hoy.year + 2):
+        try:
+            filas = _csv(URL_NBA_EQUIPOS.format(temporada))
+        except (urllib.error.URLError, OSError):
+            continue
+        for f in filas:
+            equipo, rival = POR_ID.get(f["team_id"]), POR_ID.get(f["opponent_team_id"])
+            if not (equipo and rival and f["game_id"] in tipos):
+                continue
+            i = lambda c: _num(f.get(c), int)  # noqa: E731
+            estadisticas.append((
+                f["game_id"], temporada, tipos[f["game_id"]], f["game_date"], equipo, rival, int(f["team_home_away"] == "home"),
+                i("team_score"), i("field_goals_made"), i("field_goals_attempted"), i("three_point_field_goals_made"),
+                i("three_point_field_goals_attempted"), i("free_throws_made"), i("free_throws_attempted"),
+                i("offensive_rebounds"), i("defensive_rebounds"), i("assists"), i("steals"), i("blocks"),
+                i("total_turnovers"), i("fouls"), i("points_in_paint"), i("fast_break_points"),
+            ))
+    con.executemany(f"INSERT INTO nba_estadisticas_equipo VALUES ({','.join('?' * 23)})", estadisticas)
+    if estadisticas:
+        avisar(f"  NBA: {len(estadisticas):,} registros de estadísticas de equipo por partido")
+
+    from .nba.jugadores import game_score
+
+    jugadores, nombres = 0, {}
+    for temporada in range(PRIMERA_NBA_JUGADORES, hoy.year + 2):
+        try:
+            filas = _csv(URL_NBA_JUGADORES.format(temporada))
+        except (urllib.error.URLError, OSError):
+            continue
+        datos = []
+        for f in filas:
+            equipo, minutos = POR_ID.get(f["team_id"]), _num(f.get("minutes"))
+            if equipo and minutos and f["game_id"] in tipos and f["athlete_id"].isdigit():
+                datos.append((int(f["game_id"]), equipo, int(f["athlete_id"]), round(minutos),
+                              round(game_score({k: _num(v) or 0.0 for k, v in f.items() if k in GS_CAMPOS}), 1)))
+                nombres[int(f["athlete_id"])] = f["athlete_display_name"]
+        con.executemany("INSERT INTO nba_jugadores_partido VALUES (?,?,?,?,?)", datos)
+        jugadores += len(datos)
+    con.executemany("INSERT INTO nba_jugadores VALUES (?,?)", nombres.items())
+    if jugadores:
+        avisar(f"  NBA: {jugadores:,} registros de jugadores por partido")
+    return len(partidos), len(estadisticas), jugadores
+
+
+GS_CAMPOS = {"points", "field_goals_made", "field_goals_attempted", "free_throws_made", "free_throws_attempted",
+             "offensive_rebounds", "defensive_rebounds", "steals", "assists", "blocks", "fouls", "turnovers"}
+
+
 def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
     """Descarga todas las fuentes y (re)construye la base de datos."""
     hoy = date.today()
@@ -670,6 +783,11 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
     n_p, n_e = _nfl(con, avisar, hoy)
     registrar("nfl_partidos", LICENCIAS["nfl_partidos"], n_p)
     registrar("nfl_estadisticas_equipo", LICENCIAS["nfl_equipos"], n_e)
+    avisar("Descargando NBA...")
+    n_p, n_e, n_j = _nba(con, avisar, hoy)
+    registrar("nba_partidos", LICENCIAS["nba"], n_p)
+    registrar("nba_estadisticas_equipo", LICENCIAS["nba"], n_e)
+    registrar("nba_jugadores_partido", LICENCIAS["nba"], n_j)
     con.commit()
     con.execute("VACUUM")
     con.close()
@@ -719,4 +837,9 @@ def resumen(con):
         r["nfl_estadisticas"] = con.execute("SELECT COUNT(*), MIN(season), MAX(season) FROM nfl_estadisticas_equipo").fetchone()
     except sqlite3.OperationalError:
         r["nfl_estadisticas"] = None
+    try:
+        r["nba"] = con.execute("SELECT COUNT(*), MIN(temporada), MAX(temporada), SUM(puntos_local IS NULL) FROM nba_partidos").fetchone()
+        r["nba_estadisticas"] = con.execute("SELECT COUNT(*), MIN(temporada), MAX(temporada) FROM nba_estadisticas_equipo").fetchone()
+    except sqlite3.OperationalError:  # base creada antes de añadir la NBA
+        r["nba"] = r["nba_estadisticas"] = None
     return r
