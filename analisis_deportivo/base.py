@@ -536,6 +536,32 @@ def _parecido(a, b):
     return difflib.SequenceMatcher(None, a, b).ratio()
 
 
+def _sin_siglas(nombre):
+    """Nombre normalizado sin palabras de una o dos letras ("CR Flamengo" y "Flamengo RJ" quedan en "flamengo")."""
+    return " ".join(w for w in _normalizar_nombre(nombre).split() if len(w) > 2)
+
+
+def _mapear_por_historial(nombres, historicos, ocupados, umbral=0.75):
+    """Equivalencias para nombres de openfootball sin ningún partido en común con la base (p. ej. una liga
+    anual cuya temporada en curso solo viene de openfootball): se buscan entre los clubes de las temporadas
+    anteriores de la misma liga, uno a uno y sin ambigüedad."""
+    libres = set(historicos) - set(ocupados)
+    pares = []
+    for nombre in nombres:
+        if nombre in historicos:
+            continue
+        puntos = sorted(((max(_parecido(nombre, e), _parecido(_sin_siglas(nombre), _sin_siglas(e))), e) for e in libres),
+                        reverse=True)
+        if puntos and puntos[0][0] >= umbral and (len(puntos) == 1 or puntos[1][0] < puntos[0][0]):
+            pares.append((puntos[0][0], nombre, puntos[0][1]))
+    mapa, usados = {}, set()
+    for _, nombre, club in sorted(pares, reverse=True):
+        if nombre not in mapa and club not in usados:
+            mapa[nombre] = club
+            usados.add(club)
+    return mapa
+
+
 def _openfootball_actual(con, avisar, hoy):
     """Añade la temporada en curso (resultados recientes y calendario pendiente) desde openfootball."""
     total = 0
@@ -561,6 +587,15 @@ def _openfootball_actual(con, avisar, hoy):
             "SELECT fecha, local, visitante, goles_local, goles_visitante FROM futbol_partidos "
             "WHERE competicion = ? AND temporada = ?", (codigo, temporada)).fetchall()
         mapa = _mapear_nombres([p[:5] for p in partidos if p[3] is not None], [e for e in existentes if e[3] is not None])
+        if not any(e[3] is not None for e in existentes):
+            # Sin resultados con los que comparar (la otra fuente no trae esta temporada): se usan los nombres
+            # de las temporadas anteriores para no crear "clubes nuevos" que en realidad ya existían
+            anteriores = [t for (t,) in con.execute("SELECT DISTINCT temporada FROM futbol_partidos WHERE competicion = ? "
+                                                    "AND temporada < ? ORDER BY 1 DESC LIMIT 2", (codigo, temporada))]
+            historicos = {n for t in anteriores for col in ("local", "visitante") for (n,) in con.execute(
+                f"SELECT DISTINCT {col} FROM futbol_partidos WHERE competicion = ? AND temporada = ?", (codigo, t))}
+            ocupados = {n for e in existentes for n in e[1:3]}
+            mapa.update(_mapear_por_historial({n for p in partidos for n in p[1:3]} - set(mapa), historicos, ocupados))
         # En una liga a doble vuelta cada pareja local-visitante se juega una vez por temporada
         if codigo in CRUCES_REPETIDOS:  # el cruce no identifica el partido: se empareja por fecha
             pendientes_previos = set()
@@ -603,7 +638,8 @@ def _clave_nombre(nombre):
 
 # Clubes que la fuente escribe de dos formas demasiado distintas para unificarlas solas
 # (cambian de nombre a mitad de temporada y nunca se enfrentan entre sí)
-ALIAS_CLUBES = {"Gornik Z.": "Gornik Zabrze", "U Craiova": "Univ. Craiova", "Raith": "Raith Rvs"}
+ALIAS_CLUBES = {"Gornik Z.": "Gornik Zabrze", "U Craiova": "Univ. Craiova", "Raith": "Raith Rvs",
+                "CA Mineiro": "Atletico-MG", "CA Paranaense": "Athletico-PR"}
 
 
 def _unificar_nombres(con, avisar):

@@ -61,6 +61,16 @@ class TestBase(unittest.TestCase):
         self.assertEqual(mapa["1. FC Köln"], "FC Koln")  # desempate por parecido del nombre
         self.assertEqual(mapa["Bayer 04 Leverkusen"], "Leverkusen")
 
+    def test_mapear_por_historial(self):
+        """Una liga anual cuya temporada en curso solo viene de openfootball (sin partidos en común) conserva los nombres de siempre."""
+        historicos = {"Flamengo RJ", "Botafogo RJ", "Vasco", "Corinthians", "Atletico GO", "Atletico-MG", "Sao Paulo"}
+        nuevos = {"CR Flamengo", "Botafogo FR", "CR Vasco da Gama", "SC Corinthians Paulista", "São Paulo FC", "Mirassol FC", "Atletico GO"}
+        mapa = base._mapear_por_historial(nuevos, historicos, ocupados=set())
+        self.assertEqual(mapa, {"CR Flamengo": "Flamengo RJ", "Botafogo FR": "Botafogo RJ", "CR Vasco da Gama": "Vasco",
+                                "SC Corinthians Paulista": "Corinthians", "São Paulo FC": "Sao Paulo"})  # ascendido: sin pareja
+        # un nombre histórico ya ocupado por otro club de la temporada no se reutiliza
+        self.assertNotIn("CR Flamengo", base._mapear_por_historial({"CR Flamengo"}, historicos, ocupados={"Flamengo RJ"}))
+
     def test_fechas_intercambiadas(self):
         # Liga de 8 equipos de marzo a noviembre con una jornada cada 3 días
         equipos, partidos = list("ABCDEFGH"), []

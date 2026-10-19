@@ -21,6 +21,107 @@ from analisis_deportivo import base  # noqa: E402
 PRINCIPALES = ["SP1", "E0", "I1", "D1", "F1", "P1", "N1"]
 
 
+# Partidos de la fase regular de la NFL por temporada (la de 2022 tuvo 271: se canceló el Bills-Bengals)
+NFL_REGULAR = {2020: 256, 2022: 271}
+NFL_PRIMERA = 2020  # los datos de jugadores (bajas, snaps) y la comprobación de cobertura empiezan aquí
+
+
+def cobertura(con, hoy=None):
+    """Compara la base con el calendario oficial y comprueba que las tablas de equipo y de jugadores
+    cubren los partidos jugados desde 2020. Devuelve (errores, avisos).
+
+    Error: faltan o sobran partidos en una temporada ya terminada de la NFL (256/272/271 de fase regular) o de la NBA
+    (1230 desde 2021-22), o un partido de las dos últimas temporadas sin estadísticas de equipo o sin datos de jugadores
+    (la web y los modelos los usan). Aviso: huecos antiguos de la fuente y datos de la última semana que aún no llegan."""
+    hoy = hoy or date.today()
+    reciente = (hoy - timedelta(days=4)).isoformat()
+    q = lambda sql, *a: con.execute(sql, a).fetchall()  # noqa: E731
+    errores, avisos = [], []
+
+    def existe(tabla):
+        return bool(q("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", tabla))
+
+    # --- NFL ---
+    if existe("nfl_partidos"):
+        actual = q("SELECT MAX(season) FROM nfl_partidos WHERE home_score IS NOT NULL")[0][0]
+        for temporada, n, jugados in q("SELECT season, COUNT(*), SUM(home_score IS NOT NULL) FROM nfl_partidos "
+                                       "WHERE game_type = 'REG' AND season >= ? GROUP BY 1 ORDER BY 1", NFL_PRIMERA):
+            esperado = NFL_REGULAR.get(temporada, 272)
+            if n != esperado:
+                (errores if temporada < actual or jugados == n else avisos).append(
+                    f"NFL {temporada}: {n} partidos de fase regular en el calendario y se esperaban {esperado}")
+        jugados = q("SELECT game_id, season FROM nfl_partidos WHERE home_score IS NOT NULL AND season >= ? AND gameday < ?",
+                    NFL_PRIMERA, reciente)
+        if existe("nfl_estadisticas_equipo"):
+            equipos = Counter(g for (g,) in q("SELECT game_id FROM nfl_estadisticas_equipo"))
+            sin = Counter(t for g, t in jugados if equipos[g] != 2)
+            if sin:
+                errores.append(f"NFL: partidos jugados sin estadísticas de los dos equipos {dict(sorted(sin.items()))}")
+        if existe("nfl_snaps"):
+            con_snaps = {g for (g,) in q("SELECT DISTINCT game_id FROM nfl_snaps")}
+            sin = Counter(t for g, t in jugados if g not in con_snaps)
+            if sin:
+                avisos.append(f"NFL: partidos jugados sin snaps por jugador {dict(sorted(sin.items()))} "
+                              "(el ajuste por bajas los trata como sin datos)")
+            fuera = len(con_snaps - {g for (g,) in q("SELECT game_id FROM nfl_partidos")})
+            if fuera:
+                errores.append(f"NFL: {fuera} partidos de nfl_snaps que no están en nfl_partidos")
+        if existe("nfl_lesiones"):
+            # semanas con partidos jugados y ninguna baja en el parte (hueco de la fuente, p. ej. la postemporada de 2023)
+            con_parte = {tuple(r) for r in q("SELECT DISTINCT season, week FROM nfl_lesiones")}
+            vacias = sorted({tuple(r) for r in q("SELECT season, week FROM nfl_partidos WHERE home_score IS NOT NULL "
+                                                 "AND season >= ? AND gameday < ?", NFL_PRIMERA, reciente)} - con_parte)
+            if vacias:
+                por = defaultdict(list)
+                for t, w in vacias:
+                    por[t].append(w)
+                avisos.append("NFL: semanas con partidos y sin ningún parte de lesionados en la fuente: "
+                              + "; ".join(f"{t} semanas {', '.join(map(str, w))}" for t, w in por.items()))
+            equipos_nfl = {t for (t,) in q("SELECT home_team FROM nfl_partidos UNION SELECT away_team FROM nfl_partidos")}
+            otros = [t for (t,) in q("SELECT DISTINCT team FROM nfl_lesiones") if t not in equipos_nfl]
+            if otros:
+                errores.append(f"NFL: lesiones de equipos que no existen en nfl_partidos (nombre distinto): {otros}")
+
+    # --- NBA ---
+    if existe("nba_partidos"):
+        ultima = q("SELECT MAX(temporada) FROM nba_partidos WHERE puntos_local IS NOT NULL")[0][0]
+        for temporada, n in q("SELECT temporada, COUNT(*) FROM nba_partidos WHERE tipo = 'REG' AND temporada BETWEEN 2022 AND ? "
+                              "AND (puntos_local IS NOT NULL OR temporada < ?) GROUP BY 1 ORDER BY 1", ultima, ultima):
+            if n != 1230 and (temporada < ultima or not q("SELECT 1 FROM nba_partidos WHERE tipo = 'REG' AND temporada = ? "
+                                                         "AND puntos_local IS NULL LIMIT 1", temporada)):
+                errores.append(f"NBA {temporada - 1}-{str(temporada)[2:]}: {n} partidos de fase regular y se esperaban 1230")
+        sin_resultado = q("SELECT COUNT(*) FROM nba_partidos WHERE temporada < ? AND puntos_local IS NULL", ultima)[0][0]
+        if sin_resultado:
+            errores.append(f"NBA: {sin_resultado} partidos de temporadas ya terminadas sin resultado")
+        # los ids de las tablas de equipo y jugadores se comparan como texto igual que en la tabla de partidos
+        jugados = q("SELECT id, temporada, tipo FROM nba_partidos WHERE puntos_local IS NOT NULL AND temporada >= 2020 AND fecha < ?",
+                    reciente)
+        for tabla, etiqueta in (("nba_estadisticas_equipo", "estadísticas de equipo"), ("nba_jugadores_partido", "datos de jugadores")):
+            if not existe(tabla):
+                continue
+            con_datos = {str(i) for (i,) in q(f"SELECT DISTINCT id FROM {tabla}")}
+            sin = Counter((t, tipo) for i, t, tipo in jugados if i not in con_datos)
+            graves = sorted((k, n) for k, n in sin.items() if k[0] >= ultima - 1)
+            antiguos = sorted((k, n) for k, n in sin.items() if k[0] < ultima - 1)
+            nombre = lambda k: (f"{k[0] - 1}-{str(k[0])[2:]}", k[1])  # noqa: E731
+            if graves:
+                errores.append(f"NBA: partidos de las dos últimas temporadas sin {etiqueta}: {[(*nombre(k), n) for k, n in graves]}")
+            if antiguos:
+                avisos.append(f"NBA: huecos antiguos de la fuente sin {etiqueta}: {[(*nombre(k), n) for k, n in antiguos]}")
+        if existe("nba_jugadores_partido"):
+            raros = q("SELECT COUNT(*) FROM (SELECT id, equipo FROM nba_jugadores_partido GROUP BY 1, 2 "
+                      "HAVING SUM(minutos) < 150 OR SUM(minutos) > 400)")[0][0]
+            if raros:
+                avisos.append(f"NBA: {raros} plantillas de un partido con minutos totales imposibles (menos de 150 o más de 400)")
+            un_equipo = q("SELECT COUNT(*) FROM (SELECT id FROM nba_jugadores_partido GROUP BY 1 HAVING COUNT(DISTINCT equipo) != 2)")[0][0]
+            if un_equipo:
+                errores.append(f"NBA: {un_equipo} partidos con jugadores de un solo equipo (o de más de dos)")
+            sin_nombre = q("SELECT COUNT(*) FROM nba_jugadores_partido WHERE jugador NOT IN (SELECT jugador FROM nba_jugadores)")[0][0]
+            if sin_nombre:
+                errores.append(f"NBA: {sin_nombre} registros de jugadores sin nombre en nba_jugadores")
+    return errores, avisos
+
+
 def verificar(con):
     q = lambda sql, *a: con.execute(sql, a).fetchall()  # noqa: E731
     hoy = date.today().isoformat()
@@ -130,6 +231,9 @@ def verificar(con):
     except sqlite3.OperationalError:
         pass
 
+    err_cob, av_cob = cobertura(con)
+    errores += err_cob
+    avisos += av_cob
     for a in avisos:
         print(f"AVISO: {a}")
     for e in errores:

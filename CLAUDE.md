@@ -82,13 +82,16 @@ Los datos de jugadores (NFL y NBA) se guardan **solo desde 2020** para que la ba
 - **NBA Cup:** desde 2023-24, 2 partidos de cada equipo no están en el calendario hasta diciembre; la simulación los juega contra un rival medio para llegar a 82.
 - **Temporadas incompletas reales:** Ligue 1 y Eredivisie 2019-20 (canceladas), NFL 2022 (271 partidos) y NBA 2011-12 (990), 2012-13 (1229), 2019-20 (1059) y 2020-21 (1080).
 - **NBA:** la fuente tiene un PHX-GS de 2019-20 con fecha errónea; `verificar_datos.py` solo da error por dos partidos el mismo día en las dos últimas temporadas.
+- **Openfootball sin partidos en común con la base** (p. ej. Brasil 2026 cuando football-data.co.uk está bloqueado): `_mapear_por_historial` usa los nombres de las dos temporadas anteriores de esa liga; `CA Mineiro` y `CA Paranaense` están en `ALIAS_CLUBES`.
+- **Huecos conocidos de la fuente (solo avisos):** partes de lesionados de la postemporada NFL 2023 (semanas 20-22) y estadísticas/jugadores de los 6 play-in NBA 2020-21. Las 16 ligas "new" (ARG, AUT, BRA, USA…) quedan en octubre de 2024 si football-data.co.uk no responde.
 - **La temporada en curso puede ir días por detrás:** los pronósticos omiten los partidos pasados sin resultado.
 
 `scripts/verificar_datos.py` comprueba:
 - duplicados;
 - equipos con dos partidos el mismo día;
 - resultados con fecha futura;
-- temporadas incompletas.
+- temporadas incompletas;
+- `cobertura()`: partidos de la fase regular NFL (256/272/271) y NBA (1230) frente al calendario, estadísticas de equipo, snaps, partes de lesionados y jugadores NBA emparejados con los partidos desde 2020.
 
 La actualización diaria **no publica** si encuentra errores. Si cambias `base.py`, ejecútalo siempre después de `recopilar`.
 
@@ -118,6 +121,11 @@ La actualización diaria **no publica** si encuentra errores. Si cambias `base.p
   - Simulación con incertidumbre de la fuerza de 3 puntos × √(fracción pendiente), medida en `experimentos/nba_incertidumbre.py`.
   - **Validación 2021-22 a 2025-26: Brier 0.2131** (0.2153 sin jugadores; 0.2102 si se supiera quién juega). Línea base (Elo de FiveThirtyEight): 0.2211. Sin líneas de apuestas en la base. Mediciones en `experimentos/nba_ajuste.py` y `nba_jugadores.py`.
   - Posible mejora: un parte de lesionados (ESPN lo tiene, pero su dominio está bloqueado desde el entorno de Claude en la nube; no se ha probado desde GitHub Actions).
+
+**Probado y descartado (revisión 2026-10-19, sin mejora en validación):**
+- Fútbol: parámetros del Poisson en óptimo plano (<0.0002 RPS) y forma reciente (doble decaimiento): nada. Sin fuente abierta de plantillas accesible desde la nube.
+- NFL: decaimiento temporal de los ratings (+0.0004 Brier, ruido); más estados/posiciones de bajas y valor individual con estadísticas nflverse: sobreajusta, peor que los pesos actuales.
+- NBA: descanso extra (3 partidos en 4 días, descanso largo; +0.0002) y plantilla esperada por probabilidad de jugar según la racha de ausencias (−0.0002). ESPN da 403 desde la nube: sin parte de lesionados.
 
 **Reglas al cambiar un modelo** (las siguen también los agentes de la revisión semanal):
 1. Ajusta parámetros **solo con temporadas de entrenamiento**:
