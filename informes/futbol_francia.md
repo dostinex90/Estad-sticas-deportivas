@@ -1,30 +1,30 @@
 # Ligue 1: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-19 09:59 UTC_
+_Actualizado automáticamente: 2026-10-19 12:23 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(9 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(18 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-23 Brest vs Nice                                    46%   27%   27%    52%   56%  1-1
-  2026-10-24 Toulouse vs Troyes                               59%   24%   18%    54%   53%  1-1
-  2026-10-24 Lens vs Paris FC                                 56%   24%   20%    54%   54%  1-1
-  2026-10-25 Monaco vs Lille                                  38%   28%   34%    50%   56%  1-1
-  2026-10-25 Marseille vs Le Havre                            59%   24%   18%    55%   54%  1-1
-  2026-10-25 Rennes vs Strasbourg                             47%   25%   27%    57%   60%  1-1
-  2026-10-25 Angers vs Lorient                                33%   28%   39%    49%   54%  1-1
+  2026-10-23 Brest vs Nice                                    44%   27%   28%    50%   55%  1-1
+  2026-10-24 Toulouse vs Troyes                               62%   22%   16%    57%   54%  1-1
+  2026-10-24 Lens vs Paris FC                                 56%   25%   20%    54%   54%  1-1
+  2026-10-25 Monaco vs Lille                                  39%   28%   33%    51%   56%  1-1
+  2026-10-25 Marseille vs Le Havre                            59%   23%   17%    55%   53%  1-1
+  2026-10-25 Rennes vs Strasbourg                             46%   26%   29%    57%   60%  1-1
+  2026-10-25 Angers vs Lorient                                33%   28%   39%    48%   54%  1-1
   2026-10-25 Auxerre vs Le Mans                               53%   25%   22%    56%   57%  1-1
-  2026-10-25 Paris SG vs Lyon                                 60%   23%   17%    57%   55%  1-1
-  2026-10-30 Le Havre vs Paris SG                             16%   23%   61%    55%   53%  1-1
-  2026-10-30 Lille vs Lens                                    44%   27%   29%    52%   56%  1-1
-  2026-10-31 Nice vs Rennes                                   33%   27%   40%    54%   58%  1-1
-  2026-10-31 Lyon vs Angers                                   64%   22%   14%    56%   52%  2-0
-  2026-10-31 Lorient vs Brest                                 44%   27%   28%    51%   55%  1-1
-  2026-10-31 Troyes vs Le Mans                                42%   27%   31%    53%   57%  1-1
+  2026-10-25 Paris SG vs Lyon                                 58%   24%   19%    55%   54%  1-1
+  2026-10-30 Le Havre vs Paris SG                             16%   23%   61%    55%   52%  1-1
+  2026-10-30 Lille vs Lens                                    43%   27%   30%    52%   56%  1-1
+  2026-10-31 Nice vs Rennes                                   33%   27%   40%    52%   57%  1-1
+  2026-10-31 Lyon vs Angers                                   63%   22%   14%    55%   51%  2-0
+  2026-10-31 Lorient vs Brest                                 45%   27%   28%    50%   54%  1-1
+  2026-10-31 Troyes vs Le Mans                                40%   27%   34%    54%   59%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,24 +36,24 @@ Clasificación general
 ═════════════════════
   #  Equipo      PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ─────────────────────────────────────────────────────────────────
-  1  Monaco       6   4   2   0   10    5   +5   14  2.33  GGEGE
-  2  Lille        6   4   1   1    9    4   +5   13  2.17  EGGPG
-  3  Rennes       6   4   1   1   12   10   +2   13  2.17  GGGPG
-  4  Lyon         6   3   2   1   11    4   +7   11  1.83  EGEGP
-  5  Paris FC     6   3   2   1    8    4   +4   11  1.83  GGEGP
-  6  Paris SG     6   3   2   1   11    8   +3   11  1.83  EPGGG
-  7  Brest        6   2   2   2   12    9   +3    8  1.33  EGPPG
-  8  Lorient      6   2   2   2    6    6   +0    8  1.33  PGEPG
-  9  Nice         6   2   2   2    5    7   -2    8  1.33  PEPGG
- 10  Lens         6   2   1   3   11   10   +1    7  1.17  PPEPG
- 11  Strasbourg   6   2   1   3   11   12   -1    7  1.17  GGEPP
- 12  Angers       6   2   1   3    7   10   -3    7  1.17  GPEGP
- 13  Marseille    6   2   0   4    9    8   +1    6  1.00  PPPPG
- 14  Le Mans      6   1   3   2   10   12   -2    6  1.00  PEEGP
- 15  Toulouse     6   1   3   2    9   11   -2    6  1.00  EPEGE
- 16  Auxerre      6   2   0   4    8   16   -8    6  1.00  PPGGP
- 17  Troyes       6   1   1   4    4   13   -9    4  0.67  GPPPP
- 18  Le Havre     6   0   2   4    4    8   -4    2  0.33  EPEPP
+  1  Monaco       5   4   1   0    8    3   +5   13  2.60  GGGEG
+  2  Lyon         5   3   2   0   10    2   +8   11  2.20  GEGEG
+  3  Paris FC     5   3   2   0    8    3   +5   11  2.20  EGGEG
+  4  Lille        5   3   1   1    8    4   +4   10  2.00  GEGGP
+  5  Rennes       5   3   1   1    8    9   -1   10  2.00  EGGGP
+  6  Paris SG     5   2   2   1    8    7   +1    8  1.60  EEPGG
+  7  Angers       5   2   1   2    6    5   +1    7  1.40  PGPEG
+  8  Strasbourg   5   2   1   2   10   10   +0    7  1.40  PGGEP
+  9  Le Mans      5   1   3   1    9    9   +0    6  1.20  EPEEG
+ 10  Auxerre      5   2   0   3    7   12   -5    6  1.20  PPPGG
+ 11  Brest        5   1   2   2    7    8   -1    5  1.00  EEGPP
+ 12  Lorient      5   1   2   2    5    6   -1    5  1.00  EPGEP
+ 13  Toulouse     5   1   2   2    7    9   -2    5  1.00  PEPEG
+ 14  Nice         5   1   2   2    3    6   -3    5  1.00  EPEPG
+ 15  Lens         5   1   1   3    9    9   +0    4  0.80  GPPEP
+ 16  Troyes       5   1   1   3    4   11   -7    4  0.80  EGPPP
+ 17  Marseille    5   1   0   4    7    8   -1    3  0.60  GPPPP
+ 18  Le Havre     5   0   2   3    4    7   -3    2  0.40  PEPEP
 ```
 
 ## Ranking de fuerza
@@ -65,22 +65,22 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo        Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  Paris SG     1653    1.47     0.75    +1.03  ▁▄▃▄█▅▅▅▁▃▅▇
-   2  Lens         1587    1.31     0.87    +0.62  ▅▅▄▅▂▆█▆▃▃▁▃
-   3  Lille        1584    1.05     0.76    +0.41  ▄▃▅▄▆▁▄▄▆█▅▆
-   4  Rennes       1578    1.22     1.03    +0.26  ▁▇█▄▆▂▂▄▆█▃▆
-   5  Lyon         1578    1.10     0.87    +0.34  ▁▄▅▇▅▁▄▃▅▅█▆
-   6  Monaco       1574    1.10     0.95    +0.22  ▄▃▃▄▂▁▂▄▆▇█▇
-   7  Paris FC     1538    0.96     0.85    +0.15  ▁▃▁▃▂▄▄▅▇▇█▇
-   8  Marseille    1532    1.20     0.96    +0.33  █▆▅▁▃▅█▅▃▂▁▃
-   9  Strasbourg   1531    1.12     1.11    +0.02  ▂▄▁▁▃▅▂▄██▆▄
-  10  Lorient      1502    0.90     0.89    +0.01  ▃▇▄▅█▄▃▁▄▄▂▄
-  11  Le Mans      1492    1.05     1.15    -0.15  ▆▁▁▂█▃
-  12  Toulouse     1487    1.02     0.98    +0.05  ▂▁▁▅██▃▄▁▂▄▅
-  13  Brest        1461    0.98     1.03    -0.08  ██▅▄▂▁▂▂▄▃▁▄
-  14  Troyes       1451    0.69     1.23    -0.77  ▇█▆▅▃▁
-  15  Auxerre      1447    0.89     1.09    -0.29  ▁▂▁▃▄█▇▃▂▃▅▃
-  16  Nice         1430    0.84     1.08    -0.35  ▅▆▇█▆▅▅▃▃▁▄▇
-  17  Le Havre     1426    0.84     0.94    -0.15  ▅▅▄▅▃█▆▇▄▄▂▁
-  18  Angers       1421    0.74     1.19    -0.64  ██▅▃▃▃▁▅▄▄█▄
+   1  Paris SG     1646    1.40     0.74    +0.93  ▁▂▅▄▄█▅▅▅▂▃▅
+   2  Lyon         1586    1.14     0.80    +0.48  ▁▃▅▆▇▆▃▅▄▅▆█
+   3  Lille        1580    1.06     0.78    +0.39  ▁▅▄▆▄▇▂▄▅▆█▅
+   4  Lens         1578    1.27     0.86    +0.58  ▄▅▅▄▅▂▆█▆▃▃▁
+   5  Monaco       1578    1.15     0.90    +0.35  ▇▄▃▃▄▂▁▂▄▆▇█
+   6  Rennes       1569    1.15     1.01    +0.20  ▁▂▇█▅▆▃▃▄▆█▄
+   7  Paris FC     1548    0.96     0.85    +0.16  ▁▃▄▃▄▄▅▅▆▇▇█
+   8  Strasbourg   1543    1.21     1.09    +0.17  ▆▂▄▁▁▃▅▂▄██▆
+   9  Marseille    1516    1.21     0.94    +0.38  ▇█▆▅▁▃▅█▅▃▂▁
+  10  Le Mans      1499    1.07     1.22    -0.20  ▆▁▁▂█
+  11  Lorient      1492    0.92     0.87    +0.06  ▆▃▇▄▅█▄▃▁▄▄▂
+  12  Toulouse     1482    1.07     1.00    +0.09  █▂▁▁▅██▃▄▁▂▄
+  13  Troyes       1466    0.65     1.49    -1.19  ▆█▅▃▁
+  14  Auxerre      1456    0.89     1.05    -0.23  ▂▁▂▁▃▄█▇▃▂▃▅
+  15  Brest        1446    0.90     1.01    -0.17  ███▅▄▂▁▂▂▄▃▁
+  16  Angers       1436    0.76     1.10    -0.48  █▇▇▅▂▃▃▁▅▃▄▇
+  17  Le Havre     1430    0.81     0.97    -0.22  ▄▄▅▄▅▂█▅▇▄▃▁
+  18  Nice         1418    0.82     1.04    -0.31  ▅▅▆▇█▆▅▅▃▃▁▄
 ```

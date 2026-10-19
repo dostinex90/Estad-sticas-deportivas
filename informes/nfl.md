@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-10-19 09:59 UTC_
+_Actualizado automáticamente: 2026-10-19 12:23 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -8,7 +8,7 @@ _Actualizado automáticamente: 2026-10-19 09:59 UTC_
 Pronósticos semana 6 — 2026
 ═══════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado
-  WAS @ SF    2026-10-19         81.6%     -11.0      -7.5   +3.5   51.2     52.5
+  WAS @ SF    2026-10-19         81.6%     -11.0      -7.5   +3.5   51.2     51.5
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).

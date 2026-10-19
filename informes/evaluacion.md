@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-19 09:59 UTC_
+_Actualizado automáticamente: 2026-10-19 12:23 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -121,22 +121,21 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     54    53.7%   0.599    1.005   0.205
-  Referencia (frecuencias)           54    46.3%   0.645    1.068   0.226
-  Modelo (partidos c/cuotas)         54    53.7%   0.599    1.005   0.205
-  Mercado de apuestas                54    53.7%   0.595    0.997   0.203
+  Modelo Poisson                     45    48.9%   0.636    1.057   0.216
+  Referencia (frecuencias)           45    40.0%   0.668    1.101   0.230
+  Modelo (partidos c/cuotas)         19    42.1%   0.639    1.062   0.199
+  Mercado de apuestas                19    47.4%   0.649    1.068   0.201
 
-  Acierto en más/menos de 2.5 goles: 59.3% (54 partidos)
+  Acierto en más/menos de 2.5 goles: 55.6% (45 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
-  Predicho  0-10 %  media   6.0%  →  real   0.0%  (1)
-  Predicho 10-20 %  media  17.0%  →  real  21.4%  (14)
-  Predicho 20-30 %  media  26.0%  →  real  24.7%  (73)
-  Predicho 30-40 %  media  34.5%  →  real  20.7%  (29)
-  Predicho 40-50 %  media  44.1%  →  real  61.5%  (26)
-  Predicho 50-60 %  media  55.2%  →  real  50.0%  (14)
-  Predicho 60-70 %  media  64.9%  →  real  75.0%  (4)
-  Predicho 80-90 %  media  81.1%  →  real 100.0%  (1)
+  Predicho 10-20 %  media  17.4%  →  real  25.0%  (12)
+  Predicho 20-30 %  media  26.2%  →  real  28.3%  (60)
+  Predicho 30-40 %  media  34.7%  →  real  18.5%  (27)
+  Predicho 40-50 %  media  44.4%  →  real  60.9%  (23)
+  Predicho 50-60 %  media  56.2%  →  real  40.0%  (10)
+  Predicho 60-70 %  media  64.4%  →  real  50.0%  (2)
+  Predicho 70-80 %  media  70.9%  →  real 100.0%  (1)
 ```
 
 ## NFL (temporada en curso)
@@ -159,4 +158,21 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
   Error medio del total: modelo 11.62 vs mercado 10.57
   Acierto over/under                 ████████░░░░░░░░░░░░  40.7%  (91)
   Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.
+```
+
+## NBA (temporada en curso o, si no ha empezado, la anterior)
+
+```
+(la temporada 2026-27 aún no ha empezado: se muestra la 2025-26)
+
+Validación del modelo en 2025-26 (día a día, sin datos futuros)
+═══════════════════════════════════════════════════════════════
+  Partidos evaluados: 1322
+  Acierto ganador (combinado)        ██████████████░░░░░░  67.8%
+  Acierto ganador (solo Elo)         █████████████░░░░░░░  67.4%
+  Acierto ganador (solo ratings)     ██████████████░░░░░░  68.7%
+  Gana siempre el local              ███████████░░░░░░░░░  55.5%
+  Brier score: 0.204 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.209 · log-loss 0.594
+  Error medio del margen: 11.34 pts · del total: 15.09 pts
+  La base no tiene líneas de apuestas de la NBA, así que no hay comparación con el mercado.
 ```

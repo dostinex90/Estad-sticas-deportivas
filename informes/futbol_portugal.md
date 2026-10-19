@@ -1,6 +1,6 @@
 # Primeira Liga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-19 09:59 UTC_
+_Actualizado automáticamente: 2026-10-19 12:23 UTC_
 
 ## Pronósticos de los próximos partidos
 

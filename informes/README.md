@@ -1,6 +1,6 @@
 # Informes automáticos
 
-_Última actualización: 2026-10-19 09:59 UTC_
+_Última actualización: 2026-10-19 12:23 UTC_
 
 Una tarea de GitHub Actions actualiza cada día la base de datos con los partidos nuevos y regenera estos informes. No usa IA ni consume uso de Claude.
 
@@ -12,4 +12,5 @@ Una tarea de GitHub Actions actualiza cada día la base de datos con los partido
 - [Primeira Liga](futbol_portugal.md)
 - [Eredivisie](futbol_holanda.md)
 - [NFL](nfl.md)
+- [NBA](nba.md)
 - [Precisión de los modelos (validación sin datos futuros)](evaluacion.md)
