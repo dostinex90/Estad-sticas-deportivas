@@ -39,7 +39,9 @@ def verificar(con):
     doble = q("SELECT competicion, fecha, equipo, COUNT(*) FROM (SELECT competicion, fecha, local AS equipo FROM futbol_partidos "
               "UNION ALL SELECT competicion, fecha, visitante FROM futbol_partidos) GROUP BY 1, 2, 3 HAVING COUNT(*) > 1")
     if doble:
-        errores.append(f"{len(doble)} casos de un equipo con dos partidos el mismo día, p. ej. {[tuple(d) for d in doble[:3]]}")
+        por_liga = Counter(d[0] for d in doble)
+        errores.append(f"{len(doble)} casos de un equipo con dos partidos el mismo día ({dict(por_liga)}), "
+                       f"p. ej. {[tuple(d) for d in doble[:3]]}")
     futuro = q("SELECT COUNT(*) FROM futbol_partidos WHERE goles_local IS NOT NULL AND fecha > ?", hoy)[0][0]
     if futuro:
         errores.append(f"{futuro} partidos con resultado y fecha futura")

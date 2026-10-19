@@ -167,3 +167,21 @@ class TestFootballData(unittest.TestCase):
         n = self.con.execute("SELECT COUNT(*) FROM futbol_partidos WHERE temporada = '2022-23'").fetchone()[0]
         self.assertEqual(n, 3)  # la temporada guardada se carga aunque no haya red
         self.assertTrue(any("no disponible" in a for a in avisos))
+
+
+class TestLigasNuevas(unittest.TestCase):
+    def test_solo_posteriores_traduce_nombres(self):
+        con = sqlite3.connect(":memory:")
+        self.addCleanup(con.close)
+        con.executescript(base.ESQUEMA)
+        cols = "competicion, temporada, fecha, local, visitante, goles_local, goles_visitante, fuente"
+        con.executemany(f"INSERT INTO futbol_partidos ({cols}) VALUES (?,?,?,?,?,?,?,?)", [
+            ("ARG", "2024", "2024-05-01", "Argentinos Jrs", "Racing Club", 2, 1, "clubes"),
+            ("ARG", "2024", "2024-05-08", "Racing Club", "Godoy Cruz", 0, 0, "clubes"),
+        ])
+        fila = lambda f, l, v, gl, gv: ("ARG", f[:4], f, None, l, v, gl, gv) + (None,) * 24 + ("football-data",)  # noqa: E731
+        filas = [fila("2024-05-01", "Argentinos Juniors", "Racing", 2, 1), fila("2024-05-08", "Racing", "Godoy Cruz", 0, 0),
+                 fila("2025-02-01", "Racing", "Argentinos Juniors", 1, 1)]
+        nuevas = base._solo_posteriores(con, "ARG", filas)
+        self.assertEqual(len(nuevas), 1)  # los dos partidos ya presentes no se repiten
+        self.assertEqual(nuevas[0][4:6], ("Racing Club", "Argentinos Jrs"))  # nombres de la base
