@@ -20,6 +20,10 @@ CONSULTAS = [
     ("nfl/predecir", {"temporada": "2024", "local": "KC", "visitante": "BUF", "linea": "3", "total": "47.5"}),
     ("nfl/ranking", {"temporada": "2024"}), ("nfl/estadisticas", {"temporada": "2024"}), ("nfl/liga", {"temporada": "2024"}),
     ("nfl/simular", {"temporada": "2024", "n": "200"}), ("nfl/pronosticos", {"temporada": "2024"}),
+    ("nba/opciones", {}), ("nba/clasificacion", {"temporada": "2024-25"}), ("nba/equipo", {"temporada": "2024-25", "equipo": "Lakers"}),
+    ("nba/predecir", {"temporada": "2024-25", "local": "BOS", "visitante": "LAL"}), ("nba/ranking", {"temporada": "2025"}),
+    ("nba/estadisticas", {"temporada": "2025"}), ("nba/liga", {"temporada": "2025"}),
+    ("nba/simular", {"temporada": "2025", "n": "100"}), ("nba/pronosticos", {}),
 ]
 
 

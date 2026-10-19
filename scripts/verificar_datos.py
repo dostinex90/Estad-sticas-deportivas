@@ -52,6 +52,28 @@ def verificar(con):
     nfl_dup = q("SELECT COUNT(*) FROM (SELECT game_id FROM nfl_partidos GROUP BY 1 HAVING COUNT(*) > 1)")[0][0]
     if nfl_dup:
         errores.append(f"{nfl_dup} partidos de la NFL duplicados")
+    try:
+        nba_dup = q("SELECT COUNT(*) FROM (SELECT id FROM nba_partidos GROUP BY 1 HAVING COUNT(*) > 1)")[0][0]
+        nba_doble = q("SELECT temporada, fecha, equipo, COUNT(*) FROM (SELECT temporada, fecha, local AS equipo FROM nba_partidos "
+                      "UNION ALL SELECT temporada, fecha, visitante FROM nba_partidos) GROUP BY 2, 3 HAVING COUNT(*) > 1")
+        # Las temporadas pasadas ya no cambian: sus fallos de la fuente (p. ej. un PHX-GS de 2019-20 con
+        # fecha errónea) solo se avisan; en las dos últimas temporadas son un error
+        ultima = q("SELECT MAX(temporada) FROM nba_partidos")[0][0]
+        antiguos = [d for d in nba_doble if d[0] < ultima - 1]
+        nba_doble = [d for d in nba_doble if d[0] >= ultima - 1]
+        if antiguos:
+            avisos.append(f"NBA: {len(antiguos)} casos antiguos de un equipo con dos partidos el mismo día en la fuente, "
+                          f"p. ej. {[tuple(d[1:3]) for d in antiguos[:3]]}")
+        nba_futuro = q("SELECT COUNT(*) FROM nba_partidos WHERE puntos_local IS NOT NULL AND fecha > ?", hoy)[0][0]
+    except sqlite3.OperationalError:
+        nba_dup, nba_doble, nba_futuro = 0, [], 0
+        avisos.append("la base no tiene partidos de la NBA")
+    if nba_dup:
+        errores.append(f"{nba_dup} partidos de la NBA duplicados")
+    if nba_doble:
+        errores.append(f"{len(nba_doble)} casos de un equipo NBA con dos partidos el mismo día, p. ej. {[tuple(d[1:3]) for d in nba_doble[:3]]}")
+    if nba_futuro:
+        errores.append(f"{nba_futuro} partidos de la NBA con resultado y fecha futura")
 
     # Cobertura de las ligas principales
     print(f"{'Liga':<6}{'Temporadas':>11}{'Partidos':>10}{'Incompletas':>13}  Último resultado  Pendientes ya jugados")
@@ -79,6 +101,20 @@ def verificar(con):
     nfl = q("SELECT MAX(gameday), SUM(home_score IS NULL AND gameday < ?) FROM nfl_partidos WHERE home_score IS NOT NULL "
             "OR gameday < ?", hace3, hace3)[0]
     print(f"NFL: último resultado {nfl[0]}, {nfl[1] or 0} partidos de hace más de 3 días sin resultado")
+    try:
+        nba = q("SELECT MAX(CASE WHEN puntos_local IS NOT NULL THEN fecha END), SUM(puntos_local IS NULL AND fecha < ?) "
+                "FROM nba_partidos", hace3)[0]
+        print(f"NBA: último resultado {nba[0]}, {nba[1] or 0} partidos de hace más de 3 días sin resultado")
+        if nba[1]:
+            avisos.append(f"NBA: {nba[1]} partidos de hace más de 3 días aún sin resultado en las fuentes")
+        incompletas = q("SELECT temporada, COUNT(*) FROM nba_partidos WHERE tipo = 'REG' AND puntos_local IS NOT NULL "
+                        "AND temporada < (SELECT MAX(temporada) FROM nba_partidos WHERE puntos_local IS NOT NULL) "
+                        "GROUP BY 1 HAVING COUNT(*) NOT IN (1189, 1230) ORDER BY 1")
+        if incompletas:
+            avisos.append("NBA: temporadas regulares con un número de partidos distinto del habitual (cierres patronales, "
+                          f"pandemia): {', '.join(f'{t - 1}-{str(t)[2:]} ({n})' for t, n in incompletas)}")
+    except sqlite3.OperationalError:
+        pass
 
     for a in avisos:
         print(f"AVISO: {a}")

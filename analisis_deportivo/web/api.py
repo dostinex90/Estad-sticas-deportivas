@@ -13,6 +13,11 @@ from ..comun import elegir_equipo, normal_cdf, pct, racha_actual, racha_maxima
 from ..futbol import analisis as fa
 from ..futbol import modelos as fm
 from ..futbol.datos import ESTADISTICAS, cargar_para_analisis, equipos as f_equipos, jugados as f_jugados, pendientes
+from ..nba import analisis as ba
+from ..nba import estadisticas as be
+from ..nba import modelos as bm
+from ..nba.datos import NOMBRE_TIPO as NBA_TIPO, cargar_desde_base as nba_cargar, descansos, leer_temporada, texto_temporada
+from ..nba.equipos import CONFERENCIAS, DIVISIONES as NBA_DIVISIONES, division as nba_division, nombre as nba_nombre
 from ..nfl import analisis as na
 from ..nfl import estadisticas as ne
 from ..nfl import modelos as nm
@@ -593,6 +598,239 @@ def nfl_liga(q):
     return res
 
 
+# ── NBA ───────────────────────────────────────────────────────────────────────
+
+@lru_cache(maxsize=1)
+def _nba():
+    con = _con()
+    try:
+        return tuple(nba_cargar(con))
+    finally:
+        con.close()
+
+
+@lru_cache(maxsize=8)
+def _nba_modelos(temporada):
+    return bm.ajustar_modelos(list(_nba()), temporada)
+
+
+@lru_cache(maxsize=8)
+def _nba_stats(temporada):
+    con = _con()
+    try:
+        return tuple(be.cargar(con, temporada))
+    finally:
+        con.close()
+
+
+def _nba_temporadas():
+    return sorted({p.temporada for p in _nba()})
+
+
+def _temporada_nba(q, con_resultados=False):
+    """Temporada pedida (2026 o "2025-26"). con_resultados: si aún no ha empezado, la anterior."""
+    disponibles = _nba_temporadas()
+    t = leer_temporada(q.get("temporada")) if q.get("temporada") else max(disponibles)
+    if t not in disponibles:
+        raise ValueError(f"Temporada {texto_temporada(t)} no disponible "
+                         f"({texto_temporada(disponibles[0])} a {texto_temporada(disponibles[-1])}).")
+    if con_resultados and not any(p.jugado for p in _nba() if p.temporada == t) and t - 1 in disponibles:
+        return t - 1, f"La temporada {texto_temporada(t)} aún no ha empezado: se muestra la {texto_temporada(t - 1)}."
+    return t, None
+
+
+def _nba_equipo(texto):
+    t = (texto or "").strip().upper()
+    todos = {e for div in NBA_DIVISIONES.values() for e in div}
+    if t in todos:
+        return t
+    por_nombre = {nba_nombre(e): e for e in todos}
+    return por_nombre[elegir_equipo(texto or "", list(por_nombre))]
+
+
+def nba_opciones(q):
+    return {"temporadas": [{"valor": t, "texto": texto_temporada(t)} for t in _nba_temporadas()[::-1]],
+            "equipos": [{"codigo": e, "nombre": nba_nombre(e), "division": d} for d, eqs in NBA_DIVISIONES.items() for e in eqs]}
+
+
+def _fila_nba(f, pos=None):
+    t = f.total
+    return {"equipo": f.equipo, "nombre": nba_nombre(f.equipo), "pos": pos, "g": t.g, "p": t.p, "pct": _r(t.porcentaje),
+            "pf_pp": _r(t.pf_pp, 1), "pc_pp": _r(t.pc_pp, 1), "dif_pp": _r(t.dif_pp, 1), "local": f.local.texto(),
+            "visitante": f.visitante.texto(), "conferencia": f.conferencia.texto(), "racha": f.racha, "ultimos": f.ultimos}
+
+
+def nba_clasificacion(q):
+    t, _ = _temporada_nba(q)
+    filas = ba.clasificacion(list(_nba()), t)
+    if not filas:
+        raise ValueError(f"No hay partidos de temporada regular en {texto_temporada(t)}.")
+    return {"temporada": texto_temporada(t), "playin": t >= 2021,
+            "conferencias": [{"conferencia": c, "filas": [_fila_nba(f, i) for i, f in enumerate(lista, 1)]}
+                             for c, lista in ba.por_conferencia(filas, t).items()],
+            "divisiones": [{"division": d, "filas": [_fila_nba(f) for f in lista]} for d, lista in ba.por_division(filas).items()]}
+
+
+def _pred_nba(pr):
+    return {"margen": _r(pr["margen"], 1), "margen_elo": _r(pr["margen_elo"], 1), "margen_ratings": _r(pr["margen_ratings"], 1),
+            "ajuste": _r(pr["ajuste"], 1), "prob_local": _r(pr["prob_local"]), "total": _r(pr["total"], 1),
+            "puntos_local": _r(pr["puntos_local"], 1), "puntos_visitante": _r(pr["puntos_visitante"], 1)}
+
+
+def nba_equipo(q):
+    t, _ = _temporada_nba(q)
+    equipo = _nba_equipo(q.get("equipo"))
+    partidos = list(_nba())
+    temporada = [p for p in partidos if p.temporada == t]
+    filas = ba.clasificacion(partidos, t)
+    elo, ratings = _nba_modelos(t)
+    vs = ba.vistas(temporada, equipo)
+    reg = ba.Registro.de([v for v in vs if v.partido.tipo == "REG"])
+    pos = next((i for lista in ba.por_conferencia(filas, t).values() for i, f in enumerate(lista, 1) if f.equipo == equipo), None)
+    ranking_elo = [e for e, _ in elo.ranking() if nba_division(e)]
+    ranking_neto = [e for e, *_ in ratings.ranking() if nba_division(e)]
+    res = {
+        "temporada": texto_temporada(t), "equipo": equipo, "nombre": nba_nombre(equipo), "division": nba_division(equipo),
+        "registro": {"texto": reg.texto(), "jugados": reg.jugados, "pct": _r(reg.porcentaje), "pf_pp": _r(reg.pf_pp, 1),
+                     "pc_pp": _r(reg.pc_pp, 1), "dif_pp": _r(reg.dif_pp, 1), "pitagoricas": _r(reg.victorias_pitagoricas, 1),
+                     "reales": reg.g, "puesto": pos if reg.jugados else None},
+        "racha": ba.racha(vs),
+        "elo": {"rating": _r(elo.rating.get(equipo, 1500), 0), "puesto": ranking_elo.index(equipo) + 1 if equipo in ranking_elo else None,
+                "historial": [_r(r, 0) for tt, _, r in elo.historial[equipo] if tt == t]},
+        "neto": {"valor": _r(ratings.neto(equipo), 1), "puesto": ranking_neto.index(equipo) + 1 if equipo in ranking_neto else None,
+                 "ataque": _r(ratings.ofensa.get(equipo), 1), "defensa": _r(ratings.defensa.get(equipo), 1)},
+        "splits": [{"situacion": n, "texto": r.texto(), "pf_pp": _r(r.pf_pp, 1), "pc_pp": _r(r.pc_pp, 1)}
+                   for n, r in (ba.splits(temporada, equipo, filas) if vs else [])],
+        "partidos": [{"fecha": str(v.partido.fecha), "rival": v.rival, "local": v.es_local, "resultado": "V" if v.resultado == "G" else "D",
+                      "pf": v.pf, "pc": v.pc, "prorroga": v.partido.prorrogas > 0,
+                      "fase": "" if v.partido.tipo == "REG" else (v.partido.ronda or NBA_TIPO[v.partido.tipo])} for v in vs][::-1],
+        "proximos": [],
+        "juego": None,
+    }
+    dias = descansos(temporada)
+    for p in [p for p in temporada if not p.jugado and p.participa(equipo)][:5]:
+        pr = bm.predecir_partido(elo, ratings, p, dias)
+        p_eq = pr["prob_local"] if p.local == equipo else 1 - pr["prob_local"]
+        m_eq = pr["margen"] if p.local == equipo else -pr["margen"]
+        res["proximos"].append({"fecha": str(p.fecha), "rival": p.visitante if p.local == equipo else p.local,
+                                "local": p.local == equipo, "prob": _r(p_eq), "margen": _r(m_eq, 1)})
+    resumenes = be.por_equipo(list(_nba_stats(t)))
+    r = resumenes.get(equipo)
+    if r:
+        filas_j = []
+        for m, (etiqueta, mayor) in be.METRICAS.items():
+            fav = sorted(resumenes.values(), key=lambda x: -x.favor_de(m) if mayor else x.favor_de(m))
+            con = sorted(resumenes.values(), key=lambda x: x.contra_de(m) if mayor else -x.contra_de(m))
+            filas_j.append({"metrica": etiqueta, "ataque": _r(r.favor_de(m), 3), "puesto_ataque": [x.equipo for x in fav].index(equipo) + 1,
+                            "defensa": _r(r.contra_de(m), 3), "puesto_defensa": [x.equipo for x in con].index(equipo) + 1})
+        res["juego"] = {"filas": filas_j, "neto": _r(r.neto, 1)}
+    return res
+
+
+def nba_predecir(q):
+    t, _ = _temporada_nba(q)
+    local, visitante = _nba_equipo(q.get("local")), _nba_equipo(q.get("visitante"))
+    if local == visitante:
+        raise ValueError("Elige dos equipos distintos.")
+    neutral = q.get("neutral") in ("1", "true", "si")
+    elo, ratings = _nba_modelos(t)
+    temporada = [p for p in _nba() if p.temporada == t]
+    programado = next((p for p in temporada if not p.jugado and p.local == local and p.visitante == visitante), None)
+    if programado and not neutral:
+        pr = bm.predecir_partido(elo, ratings, programado, descansos(temporada))
+    else:
+        pr = bm.predecir(elo, ratings, local, visitante, neutral)
+    return {"temporada": texto_temporada(t), "local": local, "visitante": visitante, "nombre_local": nba_nombre(local),
+            "nombre_visitante": nba_nombre(visitante), "neutral": neutral,
+            "programado": {"fecha": str(programado.fecha)} if programado and not neutral else None,
+            "moneyline_local": bm.moneyline_justa(pr["prob_local"]), "moneyline_visitante": bm.moneyline_justa(1 - pr["prob_local"]),
+            **_pred_nba(pr)}
+
+
+def nba_pronosticos(q):
+    t, _ = _temporada_nba(q)
+    temporada = [p for p in _nba() if p.temporada == t]
+    pend = [p for p in temporada if not p.jugado]
+    if not pend:
+        return {"temporada": texto_temporada(t), "fecha": None, "fechas": [], "filas": []}
+    fechas = sorted({str(p.fecha) for p in pend})
+    fecha = q.get("fecha") if q.get("fecha") in fechas else fechas[0]
+    elo, ratings = _nba_modelos(t)
+    dias = descansos(temporada)
+    filas = [{"fecha": str(p.fecha), "local": p.local, "visitante": p.visitante, "neutral": p.neutral,
+              **_pred_nba(bm.predecir_partido(elo, ratings, p, dias))} for p in pend if str(p.fecha) == fecha]
+    return {"temporada": texto_temporada(t), "fecha": fecha, "fechas": fechas, "filas": filas}
+
+
+@lru_cache(maxsize=8)
+def _nba_simulacion(t, n):
+    return bm.simular_temporada(list(_nba()), t, n, semilla=1)
+
+
+def nba_simular(q):
+    t, _ = _temporada_nba(q)
+    n = min(int(q.get("n", 2000)), 10000)
+    res, pendientes_n = _nba_simulacion(t, n)
+    conferencias = []
+    for conf in CONFERENCIAS:
+        eqs = sorted((e for e in res if ba.conferencia(e, t) == conf),
+                     key=lambda e: (-res[e].get("playoffs", 0), -res[e].get("victorias", 0)))
+        conferencias.append({"conferencia": conf, "filas": [
+            {"equipo": e, "nombre": nba_nombre(e), "victorias": _r(res[e].get("victorias", 0), 1),
+             **{k: _r(res[e].get(k, 0)) for k in ("playoffs", "top6", "primero", "final", "campeon")}} for e in eqs]})
+    return {"temporada": texto_temporada(t), "simulaciones": n, "pendientes": pendientes_n, "playin": t >= 2021,
+            "conferencias": conferencias}
+
+
+def nba_ranking(q):
+    t, _ = _temporada_nba(q)
+    elo, ratings = _nba_modelos(t)
+    filas = ba.clasificacion(list(_nba()), t)
+    netos = {e: (o, d, s) for e, o, d, s in ratings.ranking() if nba_division(e)}
+    pos_elo = {e: i for i, (e, _) in enumerate(elo.ranking())}
+    pos_neto = {e: i for i, e in enumerate(netos)}
+    orden = sorted(netos, key=lambda e: (pos_elo.get(e, 99) + pos_neto[e], -netos[e][2]))
+    jugado = lambda e: e in filas and filas[e].total.jugados  # noqa: E731
+    return {"temporada": texto_temporada(t), "ventaja_campo": _r(ratings.ventaja_campo, 1), "filas": [
+        {"equipo": e, "nombre": nba_nombre(e), "registro": filas[e].total.texto() if jugado(e) else "",
+         "elo": _r(elo.rating.get(e, 1500), 0), "neto": _r(netos[e][2], 1), "ataque": _r(netos[e][0], 1),
+         "defensa": _r(netos[e][1], 1), "pitagoricas": _r(filas[e].total.victorias_pitagoricas, 1) if jugado(e) else None,
+         "historial": [_r(r, 0) for tt, _, r in elo.historial[e] if tt == t]} for e in orden]}
+
+
+def nba_estadisticas(q):
+    t, aviso = _temporada_nba(q, con_resultados=True)
+    resumenes = be.por_equipo(list(_nba_stats(t)))
+    if not resumenes:
+        raise ValueError(f"No hay estadísticas de juego para {texto_temporada(t)}.")
+    filas = [{"equipo": r.equipo, "nombre": nba_nombre(r.equipo), "neto": _r(r.neto, 1),
+              "ataque": _r(r.favor_de("eficiencia"), 1), "defensa": _r(r.contra_de("eficiencia"), 1),
+              "ritmo": _r(r.favor_de("ritmo"), 1), "efg": _r(r.favor_de("efg"), 1), "efg_rival": _r(r.contra_de("efg"), 1),
+              "perdidas": _r(r.favor_de("pct_perdidas"), 1), "rebote_of": _r(r.favor_de("pct_rebote_of"), 1),
+              "libres": _r(r.favor_de("tasa_libres"), 3), "pct_triple": _r(r.favor_de("pct_triple"), 1),
+              "tasa_triples": _r(r.favor_de("tasa_triples"), 1), "asistencias": _r(r.favor_de("asistencias"), 1)}
+             for r in resumenes.values()]
+    filas.sort(key=lambda f: -f["neto"])
+    return {"temporada": texto_temporada(t), "aviso": aviso, "filas": filas}
+
+
+def nba_liga(q):
+    t, aviso = _temporada_nba(q, con_resultados=True)
+    r = ba.resumen_liga([p for p in _nba() if p.temporada == t])
+    if not r["partidos"]:
+        raise ValueError("No hay partidos jugados.")
+    res = {k: (_r(v, 2) if isinstance(v, float) else v) for k, v in r.items()
+           if k not in ("mas_puntos", "menos_puntos", "mayor_paliza", "margenes_frecuentes")}
+    res.update({"temporada": texto_temporada(t), "aviso": aviso,
+                "margenes_frecuentes": sorted(({"margen": m, "partidos": v} for m, v in r["margenes_frecuentes"]), key=lambda x: x["margen"])})
+    for k in ("mas_puntos", "menos_puntos", "mayor_paliza"):
+        res[k] = {"texto": r[k].marcador(), "fecha": str(r[k].fecha)}
+    factores = be.factores_victoria(list(_nba_stats(t)))
+    res["factores"] = [{"metrica": be.METRICAS[m][0], "pct": _r(p, 1), "partidos": n}
+                       for m, (p, n) in sorted(factores.items(), key=lambda kv: -kv[1][0])]
+    return res
+
+
 RUTAS = {
     "futbol/opciones": futbol_opciones, "futbol/tabla": futbol_tabla, "futbol/equipos": futbol_equipos,
     "futbol/equipo": futbol_equipo, "futbol/predecir": futbol_predecir, "futbol/pronosticos": futbol_pronosticos,
@@ -601,6 +839,9 @@ RUTAS = {
     "nfl/opciones": nfl_opciones, "nfl/clasificacion": nfl_clasificacion, "nfl/equipo": nfl_equipo,
     "nfl/predecir": nfl_predecir, "nfl/pronosticos": nfl_pronosticos, "nfl/simular": nfl_simular,
     "nfl/ranking": nfl_ranking, "nfl/estadisticas": nfl_estadisticas, "nfl/liga": nfl_liga,
+    "nba/opciones": nba_opciones, "nba/clasificacion": nba_clasificacion, "nba/equipo": nba_equipo,
+    "nba/predecir": nba_predecir, "nba/pronosticos": nba_pronosticos, "nba/simular": nba_simular,
+    "nba/ranking": nba_ranking, "nba/estadisticas": nba_estadisticas, "nba/liga": nba_liga,
 }
 
 
