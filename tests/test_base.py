@@ -1,6 +1,8 @@
 import sqlite3
+import tempfile
 import unittest
 from datetime import date
+from pathlib import Path
 
 from analisis_deportivo import base
 from analisis_deportivo.futbol.datos import cargar_desde_base
@@ -134,6 +136,9 @@ class TestFootballData(unittest.TestCase):
 
         base._bajar = falso
         self.addCleanup(setattr, base, "_bajar", original)
+        cache = base.CACHE_FD
+        base.CACHE_FD = Path(tempfile.mkdtemp())  # no ensuciar datos/football_data
+        self.addCleanup(setattr, base, "CACHE_FD", cache)
 
     def test_completa_y_anade(self):
         avisos = []
@@ -146,3 +151,19 @@ class TestFootballData(unittest.TestCase):
         self.assertEqual(filas[2][1:5], ("Chelsea", "Nottm Forest", 1, 1))
         self.assertEqual(n, 2)
         self.assertIn("+1 partidos nuevos, 1 resultados completados", avisos[-1])
+
+    def test_sin_red_usa_guardados(self):
+        import gzip
+        import urllib.error
+
+        (base.CACHE_FD / "E0_2223.csv.gz").write_bytes(gzip.compress(self.CSV.replace(b"/2025", b"/2022")))
+
+        def sin_red(url):
+            raise urllib.error.URLError("sin conexión")
+
+        base._bajar = sin_red
+        avisos = []
+        base._football_data(self.con, avisos.append, date(2025, 10, 1))
+        n = self.con.execute("SELECT COUNT(*) FROM futbol_partidos WHERE temporada = '2022-23'").fetchone()[0]
+        self.assertEqual(n, 3)  # la temporada guardada se carga aunque no haya red
+        self.assertTrue(any("no disponible" in a for a in avisos))

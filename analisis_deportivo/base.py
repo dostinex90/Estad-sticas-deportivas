@@ -200,6 +200,9 @@ def _clubes(con, avisar):
 URL_FD_TEMPORADA = "https://www.football-data.co.uk/mmz4281/{temporada}/{codigo}.csv"
 URL_FD_NUEVAS = "https://www.football-data.co.uk/new/{codigo}.csv"
 NUEVAS_FD = {"ARG", "BRA", "USA", "MEX", "JAP", "CHN", "SWE", "NOR", "FIN", "IRL", "AUT", "SUI", "DEN", "POL", "ROM", "RUS"}
+# Ligas donde un mismo cruce local-visitante puede repetirse en una temporada (más de dos vueltas o
+# playoffs): en ellas los partidos se emparejan también por fecha
+CRUCES_REPETIDOS = {"SC0", "SC1", "SC2", "SC3", "G1", "B1"} | NUEVAS_FD
 
 
 def _texto_csv(contenido):
@@ -261,6 +264,43 @@ def _temporadas_a_completar(con, codigo, actual):
     return resultado
 
 
+CACHE_FD = RAIZ / "datos" / "football_data"
+
+
+class _SinRed(Exception):
+    pass
+
+
+def _bajar_fd(url, nombre, historico, estado):
+    """Descarga un CSV de football-data.co.uk. Las temporadas terminadas se guardan comprimidas en
+    datos/football_data/ (incluidas en el repositorio) y no se vuelven a descargar; también sirven
+    sin conexión. Devuelve None si la liga no existe esa temporada."""
+    archivo, vacio = CACHE_FD / f"{nombre}.csv.gz", CACHE_FD / f"{nombre}.none"
+    if historico and archivo.exists():
+        estado["cache"] += 1
+        return gzip.decompress(archivo.read_bytes())
+    if historico and vacio.exists():
+        return None
+    if estado["sin_red"]:
+        raise _SinRed
+    try:
+        contenido = _bajar(url)
+    except urllib.error.HTTPError:
+        if historico:
+            CACHE_FD.mkdir(parents=True, exist_ok=True)
+            vacio.touch()
+        return None
+    except (urllib.error.URLError, OSError) as e:
+        estado["sin_red"] = True
+        estado["error"] = e
+        raise _SinRed from e
+    estado["descargas"] += 1
+    if historico:
+        CACHE_FD.mkdir(parents=True, exist_ok=True)
+        archivo.write_bytes(gzip.compress(contenido, compresslevel=9))
+    return contenido
+
+
 def _football_data(con, avisar, hoy):
     """Completa la base con football-data.co.uk: la temporada en curso (se actualiza dos veces por semana,
     con estadísticas y cuotas) y las temporadas que faltan o están incompletas. Empareja cada partido por
@@ -270,7 +310,7 @@ def _football_data(con, avisar, hoy):
                 "faltas_visitante, corners_local, corners_visitante, amarillas_local, amarillas_visitante, rojas_local, "
                 "rojas_visitante, cuota_local, cuota_empate, cuota_visitante, cuota_max_local, cuota_max_empate, "
                 "cuota_max_visitante, cuota_mas_2_5, cuota_menos_2_5, elo_local, elo_visitante, fuente")
-    descargas, añadidos, completados, fallos = 0, 0, 0, 0
+    añadidos, completados = 0, 0
 
     # Nombre canónico de cada club (la variante más usada) para no duplicar partidos por grafías distintas
     usos = defaultdict(Counter)
@@ -301,33 +341,33 @@ def _football_data(con, avisar, hoy):
                             (*fila, previo[0]))
                 completados += 1
 
-    for codigo, info in COMPETICIONES.items():
+    estado = {"descargas": 0, "cache": 0, "sin_red": False, "error": None}
+    actual = int(temporada_de(hoy)[:4])
+    for codigo in COMPETICIONES:
         try:
             if codigo in NUEVAS_FD:
-                try:
-                    contenido = _bajar(URL_FD_NUEVAS.format(codigo=codigo))
-                except urllib.error.HTTPError:
-                    continue
-                descargas += 1
-                filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
-                incorporar(codigo, filas, clave_fecha=True)  # ligas con más de dos cruces por temporada
+                contenido = _bajar_fd(URL_FD_NUEVAS.format(codigo=codigo), f"nuevas_{codigo}", False, estado)
+                if contenido:
+                    filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
+                    incorporar(codigo, filas, clave_fecha=True)  # ligas con más de dos cruces por temporada
                 continue
             for anio in _temporadas_a_completar(con, codigo, temporada_de(hoy)):
-                url = URL_FD_TEMPORADA.format(temporada=f"{anio % 100:02d}{(anio + 1) % 100:02d}", codigo=codigo)
+                corta = f"{anio % 100:02d}{(anio + 1) % 100:02d}"
                 try:
-                    contenido = _bajar(url)
-                except urllib.error.HTTPError:
-                    continue  # la liga no existe en esa temporada
-                descargas += 1
-                filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
-                incorporar(codigo, filas, clave_fecha=codigo.startswith("SC"))  # en Escocia se repiten cruces
-        except (urllib.error.URLError, OSError, ValueError) as e:
-            fallos += 1
-            if fallos == 1:
-                avisar(f"  football-data.co.uk no disponible ({e}); se sigue con las demás fuentes")
-            if fallos >= 3:
-                break
-    avisar(f"  football-data.co.uk: {descargas} archivos, +{añadidos} partidos nuevos, {completados} resultados completados")
+                    contenido = _bajar_fd(URL_FD_TEMPORADA.format(temporada=corta, codigo=codigo),
+                                          f"{codigo}_{corta}", anio < actual - 1, estado)
+                except _SinRed:
+                    continue  # sin conexión: se siguen usando los archivos guardados
+                if contenido:
+                    filas = [_fila_fd(codigo, f) for f in csv.DictReader(io.StringIO(_texto_csv(contenido)))]
+                    incorporar(codigo, filas, clave_fecha=codigo in CRUCES_REPETIDOS)
+        except _SinRed:
+            continue
+    if estado["error"]:
+        avisar(f"  football-data.co.uk no disponible ({estado['error']}); se usan solo los archivos guardados")
+    descargas = estado["descargas"]
+    avisar(f"  football-data.co.uk: {descargas} descargados y {estado['cache']} guardados, +{añadidos} partidos nuevos, "
+           f"{completados} resultados completados")
     return añadidos + completados
 
 
@@ -405,8 +445,12 @@ def _openfootball_actual(con, avisar, hoy):
             "WHERE competicion = ? AND temporada = ?", (codigo, temporada)).fetchall()
         mapa = _mapear_nombres([p[:5] for p in partidos if p[3] is not None], [e for e in existentes if e[3] is not None])
         # En una liga a doble vuelta cada pareja local-visitante se juega una vez por temporada
-        pendientes_previos = {(e[1], e[2]) for e in existentes if e[3] is None}
-        ya = {(e[1], e[2]) for e in existentes} | {(e[0], e[1]) for e in existentes}
+        if codigo in CRUCES_REPETIDOS:  # el cruce no identifica el partido: se empareja por fecha
+            pendientes_previos = set()
+            ya = {(e[0], e[1]) for e in existentes}
+        else:
+            pendientes_previos = {(e[1], e[2]) for e in existentes if e[3] is None}
+            ya = {(e[1], e[2]) for e in existentes} | {(e[0], e[1]) for e in existentes}
         nuevos = []
         for p in partidos:
             l, v = mapa.get(p[1], p[1]), mapa.get(p[2], p[2])
@@ -525,6 +569,7 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
 
     avisar("Descargando partidos de clubes...")
     registrar("futbol_partidos", LICENCIAS["clubes"], _clubes(con, avisar))
+    _unificar_nombres(con, avisar)  # antes de emparejar, para no duplicar partidos por grafías distintas
     avisar("Completando con football-data.co.uk (temporada en curso y huecos históricos)...")
     n = _football_data(con, avisar, hoy)
     registrar("futbol_partidos (football-data.co.uk)", LICENCIAS["football_data"], n)

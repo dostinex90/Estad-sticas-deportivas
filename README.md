@@ -48,11 +48,12 @@ El repositorio se actualiza solo en los servidores de GitHub. No usa IA ni consu
 
 - **Cada día a las 09:17 UTC** (`.github/workflows/actualizacion-diaria.yml`):
   1. Descarga los partidos nuevos (`recopilar`).
-  2. Pasa las pruebas.
-  3. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL, y la precisión de los modelos.
-  4. Si algo cambió, los guarda en el repositorio.
-  5. Publica la versión web en GitHub Pages.
-  6. La base actualizada queda como descarga del propio workflow durante 30 días.
+  2. Comprueba la integridad de los datos (`scripts/verificar_datos.py`): duplicados, fechas imposibles, temporadas incompletas y resultados atrasados. Si algo está mal, no publica nada.
+  3. Pasa las pruebas.
+  4. Regenera los informes de la carpeta [`informes/`](informes/): pronósticos y clasificación de 7 ligas de fútbol, pronósticos, playoffs y ranking de la NFL, y la precisión de los modelos.
+  5. Si algo cambió, los guarda en el repositorio.
+  6. Publica la versión web en GitHub Pages.
+  7. La base actualizada queda como descarga del propio workflow durante 30 días.
 - **Con cada cambio de código** (`.github/workflows/pruebas.yml`): pasa todas las pruebas.
 - **Para lanzarla a mano:** pestaña **Actions** del repositorio → *Actualización diaria* → **Run workflow**.
 - **Para pausarla:** en la misma pantalla, menú **···** → *Disable workflow*.
@@ -236,6 +237,7 @@ Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de anális
 
 La base de datos combina:
 
+- **[Football-Data.co.uk](https://www.football-data.co.uk/)**: completa la temporada en curso (resultados, estadísticas y cuotas, actualizados dos veces por semana) y rellena las temporadas que faltaban. Las temporadas terminadas se guardan en `datos/football_data/`, así no se descargan cada día y funcionan sin conexión.
 - **Football-Data.co.uk y ClubElo**, recopilados por [xgabora/Club-Football-Match-Data-2000-2025](https://github.com/xgabora/Club-Football-Match-Data-2000-2025): partidos de clubes.
 - **[openfootball](https://github.com/openfootball/football.json)** (dominio público): temporada en curso.
 - **[martj42/international_results](https://github.com/martj42/international_results)** (CC0): selecciones y goleadores.

@@ -19,7 +19,7 @@ concurrency:
 jobs:
   actualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
 
@@ -29,6 +29,9 @@ jobs:
 
       - name: Actualizar la base de datos
         run: python -m analisis_deportivo recopilar
+
+      - name: Verificar la integridad de los datos
+        run: python scripts/verificar_datos.py
 
       - name: Pruebas
         run: python -m unittest discover -s tests
@@ -41,11 +44,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add informes
+          if [ -d datos/football_data ]; then git add datos/football_data; fi
           if git diff --cached --quiet; then
             echo "Los informes no han cambiado."
             exit 0
           fi
           git commit -m "Informes automáticos $(date -u +%Y-%m-%d)"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push
 
       - name: Generar la web
@@ -59,10 +64,12 @@ jobs:
       # La base actualizada se guarda como descarga del propio workflow (30 días) en lugar de
       # subirla al repositorio cada día, para que el historial de git no crezca 18 MB diarios.
       - name: Guardar la base actualizada
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: base-deportiva
           path: datos/base_deportiva.sqlite.gz
+          if-no-files-found: ignore
           retention-days: 30
 
   # Publicar va en un trabajo aparte: si GitHub Pages no está activado (Settings → Pages →
