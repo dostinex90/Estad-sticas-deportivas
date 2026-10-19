@@ -67,6 +67,9 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
   - `_mapear_nombres` aprende equivalencias de los partidos que coinciden en fecha y marcador.
   - `_solo_posteriores` se usa en las ligas "new".
 - **Emparejar partidos entre fuentes:** se hace por (competición, temporada, local, visitante). Excepción: en `CRUCES_REPETIDOS` (Escocia, Bélgica, Grecia y ligas "new" hay más de dos cruces o playoffs) se empareja por fecha.
+- **Fechas con día y mes intercambiados:** xgabora trae así las 16 ligas "new" (MLS, Brasil, Suecia...) en los días 1 a 12 de cada mes. `fechas_intercambiadas` lo detecta por liga (con esas fechas los equipos juegan a menudo dos días seguidos) y `_clubes` las gira. `verificar_datos.py` da error si vuelve a aparecer.
+- **Clubes con dos nombres muy distintos** (cambio de nombre a mitad de temporada): `ALIAS_CLUBES` en `base.py`.
+- **football-data.co.uk:** solo un 404 marca una temporada como inexistente (archivo `.none` en la caché); otros errores son pasajeros y se reintenta al día siguiente.
 - **Temporadas:** las europeas van de julio a junio. En 2020 el corte es el 15 de agosto por la pandemia. Las ligas de calendario anual (ARG, BRA, USA…) usan el año.
 - **Temporadas incompletas reales:** Ligue 1 y Eredivisie 2019-20 (canceladas) y NFL 2022 (271 partidos).
 - **La temporada en curso puede ir días por detrás:** los pronósticos omiten los partidos pasados sin resultado.

@@ -1,7 +1,7 @@
 import sqlite3
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 from analisis_deportivo import base
@@ -53,6 +53,19 @@ class TestBase(unittest.TestCase):
         self.assertEqual(mapa["FC Bayern München"], "Bayern Munich")  # partido único con ese marcador
         self.assertEqual(mapa["1. FC Köln"], "FC Koln")  # desempate por parecido del nombre
         self.assertEqual(mapa["Bayer 04 Leverkusen"], "Leverkusen")
+
+    def test_fechas_intercambiadas(self):
+        # Liga de 8 equipos de marzo a noviembre con una jornada cada 3 días
+        equipos, partidos = list("ABCDEFGH"), []
+        for jornada in range(80):
+            dia = date(2019, 3, 2) + timedelta(days=3 * jornada)
+            ronda = equipos[:1] + equipos[1:][jornada % 7:] + equipos[1:][:jornada % 7]  # método del círculo
+            partidos += [(dia, "2019", ronda[k], ronda[7 - k]) for k in range(4)]
+        self.assertFalse(base.fechas_intercambiadas(partidos))
+        girados = [(base._girar_fecha(d), t, l, v) for d, t, l, v in partidos]  # como los trae la fuente
+        self.assertTrue(base.fechas_intercambiadas(girados))
+        self.assertEqual(base._girar_fecha(date(2019, 1, 4)), date(2019, 4, 1))
+        self.assertEqual(base._girar_fecha(date(2019, 3, 31)), date(2019, 3, 31))
 
     def test_cargar_clubes(self):
         con = _base_en_memoria()
@@ -167,6 +180,20 @@ class TestFootballData(unittest.TestCase):
         n = self.con.execute("SELECT COUNT(*) FROM futbol_partidos WHERE temporada = '2022-23'").fetchone()[0]
         self.assertEqual(n, 3)  # la temporada guardada se carga aunque no haya red
         self.assertTrue(any("no disponible" in a for a in avisos))
+
+    def test_error_pasajero_no_marca_inexistente(self):
+        import urllib.error
+
+        def caido(url):
+            raise urllib.error.HTTPError(url, 500, "error", None, None)
+
+        base._bajar = caido
+        estado = {"descargas": 0, "cache": 0, "sin_red": False, "error": None}
+        self.assertIsNone(base._bajar_fd("url", "E0_0405", True, estado))
+        self.assertFalse((base.CACHE_FD / "E0_0405.none").exists())  # se reintentará
+        base._bajar = lambda url: (_ for _ in ()).throw(urllib.error.HTTPError(url, 404, "no", None, None))
+        self.assertIsNone(base._bajar_fd("url", "E0_0405", True, estado))
+        self.assertTrue((base.CACHE_FD / "E0_0405.none").exists())  # 404: no existe
 
 
 class TestLigasNuevas(unittest.TestCase):

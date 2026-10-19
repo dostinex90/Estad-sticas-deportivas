@@ -174,27 +174,69 @@ CREATE INDEX IF NOT EXISTS ix_fg ON futbol_goleadores_selecciones (equipo, golea
 """
 
 
+def _girar_fecha(fecha):
+    """Intercambia día y mes (el 4 de enero pasa a ser el 1 de abril) si el día puede ser un mes."""
+    return date(fecha.year, fecha.day, fecha.month) if fecha.day <= 12 else fecha
+
+
+def choques_calendario(partidos):
+    """Veces que un equipo juega dos partidos el mismo día o en días seguidos.
+    `partidos` son tuplas (fecha, temporada, local, visitante) con la fecha como date."""
+    por_equipo = defaultdict(list)
+    for fecha, temporada, local, visitante in partidos:
+        por_equipo[(temporada, local)].append(fecha)
+        por_equipo[(temporada, visitante)].append(fecha)
+    total = 0
+    for fechas in por_equipo.values():
+        fechas.sort()
+        total += sum(1 for a, b in zip(fechas, fechas[1:]) if (b - a).days < 2)
+    return total
+
+
+def fechas_intercambiadas(partidos):
+    """True si las fechas con día ≤ 12 tienen el día y el mes cambiados. Le pasa a la fuente de clubes
+    con las ligas 'new' (MLS, Brasil, Suecia...): "LA Galaxy - Portland" del 31-3-2019 aparece el
+    4-1-2019. Se nota en que, con esas fechas, los equipos juegan a menudo dos días seguidos;
+    al girarlas el calendario vuelve a ser normal."""
+    actuales = choques_calendario(partidos)
+    girados = choques_calendario([(_girar_fecha(f), t, l, v) for f, t, l, v in partidos])
+    return actuales > 2 * girados + 5
+
+
 def _clubes(con, avisar):
     filas = _csv(URL_CLUBES)
-    datos = []
+    por_liga = defaultdict(list)
     for f in filas:
         codigo = f["Division"].strip()
-        if codigo not in COMPETICIONES or not f["MatchDate"]:
-            continue
-        fecha = date.fromisoformat(f["MatchDate"])
-        i = lambda c: _num(f.get(c), int)  # noqa: E731
-        r = lambda c: _num(f.get(c))  # noqa: E731
-        datos.append((
-            codigo, temporada_de(fecha, COMPETICIONES[codigo][4]), f["MatchDate"], f["MatchTime"] or None,
-            f["HomeTeam"].strip(), f["AwayTeam"].strip(), i("FTHome"), i("FTAway"), i("HTHome"), i("HTAway"),
-            i("HomeShots"), i("AwayShots"), i("HomeTarget"), i("AwayTarget"), i("HomeFouls"), i("AwayFouls"),
-            i("HomeCorners"), i("AwayCorners"), i("HomeYellow"), i("AwayYellow"), i("HomeRed"), i("AwayRed"),
-            r("OddHome"), r("OddDraw"), r("OddAway"), r("MaxHome"), r("MaxDraw"), r("MaxAway"),
-            r("Over25"), r("Under25"), r("HomeElo"), r("AwayElo"), "clubes",
-        ))
+        if codigo in COMPETICIONES and f["MatchDate"]:
+            por_liga[codigo].append(f)
+    datos, corregidas = [], []
+    for codigo, filas_liga in por_liga.items():
+        anual = COMPETICIONES[codigo][4]
+        fechas = [date.fromisoformat(f["MatchDate"]) for f in filas_liga]
+        partidos = [(d, temporada_de(d, anual), f["HomeTeam"].strip(), f["AwayTeam"].strip()) for d, f in zip(fechas, filas_liga)]
+        if fechas_intercambiadas(partidos):
+            fechas = [_girar_fecha(d) for d in fechas]
+            corregidas.append(codigo)
+        datos.extend(_fila_clubes(codigo, f, d) for f, d in zip(filas_liga, fechas))
     con.executemany(f"INSERT INTO futbol_partidos VALUES ({','.join('?' * 33)})", datos)
-    avisar(f"  Clubes: {len(datos):,} partidos de {len({d[0] for d in datos})} competiciones")
+    avisar(f"  Clubes: {len(datos):,} partidos de {len(por_liga)} competiciones")
+    if corregidas:
+        avisar(f"  Fechas con día y mes intercambiados corregidas en: {', '.join(sorted(corregidas))}")
     return len(datos)
+
+
+def _fila_clubes(codigo, f, fecha):
+    i = lambda c: _num(f.get(c), int)  # noqa: E731
+    r = lambda c: _num(f.get(c))  # noqa: E731
+    return (
+        codigo, temporada_de(fecha, COMPETICIONES[codigo][4]), fecha.isoformat(), f["MatchTime"] or None,
+        f["HomeTeam"].strip(), f["AwayTeam"].strip(), i("FTHome"), i("FTAway"), i("HTHome"), i("HTAway"),
+        i("HomeShots"), i("AwayShots"), i("HomeTarget"), i("AwayTarget"), i("HomeFouls"), i("AwayFouls"),
+        i("HomeCorners"), i("AwayCorners"), i("HomeYellow"), i("AwayYellow"), i("HomeRed"), i("AwayRed"),
+        r("OddHome"), r("OddDraw"), r("OddAway"), r("MaxHome"), r("MaxDraw"), r("MaxAway"),
+        r("Over25"), r("Under25"), r("HomeElo"), r("AwayElo"), "clubes",
+    )
 
 
 URL_FD_TEMPORADA = "https://www.football-data.co.uk/mmz4281/{temporada}/{codigo}.csv"
@@ -285,8 +327,10 @@ def _bajar_fd(url, nombre, historico, estado):
         raise _SinRed
     try:
         contenido = _bajar(url)
-    except urllib.error.HTTPError:
-        if historico:
+    except urllib.error.HTTPError as e:
+        # Solo un 404 significa que la liga no existe esa temporada; otros errores (429, 500...) son
+        # pasajeros y se reintenta en la próxima actualización
+        if historico and e.code == 404:
             CACHE_FD.mkdir(parents=True, exist_ok=True)
             vacio.touch()
         return None
@@ -509,15 +553,24 @@ def _clave_nombre(nombre):
     return re.sub(r"[^a-z0-9]", "", texto)
 
 
+# Clubes que la fuente escribe de dos formas demasiado distintas para unificarlas solas
+# (cambian de nombre a mitad de temporada y nunca se enfrentan entre sí)
+ALIAS_CLUBES = {"Gornik Z.": "Gornik Zabrze", "U Craiova": "Univ. Craiova", "Raith": "Raith Rvs"}
+
+
 def _unificar_nombres(con, avisar):
     """La fuente escribe a veces un mismo club de dos formas ("Nott'm Forest" y "Nottm Forest").
-    Se unifican las variantes que solo difieren en signos, mayúsculas o tildes con la más frecuente."""
+    Se unifican las variantes que solo difieren en signos, mayúsculas o tildes con la más frecuente,
+    y las de ALIAS_CLUBES."""
     clave = _clave_nombre
+    cambios = 0
+    for alias, nombre in ALIAS_CLUBES.items():
+        for columna in ("local", "visitante"):
+            cambios += con.execute(f"UPDATE futbol_partidos SET {columna} = ? WHERE {columna} = ?", (nombre, alias)).rowcount
     variantes = defaultdict(Counter)
     for columna in ("local", "visitante"):
         for nombre, n in con.execute(f"SELECT {columna}, COUNT(*) FROM futbol_partidos GROUP BY 1"):
             variantes[clave(nombre)][nombre] += n
-    cambios = 0
     for conteo in variantes.values():
         if len(conteo) < 2:
             continue

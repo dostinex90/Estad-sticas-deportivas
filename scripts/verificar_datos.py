@@ -1,15 +1,15 @@
 """Comprueba la integridad de la base de datos y muestra la cobertura de cada liga.
 
 Errores (terminan con código 1): partidos duplicados, un equipo jugando dos veces el mismo día,
-resultados con fecha futura o marcadores imposibles. Avisos: temporadas incompletas y resultados
-recientes que aún faltan. La usa la actualización diaria antes de publicar nada.
+fechas con el día y el mes intercambiados, resultados con fecha futura o marcadores imposibles.
+Avisos: temporadas incompletas y resultados recientes que aún faltan. La usa la actualización diaria antes de publicar nada.
 
 Uso: python3 scripts/verificar_datos.py
 """
 
 import sqlite3
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -42,6 +42,12 @@ def verificar(con):
         por_liga = Counter(d[0] for d in doble)
         errores.append(f"{len(doble)} casos de un equipo con dos partidos el mismo día ({dict(por_liga)}), "
                        f"p. ej. {[tuple(d) for d in doble[:3]]}")
+    por_liga = defaultdict(list)
+    for c, f, t, l, v in q("SELECT competicion, fecha, temporada, local, visitante FROM futbol_partidos"):
+        por_liga[c].append((date.fromisoformat(f), t, l, v))
+    giradas = sorted(c for c, partidos in por_liga.items() if base.fechas_intercambiadas(partidos))
+    if giradas:
+        errores.append(f"Fechas con el día y el mes intercambiados en: {', '.join(giradas)}")
     futuro = q("SELECT COUNT(*) FROM futbol_partidos WHERE goles_local IS NOT NULL AND fecha > ?", hoy)[0][0]
     if futuro:
         errores.append(f"{futuro} partidos con resultado y fecha futura")
