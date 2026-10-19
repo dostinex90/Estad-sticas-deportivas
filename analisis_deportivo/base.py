@@ -12,6 +12,8 @@ Tablas:
   nba_partidos              NBA desde 2001-02 (resultado, prórrogas, fase, sede) y calendario pendiente.
   nba_estadisticas_equipo   Estadísticas de cada equipo en cada partido NBA (tiros, rebotes,
                             asistencias, pérdidas...).
+  nba_jugadores_partido     Minutos y valoración (Game Score) de cada jugador NBA que jugó cada partido.
+  nba_jugadores             Nombre de cada jugador NBA.
   fuentes                   Origen, licencia y fecha de cada carga.
 """
 
@@ -40,6 +42,8 @@ URL_NFL_PARTIDOS = "https://raw.githubusercontent.com/nflverse/nfldata/master/da
 URL_NFL_EQUIPOS = "https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{}.csv"
 URL_NBA_PARTIDOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_{}.csv"
 URL_NBA_EQUIPOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_team_boxscores/team_box_{}.csv"
+URL_NBA_JUGADORES = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_player_boxscores/player_box_{}.csv"
+PRIMERA_NBA_JUGADORES = 2012  # 2011-12: da historial a las temporadas de validación del modelo (2021-22 en adelante)
 
 # código -> (nombre, país, alias en español, código openfootball, calendario anual)
 COMPETICIONES = {
@@ -188,6 +192,8 @@ CREATE TABLE IF NOT EXISTS nba_estadisticas_equipo (
     asistencias INTEGER, robos INTEGER, tapones INTEGER, perdidas INTEGER, faltas INTEGER,
     puntos_pintura INTEGER, puntos_contraataque INTEGER);
 CREATE INDEX IF NOT EXISTS ix_nbe ON nba_estadisticas_equipo (temporada, equipo);
+CREATE TABLE IF NOT EXISTS nba_jugadores_partido (id INTEGER, equipo TEXT, jugador INTEGER, minutos INTEGER, valoracion REAL);
+CREATE TABLE IF NOT EXISTS nba_jugadores (jugador INTEGER PRIMARY KEY, nombre TEXT);
 """
 
 
@@ -668,7 +674,32 @@ def _nba(con, avisar, hoy):
     con.executemany(f"INSERT INTO nba_estadisticas_equipo VALUES ({','.join('?' * 23)})", estadisticas)
     if estadisticas:
         avisar(f"  NBA: {len(estadisticas):,} registros de estadísticas de equipo por partido")
-    return len(partidos), len(estadisticas)
+
+    from .nba.jugadores import game_score
+
+    jugadores, nombres = 0, {}
+    for temporada in range(PRIMERA_NBA_JUGADORES, hoy.year + 2):
+        try:
+            filas = _csv(URL_NBA_JUGADORES.format(temporada))
+        except (urllib.error.URLError, OSError):
+            continue
+        datos = []
+        for f in filas:
+            equipo, minutos = POR_ID.get(f["team_id"]), _num(f.get("minutes"))
+            if equipo and minutos and f["game_id"] in tipos and f["athlete_id"].isdigit():
+                datos.append((int(f["game_id"]), equipo, int(f["athlete_id"]), round(minutos),
+                              round(game_score({k: _num(v) or 0.0 for k, v in f.items() if k in GS_CAMPOS}), 1)))
+                nombres[int(f["athlete_id"])] = f["athlete_display_name"]
+        con.executemany("INSERT INTO nba_jugadores_partido VALUES (?,?,?,?,?)", datos)
+        jugadores += len(datos)
+    con.executemany("INSERT INTO nba_jugadores VALUES (?,?)", nombres.items())
+    if jugadores:
+        avisar(f"  NBA: {jugadores:,} registros de jugadores por partido")
+    return len(partidos), len(estadisticas), jugadores
+
+
+GS_CAMPOS = {"points", "field_goals_made", "field_goals_attempted", "free_throws_made", "free_throws_attempted",
+             "offensive_rebounds", "defensive_rebounds", "steals", "assists", "blocks", "fouls", "turnovers"}
 
 
 def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
@@ -700,9 +731,10 @@ def recopilar(ruta=RUTA_BASE, avisar=print, comprimir=True):
     registrar("nfl_partidos", LICENCIAS["nfl_partidos"], n_p)
     registrar("nfl_estadisticas_equipo", LICENCIAS["nfl_equipos"], n_e)
     avisar("Descargando NBA...")
-    n_p, n_e = _nba(con, avisar, hoy)
+    n_p, n_e, n_j = _nba(con, avisar, hoy)
     registrar("nba_partidos", LICENCIAS["nba"], n_p)
     registrar("nba_estadisticas_equipo", LICENCIAS["nba"], n_e)
+    registrar("nba_jugadores_partido", LICENCIAS["nba"], n_j)
     con.commit()
     con.execute("VACUUM")
     con.close()

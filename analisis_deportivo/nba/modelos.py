@@ -17,6 +17,7 @@ from collections import defaultdict
 
 from ..comun import normal_cdf
 from . import analisis
+from . import jugadores as jug_mod
 from .datos import descansos
 from .equipos import CONFERENCIAS, conferencia
 
@@ -206,11 +207,21 @@ def ajustar_modelos(partidos, temporada):
     return elo, ratings
 
 
-def predecir_partido(elo, ratings, p, dias=None):
-    """predecir() para un partido del calendario, con el ajuste por descanso. dias: descansos()."""
+def ajuste_jugadores(jugadores, local, visitante, fecha):
+    """Puntos extra para el local según los jugadores disponibles de cada equipo (ContextoJugadores o None)."""
+    if jugadores is None:
+        return 0.0
+    return jugadores.ajuste(local, fecha) - jugadores.ajuste(visitante, fecha)
+
+
+def predecir_partido(elo, ratings, p, dias=None, jugadores=None):
+    """predecir() para un partido del calendario, con los ajustes por descanso (dias: descansos())
+    y por jugadores disponibles (jugadores: ContextoJugadores)."""
     dias = dias if dias is not None else {}
-    ajuste = ajuste_descanso(dias.get((p.id, p.local)), dias.get((p.id, p.visitante)))
-    return predecir(elo, ratings, p.local, p.visitante, p.neutral, ajuste)
+    descanso = ajuste_descanso(dias.get((p.id, p.local)), dias.get((p.id, p.visitante)))
+    plantilla = ajuste_jugadores(jugadores, p.local, p.visitante, p.fecha)
+    pr = predecir(elo, ratings, p.local, p.visitante, p.neutral, descanso + plantilla)
+    return {**pr, "ajuste_descanso": descanso, "ajuste_jugadores": plantilla}
 
 
 def _gana_serie(rng, p_mejor_en_casa, p_mejor_fuera, partidos=7):
@@ -307,9 +318,10 @@ def simular_temporada(partidos, temporada, simulaciones=5000, semilla=None):
 
 
 def evaluar(partidos, temporada, elo_params=None, ratings_params=None, peso_elo=PESO_ELO, puntos_b2b=PUNTOS_B2B,
-            desviacion=None):
+            desviacion=None, jugadores=None):
     """Predice cada día de `temporada` usando solo los partidos anteriores a ese día.
-    Los parámetros opcionales permiten a experimentos/nba_ajuste.py probar variantes."""
+    jugadores: jugadores.por_partido(); si se da, incluye el ajuste por jugadores disponibles.
+    Los demás parámetros opcionales permiten a experimentos/nba_ajuste.py probar variantes."""
     desviacion = desviacion or DESVIACION_PROB
     jug = sorted((p for p in partidos if p.jugado and p.temporada <= temporada), key=lambda p: p.fecha)
     objetivo = [p for p in jug if p.temporada == temporada]
@@ -322,7 +334,14 @@ def evaluar(partidos, temporada, elo_params=None, ratings_params=None, peso_elo=
     m = defaultdict(float)
     fechas = sorted({p.fecha for p in objetivo})
     primera = True
+    ctx = jug_mod.contexto(jugadores, fechas[0]) if jugadores else None
+    pendientes_ctx = sorted((kv for kv in (jugadores or {}).items() if fechas[0] <= kv[1][0]), key=lambda kv: (kv[1][0], kv[0]))
+    idx_ctx = 0
     for fecha in fechas:
+        while ctx is not None and idx_ctx < len(pendientes_ctx) and pendientes_ctx[idx_ctx][1][0] < fecha:
+            for equipo, lista in sorted(pendientes_ctx[idx_ctx][1][1].items()):
+                ctx.agregar(pendientes_ctx[idx_ctx][1][0], equipo, lista)
+            idx_ctx += 1
         while idx < len(jug) and jug[idx].fecha < fecha:
             elo.actualizar(jug[idx])
             idx += 1
@@ -337,6 +356,7 @@ def evaluar(partidos, temporada, elo_params=None, ratings_params=None, peso_elo=
             ratings.ajustar(previos[-3000:], temporada, fecha)
         for p in (p for p in objetivo if p.fecha == fecha):
             ajuste = ajuste_descanso(dias.get((p.id, p.local)), dias.get((p.id, p.visitante)), puntos_b2b)
+            ajuste += ajuste_jugadores(ctx, p.local, p.visitante, fecha)
             pr = predecir(elo, ratings, p.local, p.visitante, p.neutral, ajuste, peso_elo)
             prob = normal_cdf(pr["margen"], 0, desviacion)
             gana_local = p.margen > 0

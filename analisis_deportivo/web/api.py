@@ -15,6 +15,7 @@ from ..futbol import modelos as fm
 from ..futbol.datos import ESTADISTICAS, cargar_para_analisis, equipos as f_equipos, jugados as f_jugados, pendientes
 from ..nba import analisis as ba
 from ..nba import estadisticas as be
+from ..nba import jugadores as bj
 from ..nba import modelos as bm
 from ..nba.datos import NOMBRE_TIPO as NBA_TIPO, cargar_desde_base as nba_cargar, descansos, leer_temporada, texto_temporada
 from ..nba.equipos import CONFERENCIAS, DIVISIONES as NBA_DIVISIONES, division as nba_division, nombre as nba_nombre
@@ -623,6 +624,24 @@ def _nba_stats(temporada):
         con.close()
 
 
+@lru_cache(maxsize=1)
+def _nba_jugadores_ctx():
+    con = _con()
+    try:
+        return bj.contexto(bj.por_partido(con))
+    finally:
+        con.close()
+
+
+def _ctx_nba(t):
+    """Contexto de jugadores solo para la temporada más reciente (las bajas de hoy no aplican a las pasadas)."""
+    return _nba_jugadores_ctx() if t == max(_nba_temporadas()) else None
+
+
+def _bajas_nba(ctx, equipo, fecha):
+    return [{"nombre": n, "puntos": _r(v, 1)} for n, _, v in (ctx.ausentes(equipo, fecha) if ctx else []) if v >= 0.3][:4]
+
+
 def _nba_temporadas():
     return sorted({p.temporada for p in _nba()})
 
@@ -673,7 +692,8 @@ def nba_clasificacion(q):
 
 def _pred_nba(pr):
     return {"margen": _r(pr["margen"], 1), "margen_elo": _r(pr["margen_elo"], 1), "margen_ratings": _r(pr["margen_ratings"], 1),
-            "ajuste": _r(pr["ajuste"], 1), "prob_local": _r(pr["prob_local"]), "total": _r(pr["total"], 1),
+            "ajuste": _r(pr["ajuste"], 1), "ajuste_descanso": _r(pr.get("ajuste_descanso", pr["ajuste"]), 1),
+            "ajuste_jugadores": _r(pr.get("ajuste_jugadores", 0.0), 1), "prob_local": _r(pr["prob_local"]), "total": _r(pr["total"], 1),
             "puntos_local": _r(pr["puntos_local"], 1), "puntos_visitante": _r(pr["puntos_visitante"], 1)}
 
 
@@ -706,10 +726,20 @@ def nba_equipo(q):
                       "fase": "" if v.partido.tipo == "REG" else (v.partido.ronda or NBA_TIPO[v.partido.tipo])} for v in vs][::-1],
         "proximos": [],
         "juego": None,
+        "jugadores": None,
     }
+    ctx = _ctx_nba(t)
+    hoy = date.today()
+    if ctx and ctx.historial.get(equipo):
+        ultimo = set(ctx.historial[equipo][-1])
+        recientes = {j for g in list(ctx.historial[equipo])[-10:] for j in g}
+        filas_j = [{"nombre": ctx.nombres[j], "minutos": _r(ctx.minutos_habituales(j), 1), "valoracion": _r(36 * ctx.valor(j, hoy), 1),
+                    "jugo": j in ultimo} for j in recientes if ctx.minutos_habituales(j) >= ctx.rotacion]
+        filas_j.sort(key=lambda f: -f["minutos"] * f["valoracion"])
+        res["jugadores"] = {"filas": filas_j, "ajuste": _r(ctx.ajuste(equipo, hoy), 1)}
     dias = descansos(temporada)
     for p in [p for p in temporada if not p.jugado and p.participa(equipo)][:5]:
-        pr = bm.predecir_partido(elo, ratings, p, dias)
+        pr = bm.predecir_partido(elo, ratings, p, dias, ctx)
         p_eq = pr["prob_local"] if p.local == equipo else 1 - pr["prob_local"]
         m_eq = pr["margen"] if p.local == equipo else -pr["margen"]
         res["proximos"].append({"fecha": str(p.fecha), "rival": p.visitante if p.local == equipo else p.local,
@@ -736,11 +766,13 @@ def nba_predecir(q):
     elo, ratings = _nba_modelos(t)
     temporada = [p for p in _nba() if p.temporada == t]
     programado = next((p for p in temporada if not p.jugado and p.local == local and p.visitante == visitante), None)
+    ctx = _ctx_nba(t)
     if programado and not neutral:
-        pr = bm.predecir_partido(elo, ratings, programado, descansos(temporada))
+        pr = bm.predecir_partido(elo, ratings, programado, descansos(temporada), ctx)
     else:
-        pr = bm.predecir(elo, ratings, local, visitante, neutral)
-    return {"temporada": texto_temporada(t), "local": local, "visitante": visitante, "nombre_local": nba_nombre(local),
+        plantilla = bm.ajuste_jugadores(ctx, local, visitante, date.today())
+        pr = {**bm.predecir(elo, ratings, local, visitante, neutral, plantilla), "ajuste_descanso": 0.0, "ajuste_jugadores": plantilla}
+    return {"bajas_local": _bajas_nba(ctx, local, date.today()), "bajas_visitante": _bajas_nba(ctx, visitante, date.today()),"temporada": texto_temporada(t), "local": local, "visitante": visitante, "nombre_local": nba_nombre(local),
             "nombre_visitante": nba_nombre(visitante), "neutral": neutral,
             "programado": {"fecha": str(programado.fecha)} if programado and not neutral else None,
             "moneyline_local": bm.moneyline_justa(pr["prob_local"]), "moneyline_visitante": bm.moneyline_justa(1 - pr["prob_local"]),
@@ -757,8 +789,10 @@ def nba_pronosticos(q):
     fecha = q.get("fecha") if q.get("fecha") in fechas else fechas[0]
     elo, ratings = _nba_modelos(t)
     dias = descansos(temporada)
+    ctx = _ctx_nba(t)
     filas = [{"fecha": str(p.fecha), "local": p.local, "visitante": p.visitante, "neutral": p.neutral,
-              **_pred_nba(bm.predecir_partido(elo, ratings, p, dias))} for p in pend if str(p.fecha) == fecha]
+              "bajas_local": _bajas_nba(ctx, p.local, p.fecha), "bajas_visitante": _bajas_nba(ctx, p.visitante, p.fecha),
+              **_pred_nba(bm.predecir_partido(elo, ratings, p, dias, ctx))} for p in pend if str(p.fecha) == fecha]
     return {"temporada": texto_temporada(t), "fecha": fecha, "fechas": fechas, "filas": filas}
 
 

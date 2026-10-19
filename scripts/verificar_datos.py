@@ -74,6 +74,14 @@ def verificar(con):
         errores.append(f"{len(nba_doble)} casos de un equipo NBA con dos partidos el mismo día, p. ej. {[tuple(d[1:3]) for d in nba_doble[:3]]}")
     if nba_futuro:
         errores.append(f"{nba_futuro} partidos de la NBA con resultado y fecha futura")
+    try:
+        sin_jugadores = q("SELECT COUNT(*) FROM nba_partidos p WHERE puntos_local IS NOT NULL AND tipo != 'COPA' AND fecha >= ? "
+                          "AND NOT EXISTS (SELECT 1 FROM nba_jugadores_partido j WHERE CAST(j.id AS TEXT) = p.id)",
+                          (date.today() - timedelta(days=30)).isoformat())[0][0]
+        if sin_jugadores:
+            avisos.append(f"NBA: {sin_jugadores} partidos del último mes sin datos de jugadores (el ajuste por bajas los ignora)")
+    except sqlite3.OperationalError:
+        pass
 
     # Cobertura de las ligas principales
     print(f"{'Liga':<6}{'Temporadas':>11}{'Partidos':>10}{'Incompletas':>13}  Último resultado  Pendientes ya jugados")

@@ -102,6 +102,42 @@ class TestBaseReal(unittest.TestCase):
         self.assertAlmostEqual(sum(r.get("playoffs", 0) for r in res.values()), 16)
 
     def test_evaluar(self):
+        from analisis_deportivo.nba.jugadores import por_partido
+
         m = modelos.evaluar(self.partidos, 2025)
         self.assertGreater(m["n"], 1300)
         self.assertLess(m["brier"] / m["n"], 0.215)
+        datos = por_partido(base.conectar())
+        if datos:
+            con = modelos.evaluar(self.partidos, 2025, jugadores=datos)
+            self.assertLess(con["brier"], m["brier"])
+
+
+class TestJugadores(unittest.TestCase):
+    def _ctx(self, ultimo):
+        from analisis_deportivo.nba.jugadores import ContextoJugadores
+
+        ctx = ContextoJugadores(n_habitual=3)
+        estrella, normal = ("A", "Estrella", 36, 30.0), ("B", "Normal", 30, 10.0)
+        for d in range(3):
+            ctx.agregar(INICIO + timedelta(days=d), "BOS", [estrella, normal] if d < 2 or ultimo else [normal])
+        return ctx
+
+    def test_baja_resta(self):
+        con, sin = self._ctx(True), self._ctx(False)
+        hoy = INICIO + timedelta(days=3)
+        self.assertLess(sin.ajuste("BOS", hoy), con.ajuste("BOS", hoy))
+        self.assertLess(sin.ajuste("BOS", hoy), 0)
+        self.assertEqual([n for n, *_ in sin.ausentes("BOS", hoy)], ["Estrella"])
+
+    def test_tras_el_verano_no_supone_bajas(self):
+        ctx = self._ctx(False)
+        otoño = INICIO + timedelta(days=150)
+        self.assertEqual(ctx.ajuste("BOS", otoño), 0.0)
+        self.assertEqual(ctx.ausentes("BOS", otoño), [])
+
+    def test_game_score(self):
+        from analisis_deportivo.nba.jugadores import game_score
+
+        self.assertAlmostEqual(game_score({"points": 20, "field_goals_made": 8, "field_goals_attempted": 15,
+                                           "assists": 5, "turnovers": 2}), 20 + 3.2 - 10.5 + 3.5 - 2)

@@ -75,6 +75,7 @@ El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.s
 | Estadísticas de cada equipo en cada partido de la NFL: yardas, EPA, pérdidas de balón, sacks, penalizaciones, goles de campo y más (unas 130 columnas) | 14.707 registros | 1999 – 2026 |
 | Partidos de la NBA (temporada regular, final de la NBA Cup, play-in y playoffs) con prórrogas y sede, y el calendario de la temporada en curso | 33.390 partidos | 2001-02 – 2026-27 |
 | Estadísticas de cada equipo en cada partido de la NBA: tiros de campo, triples, tiros libres, rebotes, asistencias, robos, tapones, pérdidas, faltas y puntos en la pintura | 64.352 registros | 2001-02 – 2025-26 |
+| Minutos y valoración (Game Score) de cada jugador de la NBA en cada partido | 404.702 registros | 2011-12 – 2025-26 |
 
 ```bash
 python3 -m analisis_deportivo base        # qué contiene: ligas, temporadas, cobertura de tiros y cuotas
@@ -213,12 +214,12 @@ Requiere la base de datos. Los equipos se escriben con su abreviatura de ESPN (`
 | Comando | Qué muestra |
 |---|---|
 | `clasificacion [--vista conferencia\|division\|liga]` | Récord, PCT, puntos a favor y en contra por partido, local, visitante, conferencia, racha y últimos 10, con los cortes de playoffs (1-6) y play-in (7-10) |
-| `equipo EQUIPO` | Récord y puesto, victorias pitagóricas, Elo y rating neto, estadísticas de juego con su puesto en la liga, récords por situación (local, visitante, contra cada conferencia, partidos ajustados, prórrogas, dos días seguidos, playoffs...), últimos partidos y próximos con su probabilidad |
+| `equipo EQUIPO` | Récord y puesto, victorias pitagóricas, Elo y rating neto, jugadores de rotación (y si jugaron el último partido), estadísticas de juego con su puesto en la liga, récords por situación (local, visitante, contra cada conferencia, partidos ajustados, prórrogas, dos días seguidos, playoffs...), últimos partidos y próximos con su probabilidad |
 | `h2h A B` | Historial entre dos equipos desde 2001-02, también en playoffs |
 | `liga [--solo-regular]` | Ventaja de jugar en casa, partidos ajustados y palizas, prórrogas, efecto de jugar dos días seguidos y qué estadísticas deciden los partidos |
 | `ranking` | Power ranking con Elo, rating neto, ataque, defensa y victorias pitagóricas |
 | `predecir LOCAL VISITANTE [--neutral] [--linea X] [--total Y]` | Marcador esperado, spread, total, probabilidad de victoria y moneyline justa. Si el partido está en el calendario, tiene en cuenta el descanso de cada equipo |
-| `pronosticos [--fecha AAAA-MM-DD] [--dias N]` | Pronósticos del próximo día (o días) con partidos |
+| `pronosticos [--fecha AAAA-MM-DD] [--dias N]` | Pronósticos del próximo día (o días) con partidos, con las bajas importantes de cada equipo |
 | `simular [-n N]` | Simulación Monte Carlo del resto de la temporada, del play-in y de los playoffs: victorias esperadas y probabilidad de playoffs, de top 6, de ser primero, de llegar a la final y de ser campeón |
 | `evaluar` | Validación día a día sin datos futuros |
 | `estadisticas [--orden COLUMNA]` | Tabla de los 30 equipos con eficiencia ofensiva y defensiva (puntos por 100 posesiones), ritmo y los "cuatro factores" (acierto efectivo, pérdidas, rebote ofensivo y tiros libres) |
@@ -254,6 +255,7 @@ Algunos términos:
 - **Elo** al estilo FiveThirtyEight: K=15, ventaja de campo de 70 puntos Elo y regresión de una cuarta parte hacia la media entre temporadas. 28 puntos Elo equivalen a 1 punto de margen.
 - **Ratings de ataque y defensa** ajustados por la calidad de los rivales. Un partido de hace 90 días pesa la mitad, y los de la temporada anterior, la mitad más. La ventaja de campo se estima con los datos.
 - **Descanso:** el equipo que juega el segundo de dos días seguidos pierde 1.5 puntos.
+- **Jugadores disponibles:** cada jugador tiene un valor (la "valoración" Game Score de Hollinger por minuto: puntos, tiros, rebotes, asistencias, robos, tapones, faltas y pérdidas), calculado solo con sus partidos anteriores. Si un equipo juega sin jugadores importantes que suele tener, pierde puntos; si recupera a alguno, los gana. Como no hay parte de lesionados, se supone que juega con los mismos que en su partido anterior (salvo después del verano). Los pronósticos y el informe de equipo muestran esas bajas.
 - **Predicción.** Combina Elo (60 %) y ratings (40 %). La probabilidad de victoria sale de una distribución normal de 10 puntos de desviación.
 - **Simulación.** Juega muchas veces lo que queda de temporada, el play-in y los playoffs (series al mejor de 7). Como la fuerza real de cada equipo no se conoce con exactitud, en cada simulación varía al azar unos 3 puntos al empezar la temporada y menos a medida que avanza.
 
@@ -264,9 +266,9 @@ Algunos términos:
 - **Fútbol** (validación 2023-24 a 2025-26, Premier, LaLiga, Serie A, Bundesliga y Ligue 1; 5.255 partidos): el RPS baja de 0.2012 a 0.1987 y mejora en las cinco ligas. El RPS es la medida habitual para predicciones de 1X2; menos es mejor. Las casas de apuestas están en 0.1934.
 - **NFL** (validación 2020–2025, 1.688 partidos): el Brier baja de 0.2228 a 0.2187. Es la medida de error de las probabilidades; menos es mejor, y 0.25 equivale a tirar una moneda. Mejora en 5 de 6 temporadas, y casi toda la ganancia viene del ajuste por quarterback titular.
 - **Descartado:** un modelo NFL basado en EPA por jugada. No mejoraba al actual.
-- **NBA** (parámetros ajustados con 2012-13 a 2018-19; validación 2021-22 a 2025-26, 6.605 partidos): el Brier baja de 0.2211, el del Elo de FiveThirtyEight con sus parámetros publicados, a 0.2153, y el acierto del ganador sube del 64.7 % al 66.0 %. Mejora en las cinco temporadas. La base no tiene líneas de apuestas de la NBA, así que no se compara con el mercado.
+- **NBA** (parámetros ajustados con 2012-13 a 2018-19; validación 2021-22 a 2025-26, 6.605 partidos): el Brier baja de 0.2211, el del Elo de FiveThirtyEight con sus parámetros publicados, a 0.2153, y el acierto del ganador sube del 64.7 % al 66.0 %. El ajuste por jugadores disponibles lo baja a 0.2131 (acierto 66.4 %). Ambos mejoran en las cinco temporadas. Si se supiera exactamente quién juega (con un parte de lesionados), bajaría a 0.2102. La base no tiene líneas de apuestas de la NBA, así que no se compara con el mercado.
 
-Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py`, `nfl_ajuste.py`, `nba_ajuste.py` y `nba_incertidumbre.py`.
+Los scripts para reproducir las mediciones están en `experimentos/`: `evaluar_poisson.py`, `futbol_tiros_elo.py`, `nfl_ajuste.py`, `nba_ajuste.py`, `nba_incertidumbre.py` y `nba_jugadores.py`.
 
 Batir al mercado de apuestas es muy difícil. Úsalo como herramienta de análisis, no como garantía.
 
@@ -313,7 +315,7 @@ analisis_deportivo/
   web/     api.py (datos en JSON) · servidor.py · static/ (index.html, app.js, estilos.css)
   futbol/  datos.py · analisis.py · modelos.py · cli.py
   nfl/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
-  nba/     datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py · cli.py
+  nba/     datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py · cli.py
 datos/base_deportiva.sqlite.gz   base de datos completa (comprimida)
 datos/                  ejemplos simulados (regenerables con scripts/generar_ejemplos.py)
 datos/descargas/        datos reales descargados (ignorados por git)
