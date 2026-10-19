@@ -715,6 +715,8 @@ const vistasNFL = {
 const nbaTemp = () => estado.p.temporada || opciones.nba.temporadas[0].valor;
 const equiposNBA = () => opciones.nba.equipos.map((e) => ({ valor: e.codigo, texto: `${e.nombre} (${e.codigo})` }))
   .sort((a, b) => a.texto.localeCompare(b.texto));
+const textoBajas = (equipo, bajas) => (bajas?.length
+  ? `<p class="nota" style="margin:4px 0 0">Bajas ${esc(equipo)}: ${bajas.map((b) => `${esc(b.nombre)} (${signo(b.puntos)})`).join(", ")}</p>` : "");
 const avisoNBA = (d) => (d.aviso ? `<p class="nota">${esc(d.aviso)}</p>` : "");
 
 const colsNBA = [
@@ -774,6 +776,12 @@ const vistasNBA = {
       html += tarjeta("Próximos partidos", d.proximos.map((p) => `<p class="fuerte" style="margin:10px 0 0">${p.local ? "vs" : "@"} ${esc(p.rival)} <span class="descripcion">· ${p.fecha} · margen esperado ${signo(p.margen)}</span></p>`
         + barraProb([{ valor: p.prob, etiqueta: d.equipo, color: COLOR.local }, { valor: 1 - p.prob, etiqueta: p.rival, color: COLOR.visitante }])).join(""));
     }
+    if (d.jugadores) {
+      html += tarjeta("Jugadores de rotación", tablaHTML("t-jugb", [{ clave: "nombre", titulo: "Jugador", texto: true },
+        { clave: "minutos", titulo: "Min.", fmt: (v) => num(v, 1) }, { clave: "valoracion", titulo: "Valoración/36", fmt: (v) => num(v, 1), ayuda: "Game Score de Hollinger cada 36 minutos (unos 10 es un titular normal)" },
+        { clave: "jugo", titulo: "Último", texto: true, fmt: (v) => (v ? "jugó" : `<span class="negativo fuerte">no jugó</span>`) }], d.jugadores.filas)
+        + `<p class="nota">Ajuste por plantilla para su próximo partido: ${signo(d.jugadores.ajuste)} puntos frente a lo habitual. Se supone que juegan los mismos que en el último partido (si fue hace menos de 60 días).</p>`);
+    }
     if (d.juego) {
       const fmt = (v, f) => (f.metrica.includes("libres por") ? num(v, 2) : num(v, 1));
       html += tarjeta("Estadísticas de juego (temporada regular)", tablaHTML("t-jb", [{ clave: "metrica", titulo: "", texto: true },
@@ -800,9 +808,10 @@ const vistasNBA = {
       <p class="descripcion">${d.programado ? `Partido del calendario: ${d.programado.fecha} (incluye el descanso de cada equipo)` : "Partido hipotético"}</p><div class="rejilla">`;
     html += tarjeta("Probabilidad de victoria", barraProb([{ valor: d.prob_local, etiqueta: d.local, color: COLOR.local }, { valor: 1 - d.prob_local, etiqueta: d.visitante, color: COLOR.visitante }])
       + `<div class="cifras" style="margin-top:12px">${cifra(`${num(d.puntos_local, 0)} - ${num(d.puntos_visitante, 0)}`, `Marcador esperado (${d.local}-${d.visitante})`)}${cifra(`${esc(fav)} -${num(Math.abs(d.margen), 1)}`, "Spread del modelo")}${cifra(num(d.total, 1), "Total de puntos esperado")}</div>
-      <p class="nota">Elo: ${signo(d.margen_elo)} · ratings: ${signo(d.margen_ratings)} · descanso: ${signo(d.ajuste)} (ventaja del local en puntos) · moneyline justa ${esc(d.moneyline_local)} / ${esc(d.moneyline_visitante)}</p>`);
+      <p class="nota">Elo: ${signo(d.margen_elo)} · ratings: ${signo(d.margen_ratings)} · descanso: ${signo(d.ajuste_descanso)} · jugadores: ${signo(d.ajuste_jugadores)} (ventaja del local en puntos) · moneyline justa ${esc(d.moneyline_local)} / ${esc(d.moneyline_visitante)}</p>`
+      + textoBajas(d.local, d.bajas_local) + textoBajas(d.visitante, d.bajas_visitante));
     return {
-      html: html + `</div><p class="nota">Combina Elo y ratings ajustados por rival. No incluye lesiones ni descansos de jugadores.</p>`,
+      html: html + `</div><p class="nota">Combina Elo, ratings ajustados por rival, descanso y jugadores disponibles. Sin parte de lesionados, supone que cada equipo juega con los mismos que en su partido anterior.</p>`,
       tras() {
         $("#c-local").onchange = (e) => ir({}, { local: e.target.value });
         $("#c-visit").onchange = (e) => ir({}, { visitante: e.target.value });
@@ -818,8 +827,10 @@ const vistasNBA = {
       <h1 class="titulo-vista">Pronósticos · ${d.fecha}</h1><p class="descripcion">Temporada ${d.temporada} · spread desde el punto de vista del local (negativo = favorito)</p>
       ${tarjeta("", d.filas.map((p) => `<div style="padding:10px 0;border-bottom:1px solid var(--grid)">
           <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="fuerte">${esc(p.visitante)} @ ${esc(p.local)}</span>
-          <span class="descripcion" style="margin:0">spread ${signo(-p.margen)} · total ${num(p.total, 1)} · marcador ${num(p.puntos_visitante, 0)}-${num(p.puntos_local, 0)}${p.ajuste ? ` · ${p.ajuste < 0 ? "local" : "visitante"} en días seguidos` : ""}</span></div>
-          ${barraProb([{ valor: p.prob_local, etiqueta: p.local, color: COLOR.local }, { valor: 1 - p.prob_local, etiqueta: p.visitante, color: COLOR.visitante }])}</div>`).join(""))}`;
+          <span class="descripcion" style="margin:0">spread ${signo(-p.margen)} · total ${num(p.total, 1)} · marcador ${num(p.puntos_visitante, 0)}-${num(p.puntos_local, 0)}${p.ajuste_descanso ? ` · ${p.ajuste_descanso < 0 ? "local" : "visitante"} en días seguidos` : ""}</span></div>
+          ${barraProb([{ valor: p.prob_local, etiqueta: p.local, color: COLOR.local }, { valor: 1 - p.prob_local, etiqueta: p.visitante, color: COLOR.visitante }])}
+          ${textoBajas(p.visitante, p.bajas_visitante)}${textoBajas(p.local, p.bajas_local)}</div>`).join(""))}
+      <p class="nota">Bajas: jugadores importantes que no jugaron el último partido de su equipo (entre paréntesis, los puntos que vale cada uno); se supone que tampoco juegan este.</p>`;
     return { html, tras() { $("#c-fecha").onchange = (e) => ir({}, { fecha: e.target.value }); } };
   },
 

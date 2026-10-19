@@ -26,7 +26,7 @@ analisis_deportivo/
   descargas.py    descarga de archivos sueltos
   futbol/         datos.py · analisis.py · modelos.py (Poisson + Dixon-Coles, tiros a puerta, Elo) · cli.py
   nfl/            datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py (Elo + ratings + ajuste por QB) · cli.py
-  nba/            datos.py · equipos.py · analisis.py · estadisticas.py · modelos.py (Elo + ratings + descanso) · cli.py (solo con la base)
+  nba/            datos.py · equipos.py · analisis.py · estadisticas.py · jugadores.py · modelos.py (Elo + ratings + descanso + jugadores) · cli.py (solo con la base)
   web/            api.py (JSON) · servidor.py (http.server) · static/ (index.html, app.js, estilos.css; JS sin dependencias)
 scripts/          generar_informes.py · generar_sitio.py (web estática) · verificar_datos.py · generar_ejemplos.py
 experimentos/     scripts para medir modelos: evaluar_poisson.py, futbol_tiros_elo.py, nfl_ajuste.py, nba_ajuste.py…
@@ -51,6 +51,7 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
 - `nfl_estadisticas_equipo`
 - `nba_partidos` (temporada = año en que termina: 2026 es la 2025-26; tipo REG, COPA, PLAYIN o PO)
 - `nba_estadisticas_equipo`
+- `nba_jugadores_partido` (desde 2011-12; id y jugador como enteros para ocupar menos) y `nba_jugadores` (nombres)
 - `fuentes`
 
 **Fuentes de fútbol, en orden de carga:**
@@ -105,8 +106,10 @@ La actualización diaria **no publica** si encuentra errores. Si cambias `base.p
   - Elo con K=15, ventaja de campo 70, regresión de 1/4 y multiplicador por margen de FiveThirtyEight.
   - `RatingsNBA`: ataque y defensa ajustados por rival, vida media de 90 días y ×0.5 por temporada anterior.
   - Mezcla: 60 % Elo, 40 % ratings, desviación de 10; −1.5 puntos por jugar dos días seguidos.
+  - Jugadores disponibles (`nba/jugadores.py`): Game Score por minuto de cada jugador; ajuste = 0.2 × (valor de la plantilla de hoy − media de sus últimos 40 partidos), con jugadores de rotación (20+ minutos). Sin parte de lesionados: se supone la plantilla del partido anterior, salvo si fue hace más de 60 días. No se aplica en la simulación de la temporada (las bajas son temporales).
   - Simulación con incertidumbre de la fuerza de 3 puntos × √(fracción pendiente), medida en `experimentos/nba_incertidumbre.py`.
-  - **Validación 2021-22 a 2025-26: Brier 0.2153.** Línea base (Elo de FiveThirtyEight): 0.2211. Sin líneas de apuestas en la base.
+  - **Validación 2021-22 a 2025-26: Brier 0.2131** (0.2153 sin jugadores; 0.2102 si se supiera quién juega). Línea base (Elo de FiveThirtyEight): 0.2211. Sin líneas de apuestas en la base. Mediciones en `experimentos/nba_ajuste.py` y `nba_jugadores.py`.
+  - Posible mejora: un parte de lesionados (ESPN lo tiene, pero su dominio está bloqueado desde el entorno de Claude en la nube; no se ha probado desde GitHub Actions).
 
 **Reglas al cambiar un modelo** (las siguen también los agentes de la revisión semanal):
 1. Ajusta parámetros **solo con temporadas de entrenamiento**:

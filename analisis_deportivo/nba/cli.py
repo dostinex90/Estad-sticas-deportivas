@@ -6,7 +6,7 @@ from datetime import date
 
 from ..comun import barra, chispa, elegir_equipo, linea_pct, normal_cdf, pct, salir
 from .. import base
-from . import analisis, estadisticas, modelos
+from . import analisis, estadisticas, jugadores, modelos
 from .datos import NOMBRE_TIPO, cargar_desde_base, descansos, equipos, jugados, leer_temporada, temporadas, texto_temporada
 from .equipos import CONFERENCIAS, DIVISIONES, conferencia, division, nombre
 
@@ -39,6 +39,21 @@ def _de_temporada(partidos, args):
 
 def _t(args):
     return texto_temporada(args.temporada)
+
+
+def _jugadores(args):
+    """ContextoJugadores con todos los partidos jugados, solo para la temporada más reciente (en las
+    pasadas no tiene sentido usar las bajas de hoy). None si la base no tiene jugadores."""
+    if not hasattr(args, "_ctx_jugadores"):
+        args._ctx_jugadores = (jugadores.contexto(jugadores.por_partido(args.conexion))
+                               if args.temporada == args.ultima_temporada else None)
+    return args._ctx_jugadores
+
+
+def _bajas(ctx, equipo, hoy):
+    """Texto con los jugadores importantes que no jugaron el último partido del equipo."""
+    lista = [f"{n} ({v:+.1f})" for n, _, v in ctx.ausentes(equipo, hoy) if v >= 0.3] if ctx else []
+    return ", ".join(lista[:4])
 
 
 def cmd_equipos(partidos, args):
@@ -145,12 +160,27 @@ def cmd_equipo(partidos, args):
             print(f"  {p.fecha}  {'vs' if v.es_local else '@ '} {v.rival:<5} {v.resultado.replace('G', 'V').replace('P', 'D')} "
                   f"{v.pf}-{v.pc}{pro}{fase}")
 
+    ctx = _jugadores(args)
+    hoy = date.today()
+    if ctx and ctx.historial.get(equipo):
+        _seccion("Jugadores de rotación (los que suelen jugar 20+ minutos)")
+        recientes = {j for g in list(ctx.historial[equipo])[-10:] for j in g}
+        ultimo = set(ctx.historial[equipo][-1])
+        filas_j = sorted(((ctx.nombres[j], ctx.minutos_habituales(j), 36 * ctx.valor(j, hoy), j in ultimo) for j in recientes
+                          if ctx.minutos_habituales(j) >= ctx.rotacion), key=lambda f: -f[1] * f[2])
+        print(f"  {'Jugador':<26}{'Min.':>6}{'Valoración/36':>15}  Último partido")
+        for n, m, v, jugo in filas_j:
+            print(f"  {n[:25]:<26}{m:>6.1f}{v:>15.1f}  {'jugó' if jugo else 'NO JUGÓ'}")
+        print(f"  Ajuste por plantilla para su próximo partido: {ctx.ajuste(equipo, hoy):+.1f} puntos frente a lo habitual"
+              + ("" if ctx.vigente(equipo, hoy) else " (su último partido fue hace más de 60 días: no se suponen bajas)"))
+        print("  Valoración/36: Game Score de Hollinger cada 36 minutos (unos 10 es un titular normal).")
+
     proximos = [p for p in temporada if not p.jugado and p.participa(equipo)][:5]
     if proximos:
         _seccion("Próximos partidos")
         dias = descansos(temporada)
         for p in proximos:
-            pr = modelos.predecir_partido(elo, ratings, p, dias)
+            pr = modelos.predecir_partido(elo, ratings, p, dias, ctx)
             p_eq = pr["prob_local"] if p.local == equipo else 1 - pr["prob_local"]
             m_eq = pr["margen"] if p.local == equipo else -pr["margen"]
             print(f"  {p.fecha}  {p.marcador():<12} prob. victoria {100 * p_eq:4.1f}%  margen {m_eq:+.1f}")
@@ -230,7 +260,8 @@ def _mostrar_prediccion(local, visitante, neutral, pr, linea=None, total_linea=N
     favorito = local if pr["margen"] > 0 else visitante
     print(f"  Marcador esperado: {local} {pr['puntos_local']:.1f} - {pr['puntos_visitante']:.1f} {visitante}")
     print(f"  Spread del modelo: {favorito} -{abs(pr['margen']):.1f}   (Elo {pr['margen_elo']:+.1f} · ratings "
-          f"{pr['margen_ratings']:+.1f} · descanso {pr['ajuste']:+.1f}, desde el local)")
+          f"{pr['margen_ratings']:+.1f} · descanso {pr.get('ajuste_descanso', 0.0):+.1f} · jugadores "
+          f"{pr.get('ajuste_jugadores', 0.0):+.1f}, desde el local)")
     print(f"  Total esperado: {pr['total']:.1f} puntos")
     _seccion("Probabilidad de victoria")
     print(linea_pct(local, 100 * pr["prob_local"], 8) + f"   moneyline justa {modelos.moneyline_justa(pr['prob_local'])}")
@@ -253,13 +284,20 @@ def cmd_predecir(partidos, args):
     elo, ratings = modelos.ajustar_modelos(partidos, args.temporada)
     temporada = _de_temporada(partidos, args)
     programado = next((p for p in temporada if not p.jugado and p.local == local and p.visitante == visitante), None)
+    ctx = _jugadores(args)
     if programado and not args.neutral:
-        pr = modelos.predecir_partido(elo, ratings, programado, descansos(temporada))
+        pr = modelos.predecir_partido(elo, ratings, programado, descansos(temporada), ctx)
         print(f"  (partido del calendario: {programado.fecha}; incluye el descanso de cada equipo)")
     else:
-        pr = modelos.predecir(elo, ratings, local, visitante, args.neutral)
+        plantilla = modelos.ajuste_jugadores(ctx, local, visitante, date.today())
+        pr = {**modelos.predecir(elo, ratings, local, visitante, args.neutral, plantilla), "ajuste_jugadores": plantilla}
     _mostrar_prediccion(local, visitante, args.neutral, pr, args.linea, args.total)
-    print("\n  Orientativo: combina Elo y ratings ajustados por rival; no incluye lesiones ni descansos de jugadores.")
+    for e in (local, visitante):
+        bajas = _bajas(ctx, e, date.today())
+        if bajas:
+            print(f"  No jugaron el último partido de {e}: {bajas}")
+    print("\n  Orientativo: combina Elo, ratings ajustados por rival, descanso y jugadores disponibles. Sin parte de")
+    print("  lesionados, supone que cada equipo juega con los mismos que en su partido anterior.")
 
 
 def cmd_pronosticos(partidos, args):
@@ -270,14 +308,19 @@ def cmd_pronosticos(partidos, args):
     fechas = sorted({p.fecha for p in pend if p.fecha >= desde})[:args.dias]
     elo, ratings = modelos.ajustar_modelos(partidos, args.temporada)
     dias = descansos(_de_temporada(partidos, args))
+    ctx = _jugadores(args)
     _titulo(f"Pronósticos NBA {_t(args)} — " + (f"{fechas[0]}" if len(fechas) == 1 else f"{fechas[0]} a {fechas[-1]}"))
-    print(f"  {'Fecha':<12}{'Partido':<14}{'Prob. local':>12}{'Spread':>9}{'Total':>8}  Marcador esperado")
+    print(f"  {'Fecha':<12}{'Partido':<14}{'Prob. local':>12}{'Spread':>9}{'Total':>8}{'Marcador':>10}{'Jug.':>6}  Notas")
     for p in (p for p in pend if p.fecha in fechas):
-        pr = modelos.predecir_partido(elo, ratings, p, dias)
-        nota = "  (local en días seguidos)" if pr["ajuste"] < 0 else "  (visitante en días seguidos)" if pr["ajuste"] > 0 else ""
+        pr = modelos.predecir_partido(elo, ratings, p, dias, ctx)
+        d = pr["ajuste_descanso"]
+        notas = ["local en días seguidos"] if d < 0 else ["visitante en días seguidos"] if d > 0 else []
+        notas += [f"bajas {e}: {b}" for e in (p.visitante, p.local) for b in [_bajas(ctx, e, p.fecha)] if b]
         print(f"  {str(p.fecha):<12}{p.marcador():<14}{100 * pr['prob_local']:>11.1f}%{-pr['margen']:>+9.1f}{pr['total']:>8.1f}"
-              f"  {pr['puntos_visitante']:.0f}-{pr['puntos_local']:.0f}{nota}")
-    print("\n  Spread desde el punto de vista del local (negativo = local favorito).")
+              f"{pr['puntos_visitante']:>6.0f}-{pr['puntos_local']:<3.0f}{pr['ajuste_jugadores']:>+6.1f}  {' · '.join(notas)}")
+    print("\n  Spread desde el punto de vista del local (negativo = local favorito). Jug.: ajuste por jugadores")
+    print("  disponibles, en puntos para el local. Bajas: jugadores importantes que no jugaron el último partido")
+    print("  de su equipo (entre paréntesis, los puntos que vale cada uno); se supone que tampoco juegan este.")
 
 
 def cmd_simular(partidos, args):
@@ -302,7 +345,7 @@ def cmd_simular(partidos, args):
 
 def cmd_evaluar(partidos, args):
     try:
-        m = modelos.evaluar(partidos, args.temporada)
+        m = modelos.evaluar(partidos, args.temporada, jugadores=jugadores.por_partido(args.conexion))
     except ValueError as e:
         salir(str(e))
     n = m.get("n", 0)
@@ -428,6 +471,7 @@ def _ejecutar(args):
         salir("No hay partidos de la NBA en la base de datos.")
     disponibles = temporadas(partidos)
     print(f"(base de datos: NBA {texto_temporada(disponibles[0])} a {texto_temporada(disponibles[-1])} · {len(partidos):,} partidos)")
+    args.ultima_temporada = max(disponibles)
     explicita = args.temporada is not None
     try:
         args.temporada = leer_temporada(args.temporada) if explicita else max(disponibles)
