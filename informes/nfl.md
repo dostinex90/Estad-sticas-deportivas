@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-10-19 12:23 UTC_
+_Actualizado automáticamente: 2026-10-19 12:30 UTC_
 
 ## Pronósticos de la próxima semana
 

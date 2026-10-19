@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-19 12:23 UTC_
+_Actualizado automáticamente: 2026-10-19 12:30 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -121,21 +121,22 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     45    48.9%   0.636    1.057   0.216
-  Referencia (frecuencias)           45    40.0%   0.668    1.101   0.230
-  Modelo (partidos c/cuotas)         19    42.1%   0.639    1.062   0.199
-  Mercado de apuestas                19    47.4%   0.649    1.068   0.201
+  Modelo Poisson                     54    53.7%   0.599    1.005   0.205
+  Referencia (frecuencias)           54    46.3%   0.645    1.068   0.226
+  Modelo (partidos c/cuotas)         54    53.7%   0.599    1.005   0.205
+  Mercado de apuestas                54    53.7%   0.595    0.997   0.203
 
-  Acierto en más/menos de 2.5 goles: 55.6% (45 partidos)
+  Acierto en más/menos de 2.5 goles: 59.3% (54 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
-  Predicho 10-20 %  media  17.4%  →  real  25.0%  (12)
-  Predicho 20-30 %  media  26.2%  →  real  28.3%  (60)
-  Predicho 30-40 %  media  34.7%  →  real  18.5%  (27)
-  Predicho 40-50 %  media  44.4%  →  real  60.9%  (23)
-  Predicho 50-60 %  media  56.2%  →  real  40.0%  (10)
-  Predicho 60-70 %  media  64.4%  →  real  50.0%  (2)
-  Predicho 70-80 %  media  70.9%  →  real 100.0%  (1)
+  Predicho  0-10 %  media   6.0%  →  real   0.0%  (1)
+  Predicho 10-20 %  media  17.0%  →  real  21.4%  (14)
+  Predicho 20-30 %  media  26.0%  →  real  24.7%  (73)
+  Predicho 30-40 %  media  34.5%  →  real  20.7%  (29)
+  Predicho 40-50 %  media  44.1%  →  real  61.5%  (26)
+  Predicho 50-60 %  media  55.2%  →  real  50.0%  (14)
+  Predicho 60-70 %  media  64.9%  →  real  75.0%  (4)
+  Predicho 80-90 %  media  81.1%  →  real 100.0%  (1)
 ```
 
 ## NFL (temporada en curso)

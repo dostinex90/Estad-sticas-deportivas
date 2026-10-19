@@ -1,6 +1,6 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-19 12:23 UTC_
+_Actualizado automáticamente: 2026-10-19 12:30 UTC_
 
 ## Pronósticos de los próximos partidos
 
