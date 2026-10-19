@@ -73,11 +73,11 @@ El repositorio trae una base de datos SQLite comprimida, `datos/base_deportiva.s
 | Goles de selecciones con autor, minuto, penalti y autogol | 47.914 goles | 1916 – 2026 |
 | Partidos de la NFL con líneas de apuestas, descanso entre partidos, clima, estadio, quarterbacks y entrenadores | 7.548 partidos | 1999 – 2026 |
 | Estadísticas de cada equipo en cada partido de la NFL: yardas, EPA, pérdidas de balón, sacks, penalizaciones, goles de campo y más (unas 130 columnas) | 14.707 registros | 1999 – 2026 |
-| Parte oficial de lesionados de la NFL de cada semana (Out, Doubtful, Questionable) | 35.356 bajas | 2012 – 2026 |
-| % de jugadas (snaps) que jugó cada jugador de la NFL en cada partido | 301.608 registros | 2013 – 2026 |
+| Parte oficial de lesionados de la NFL de cada semana (Out, Doubtful, Questionable) | 16.211 bajas | 2020 – 2026 |
+| % de jugadas (snaps) que jugó cada jugador de la NFL en cada partido | 150.411 registros | 2020 – 2026 |
 | Partidos de la NBA (temporada regular, final de la NBA Cup, play-in y playoffs) con prórrogas y sede, y el calendario de la temporada en curso | 33.390 partidos | 2001-02 – 2026-27 |
 | Estadísticas de cada equipo en cada partido de la NBA: tiros de campo, triples, tiros libres, rebotes, asistencias, robos, tapones, pérdidas, faltas y puntos en la pintura | 64.352 registros | 2001-02 – 2025-26 |
-| Minutos y valoración (Game Score) de cada jugador de la NBA en cada partido | 404.702 registros | 2011-12 – 2025-26 |
+| Minutos y valoración (Game Score) de cada jugador de la NBA en cada partido | 189.241 registros | 2019-20 – 2025-26 |
 
 ```bash
 python3 -m analisis_deportivo base        # qué contiene: ligas, temporadas, cobertura de tiros y cuotas

@@ -49,10 +49,12 @@ La base SQLite se construye con `python3 -m analisis_deportivo recopilar`.
 - `futbol_goleadores_selecciones`
 - `nfl_partidos`
 - `nfl_estadisticas_equipo`
-- `nfl_lesiones` (parte de lesionados desde 2012, solo Out/Doubtful/Questionable) y `nfl_snaps` (% de jugadas por jugador y partido, desde 2013)
+- `nfl_lesiones` (parte de lesionados, solo Out/Doubtful/Questionable) y `nfl_snaps` (% de jugadas por jugador y partido), desde 2020
 - `nba_partidos` (temporada = año en que termina: 2026 es la 2025-26; tipo REG, COPA, PLAYIN o PO)
 - `nba_estadisticas_equipo`
-- `nba_jugadores_partido` (desde 2011-12; id y jugador como enteros para ocupar menos) y `nba_jugadores` (nombres)
+- `nba_jugadores_partido` (desde 2019-20; id y jugador como enteros para ocupar menos) y `nba_jugadores` (nombres)
+
+Los datos de jugadores (NFL y NBA) se guardan **solo desde 2020** para que la base no crezca: basta para predecir y para validar. Para reajustar pesos con las temporadas de entrenamiento, los scripts de `experimentos/` (`nfl_lesiones.py`, `nba_jugadores.py`) descargan las temporadas antiguas a `datos/descargas/`.
 - `fuentes`
 
 **Fuentes de fútbol, en orden de carga:**

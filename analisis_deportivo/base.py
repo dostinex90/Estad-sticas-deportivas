@@ -9,8 +9,8 @@ Tablas:
   nfl_partidos              NFL desde 1999 (resultado, líneas de apuestas, clima, QB, entrenadores).
   nfl_estadisticas_equipo   Estadísticas de cada equipo en cada partido NFL (yardas, pérdidas,
                             sacks, EPA, penalizaciones, goles de campo...).
-  nfl_lesiones              Parte de lesionados NFL de cada semana desde 2012 (Out, Doubtful, Questionable).
-  nfl_snaps                 % de jugadas que jugó cada jugador NFL en cada partido, desde 2013.
+  nfl_lesiones              Parte de lesionados NFL de cada semana desde 2020 (Out, Doubtful, Questionable).
+  nfl_snaps                 % de jugadas que jugó cada jugador NFL en cada partido, desde 2020.
   nba_partidos              NBA desde 2001-02 (resultado, prórrogas, fase, sede) y calendario pendiente.
   nba_estadisticas_equipo   Estadísticas de cada equipo en cada partido NBA (tiros, rebotes,
                             asistencias, pérdidas...).
@@ -43,11 +43,11 @@ URL_OPENFOOTBALL = "https://raw.githubusercontent.com/openfootball/football.json
 URL_NFL_PARTIDOS = "https://raw.githubusercontent.com/nflverse/nfldata/master/data/games.csv"
 URL_NFL_EQUIPOS = "https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_week_{}.csv"
 URL_NFL_JUGADORES = "https://github.com/nflverse/nflverse-data/releases/download/{0}/{0}_{1}.csv"  # injuries, snap_counts
-PRIMERA_NFL_JUGADORES = 2012
+PRIMERA_NFL_JUGADORES = 2020  # desde 2020 para que la base no crezca tanto (los pesos ya están ajustados)
 URL_NBA_PARTIDOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_{}.csv"
 URL_NBA_EQUIPOS = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_team_boxscores/team_box_{}.csv"
 URL_NBA_JUGADORES = "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_player_boxscores/player_box_{}.csv"
-PRIMERA_NBA_JUGADORES = 2012  # 2011-12: da historial a las temporadas de validación del modelo (2021-22 en adelante)
+PRIMERA_NBA_JUGADORES = 2020  # 2019-20: da historial a las temporadas de validación del modelo (2021-22 en adelante)
 
 # código -> (nombre, país, alias en español, código openfootball, calendario anual)
 COMPETICIONES = {
