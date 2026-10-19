@@ -336,6 +336,18 @@ def _football_data(con, avisar, hoy):
         nonlocal añadidos, completados
         filas = [f[:4] + (canonico.get(_clave_nombre(f[4]), f[4]), canonico.get(_clave_nombre(f[5]), f[5])) + f[6:]
                  for f in filas if f]
+        # Nombres que siguen sin coincidir ("Man Utd" / "Man United"): se aprenden de los partidos que
+        # coinciden en fecha y marcador con los que ya hay
+        conocidos = {n for (n,) in con.execute("SELECT local FROM futbol_partidos WHERE competicion = ? UNION "
+                                               "SELECT visitante FROM futbol_partidos WHERE competicion = ?", (codigo, codigo))}
+        if conocidos and {n for f in filas for n in f[4:6]} - conocidos:
+            fechas = sorted({f[2] for f in filas})
+            referencia = con.execute("SELECT fecha, local, visitante, goles_local, goles_visitante FROM futbol_partidos "
+                                     "WHERE competicion = ? AND goles_local IS NOT NULL AND fecha BETWEEN ? AND ?",
+                                     (codigo, fechas[0], fechas[-1])).fetchall()
+            mapa = {n: m for n, m in _mapear_nombres([(f[2], f[4], f[5], f[6], f[7]) for f in filas if f[6] is not None],
+                                                     referencia).items() if n not in conocidos}
+            filas = [f[:4] + (mapa.get(f[4], f[4]), mapa.get(f[5], f[5])) + f[6:] for f in filas]
         existentes = {}
         for rowid, temp, fecha, l, v, g in con.execute(
                 "SELECT rowid, temporada, fecha, local, visitante, goles_local FROM futbol_partidos WHERE competicion = ?", (codigo,)):
@@ -485,9 +497,16 @@ def _openfootball_actual(con, avisar, hoy):
     return total
 
 
+# Letras que la normalización Unicode no descompone en ASCII
+_LETRAS = str.maketrans({"ß": "ss", "ø": "o", "Ø": "O", "æ": "ae", "Æ": "AE", "ł": "l", "Ł": "L", "đ": "d", "Đ": "D",
+                         "ı": "i", "œ": "oe", "Œ": "OE", "þ": "th", "ð": "d"})
+
+
 def _clave_nombre(nombre):
-    """Clave que ignora signos, mayúsculas y tildes ("Nott'm Forest" y "Nottm Forest" coinciden)."""
-    return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode().lower())
+    """Clave que ignora signos, mayúsculas y tildes ("Nott'm Forest" y "Nottm Forest",
+    "Preußen Münster" y "Preussen Munster" coinciden)."""
+    texto = unicodedata.normalize("NFKD", nombre.translate(_LETRAS)).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]", "", texto)
 
 
 def _unificar_nombres(con, avisar):
