@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-19 16:20 UTC_
+_Actualizado automáticamente: 2026-10-20 09:53 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -11,22 +11,22 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     78    51.3%   0.559    0.947   0.185
-  Referencia (frecuencias)           78    44.9%   0.650    1.075   0.226
-  Modelo (partidos c/cuotas)         78    51.3%   0.559    0.947   0.185
-  Mercado de apuestas                78    55.1%   0.547    0.927   0.182
+  Modelo Poisson                     88    52.3%   0.560    0.948   0.182
+  Referencia (frecuencias)           88    43.2%   0.658    1.086   0.226
+  Modelo (partidos c/cuotas)         88    52.3%   0.560    0.948   0.182
+  Mercado de apuestas                88    55.7%   0.545    0.925   0.177
 
-  Acierto en más/menos de 2.5 goles: 67.9% (78 partidos)
+  Acierto en más/menos de 2.5 goles: 64.8% (88 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
-  Predicho  0-10 %  media   7.0%  →  real   0.0%  (6)
-  Predicho 10-20 %  media  16.3%  →  real   3.7%  (27)
-  Predicho 20-30 %  media  26.1%  →  real  27.6%  (105)
-  Predicho 30-40 %  media  35.2%  →  real  40.6%  (32)
-  Predicho 40-50 %  media  45.6%  →  real  31.0%  (29)
-  Predicho 50-60 %  media  54.5%  →  real  68.2%  (22)
-  Predicho 60-70 %  media  63.5%  →  real  60.0%  (5)
-  Predicho 70-80 %  media  73.7%  →  real 100.0%  (6)
+  Predicho  0-10 %  media   7.3%  →  real   0.0%  (7)
+  Predicho 10-20 %  media  16.3%  →  real   3.4%  (29)
+  Predicho 20-30 %  media  26.2%  →  real  27.5%  (120)
+  Predicho 30-40 %  media  35.1%  →  real  40.0%  (35)
+  Predicho 40-50 %  media  45.3%  →  real  34.3%  (35)
+  Predicho 50-60 %  media  54.5%  →  real  69.6%  (23)
+  Predicho 60-70 %  media  63.6%  →  real  50.0%  (6)
+  Predicho 70-80 %  media  73.7%  →  real 100.0%  (7)
   Predicho 80-90 %  media  83.7%  →  real 100.0%  (2)
 ```
 
@@ -39,22 +39,22 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     60    45.0%   0.636    1.054   0.209
-  Referencia (frecuencias)           60    38.3%   0.668    1.101   0.225
-  Modelo (partidos c/cuotas)         60    45.0%   0.636    1.054   0.209
-  Mercado de apuestas                60    45.0%   0.630    1.045   0.205
+  Modelo Poisson                     70    47.1%   0.610    1.018   0.204
+  Referencia (frecuencias)           70    40.0%   0.663    1.093   0.229
+  Modelo (partidos c/cuotas)         70    47.1%   0.610    1.018   0.204
+  Mercado de apuestas                70    48.6%   0.599    1.003   0.198
 
-  Acierto en más/menos de 2.5 goles: 51.7% (60 partidos)
+  Acierto en más/menos de 2.5 goles: 51.4% (70 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
-  Predicho  0-10 %  media   7.9%  →  real   0.0%  (2)
-  Predicho 10-20 %  media  16.5%  →  real  20.0%  (15)
-  Predicho 20-30 %  media  26.0%  →  real  30.9%  (81)
-  Predicho 30-40 %  media  34.7%  →  real  29.4%  (34)
-  Predicho 40-50 %  media  44.4%  →  real  40.7%  (27)
-  Predicho 50-60 %  media  54.4%  →  real  33.3%  (12)
+  Predicho  0-10 %  media   8.3%  →  real   0.0%  (3)
+  Predicho 10-20 %  media  16.5%  →  real  17.6%  (17)
+  Predicho 20-30 %  media  25.9%  →  real  27.7%  (94)
+  Predicho 30-40 %  media  34.9%  →  real  31.7%  (41)
+  Predicho 40-50 %  media  44.4%  →  real  41.4%  (29)
+  Predicho 50-60 %  media  54.5%  →  real  50.0%  (16)
   Predicho 60-70 %  media  63.8%  →  real  71.4%  (7)
-  Predicho 70-80 %  media  75.7%  →  real 100.0%  (2)
+  Predicho 70-80 %  media  75.1%  →  real 100.0%  (3)
 ```
 
 ## Serie A (temporada en curso)
@@ -66,21 +66,21 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     60    58.3%   0.541    0.923   0.190
-  Referencia (frecuencias)           60    46.7%   0.642    1.060   0.239
-  Modelo (partidos c/cuotas)         60    58.3%   0.541    0.923   0.190
-  Mercado de apuestas                60    56.7%   0.531    0.910   0.187
+  Modelo Poisson                     70    57.1%   0.557    0.948   0.204
+  Referencia (frecuencias)           70    47.1%   0.635    1.049   0.243
+  Modelo (partidos c/cuotas)         70    57.1%   0.557    0.948   0.204
+  Mercado de apuestas                70    58.6%   0.539    0.922   0.197
 
-  Acierto en más/menos de 2.5 goles: 46.7% (60 partidos)
+  Acierto en más/menos de 2.5 goles: 42.9% (70 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
   Predicho  0-10 %  media   7.4%  →  real   0.0%  (2)
-  Predicho 10-20 %  media  16.1%  →  real  11.1%  (18)
-  Predicho 20-30 %  media  26.6%  →  real  18.4%  (76)
-  Predicho 30-40 %  media  33.6%  →  real  35.1%  (37)
-  Predicho 40-50 %  media  44.6%  →  real  52.2%  (23)
-  Predicho 50-60 %  media  54.5%  →  real  68.8%  (16)
-  Predicho 60-70 %  media  63.7%  →  real 100.0%  (6)
+  Predicho 10-20 %  media  16.0%  →  real  14.3%  (21)
+  Predicho 20-30 %  media  26.6%  →  real  18.4%  (87)
+  Predicho 30-40 %  media  33.7%  →  real  36.2%  (47)
+  Predicho 40-50 %  media  44.8%  →  real  50.0%  (26)
+  Predicho 50-60 %  media  55.0%  →  real  72.2%  (18)
+  Predicho 60-70 %  media  63.6%  →  real  85.7%  (7)
   Predicho 70-80 %  media  75.4%  →  real 100.0%  (2)
 ```
 
@@ -93,22 +93,22 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     45    55.6%   0.583    0.975   0.209
-  Referencia (frecuencias)           45    51.1%   0.624    1.036   0.231
-  Modelo (partidos c/cuotas)         45    55.6%   0.583    0.975   0.209
-  Mercado de apuestas                45    55.6%   0.590    0.984   0.212
+  Modelo Poisson                     54    55.6%   0.579    0.968   0.206
+  Referencia (frecuencias)           54    51.9%   0.622    1.034   0.229
+  Modelo (partidos c/cuotas)         54    55.6%   0.579    0.968   0.206
+  Mercado de apuestas                54    57.4%   0.586    0.978   0.210
 
-  Acierto en más/menos de 2.5 goles: 77.8% (45 partidos)
+  Acierto en más/menos de 2.5 goles: 74.1% (54 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
   Predicho  0-10 %  media   6.7%  →  real   0.0%  (4)
-  Predicho 10-20 %  media  15.4%  →  real  22.7%  (22)
-  Predicho 20-30 %  media  24.1%  →  real  23.5%  (51)
-  Predicho 30-40 %  media  34.9%  →  real  27.8%  (18)
-  Predicho 40-50 %  media  45.2%  →  real  46.7%  (15)
-  Predicho 50-60 %  media  55.5%  →  real  54.5%  (11)
+  Predicho 10-20 %  media  15.4%  →  real  20.0%  (25)
+  Predicho 20-30 %  media  24.0%  →  real  23.8%  (63)
+  Predicho 30-40 %  media  35.2%  →  real  30.4%  (23)
+  Predicho 40-50 %  media  45.3%  →  real  47.1%  (17)
+  Predicho 50-60 %  media  55.9%  →  real  53.3%  (15)
   Predicho 60-70 %  media  64.7%  →  real  71.4%  (7)
-  Predicho 70-80 %  media  74.0%  →  real  80.0%  (5)
+  Predicho 70-80 %  media  73.7%  →  real  83.3%  (6)
   Predicho 80-90 %  media  83.5%  →  real  50.0%  (2)
 ```
 
@@ -121,20 +121,20 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     54    53.7%   0.599    1.005   0.205
-  Referencia (frecuencias)           54    46.3%   0.645    1.068   0.226
-  Modelo (partidos c/cuotas)         54    53.7%   0.599    1.005   0.205
-  Mercado de apuestas                54    53.7%   0.595    0.997   0.203
+  Modelo Poisson                     63    54.0%   0.588    0.988   0.204
+  Referencia (frecuencias)           63    44.4%   0.649    1.072   0.233
+  Modelo (partidos c/cuotas)         63    54.0%   0.588    0.988   0.204
+  Mercado de apuestas                63    55.6%   0.585    0.983   0.203
 
-  Acierto en más/menos de 2.5 goles: 59.3% (54 partidos)
+  Acierto en más/menos de 2.5 goles: 60.3% (63 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
   Predicho  0-10 %  media   6.0%  →  real   0.0%  (1)
-  Predicho 10-20 %  media  17.0%  →  real  21.4%  (14)
-  Predicho 20-30 %  media  26.0%  →  real  24.7%  (73)
-  Predicho 30-40 %  media  34.5%  →  real  20.7%  (29)
-  Predicho 40-50 %  media  44.1%  →  real  61.5%  (26)
-  Predicho 50-60 %  media  55.2%  →  real  50.0%  (14)
+  Predicho 10-20 %  media  17.3%  →  real  17.6%  (17)
+  Predicho 20-30 %  media  25.9%  →  real  22.6%  (84)
+  Predicho 30-40 %  media  34.5%  →  real  25.7%  (35)
+  Predicho 40-50 %  media  44.1%  →  real  62.1%  (29)
+  Predicho 50-60 %  media  55.3%  →  real  55.6%  (18)
   Predicho 60-70 %  media  64.9%  →  real  75.0%  (4)
   Predicho 80-90 %  media  81.1%  →  real 100.0%  (1)
 ```
@@ -144,20 +144,20 @@ Validación histórica del modelo (sin mirar el futuro)
 ```
 Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ══════════════════════════════════════════════════════════════════
-  Partidos evaluados: 91
-  Acierto ganador (combinado)        █████████████░░░░░░░  63.7%
-  Acierto ganador (solo Elo)         ████████████░░░░░░░░  58.2%
-  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  53.8%
-  Acierto del favorito del mercado   █████████████░░░░░░░  62.6%
-  Brier score: 0.222 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.634
-  Error medio del margen: 9.27 pts · del total: 11.62 pts
+  Partidos evaluados: 92
+  Acierto ganador (combinado)        █████████████░░░░░░░  64.1%
+  Acierto ganador (solo Elo)         ████████████░░░░░░░░  58.7%
+  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  54.3%
+  Acierto del favorito del mercado   █████████████░░░░░░░  63.0%
+  Brier score: 0.220 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.629
+  Error medio del margen: 9.22 pts · del total: 11.61 pts
 
 ── Frente a las casas de apuestas ──────────────────────────────
-  Error medio del margen: modelo 9.27 pts vs mercado 9.46 pts
-  Acierto contra el spread           ████████████░░░░░░░░  58.8%  (85)
-  ATS con diferencia ≥3 pts          ████████████░░░░░░░░  58.3%  (24)
-  Error medio del total: modelo 11.62 vs mercado 10.57
-  Acierto over/under                 ████████░░░░░░░░░░░░  40.7%  (91)
+  Error medio del margen: modelo 9.22 pts vs mercado 9.37 pts
+  Acierto contra el spread           ████████████░░░░░░░░  58.1%  (86)
+  ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  56.0%  (25)
+  Error medio del total: modelo 11.61 vs mercado 10.58
+  Acierto over/under                 ████████░░░░░░░░░░░░  41.3%  (92)
   Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.
 ```
 
