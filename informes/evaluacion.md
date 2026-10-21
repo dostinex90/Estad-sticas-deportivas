@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-20 09:53 UTC_
+_Actualizado automáticamente: 2026-10-21 09:54 UTC_
 
 ## LaLiga (temporada en curso)
 
