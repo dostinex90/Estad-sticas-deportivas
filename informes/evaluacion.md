@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-21 09:54 UTC_
+_Actualizado automáticamente: 2026-10-22 09:55 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -11,19 +11,19 @@ Validación histórica del modelo (sin mirar el futuro)
   Brier, log-loss y RPS: menor es mejor. RPS es la métrica estándar para 1X2.
 
                                Partidos  Acierto   Brier  LogLoss     RPS
-  Modelo Poisson                     88    52.3%   0.560    0.948   0.182
-  Referencia (frecuencias)           88    43.2%   0.658    1.086   0.226
-  Modelo (partidos c/cuotas)         88    52.3%   0.560    0.948   0.182
-  Mercado de apuestas                88    55.7%   0.545    0.925   0.177
+  Modelo Poisson                     89    52.8%   0.559    0.947   0.183
+  Referencia (frecuencias)           89    43.8%   0.655    1.082   0.226
+  Modelo (partidos c/cuotas)         89    52.8%   0.559    0.947   0.183
+  Mercado de apuestas                89    55.1%   0.548    0.929   0.179
 
-  Acierto en más/menos de 2.5 goles: 64.8% (88 partidos)
+  Acierto en más/menos de 2.5 goles: 64.0% (89 partidos)
 
 ── Calibración (¿lo que el modelo dice 60% ocurre ~60%?) ───────
   Predicho  0-10 %  media   7.3%  →  real   0.0%  (7)
   Predicho 10-20 %  media  16.3%  →  real   3.4%  (29)
-  Predicho 20-30 %  media  26.2%  →  real  27.5%  (120)
-  Predicho 30-40 %  media  35.1%  →  real  40.0%  (35)
-  Predicho 40-50 %  media  45.3%  →  real  34.3%  (35)
+  Predicho 20-30 %  media  26.2%  →  real  27.3%  (121)
+  Predicho 30-40 %  media  35.0%  →  real  38.9%  (36)
+  Predicho 40-50 %  media  45.2%  →  real  36.1%  (36)
   Predicho 50-60 %  media  54.5%  →  real  69.6%  (23)
   Predicho 60-70 %  media  63.6%  →  real  50.0%  (6)
   Predicho 70-80 %  media  73.7%  →  real 100.0%  (7)
@@ -164,16 +164,14 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ## NBA (temporada en curso o, si no ha empezado, la anterior)
 
 ```
-(la temporada 2026-27 aún no ha empezado: se muestra la 2025-26)
-
-Validación del modelo en 2025-26 (día a día, sin datos futuros)
+Validación del modelo en 2026-27 (día a día, sin datos futuros)
 ═══════════════════════════════════════════════════════════════
-  Partidos evaluados: 1322
-  Acierto ganador (combinado)        ██████████████░░░░░░  67.8%
-  Acierto ganador (solo Elo)         █████████████░░░░░░░  67.4%
-  Acierto ganador (solo ratings)     ██████████████░░░░░░  68.7%
-  Gana siempre el local              ███████████░░░░░░░░░  55.5%
-  Brier score: 0.204 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.209 · log-loss 0.594
-  Error medio del margen: 11.34 pts · del total: 15.09 pts
+  Partidos evaluados: 3
+  Acierto ganador (combinado)        ███████░░░░░░░░░░░░░  33.3%
+  Acierto ganador (solo Elo)         ███████░░░░░░░░░░░░░  33.3%
+  Acierto ganador (solo ratings)     ███████░░░░░░░░░░░░░  33.3%
+  Gana siempre el local              ███████░░░░░░░░░░░░░  33.3%
+  Brier score: 0.392 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.388 · log-loss 1.032
+  Error medio del margen: 11.65 pts · del total: 13.04 pts
   La base no tiene líneas de apuestas de la NBA, así que no hay comparación con el mercado.
 ```
