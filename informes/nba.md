@@ -1,38 +1,35 @@
 # NBA: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-10-22 09:55 UTC_
+_Actualizado automáticamente: 2026-10-23 09:54 UTC_
 
 ## Pronósticos de los próximos días
 
 ```
-Pronósticos NBA 2026-27 — 2026-10-21 a 2026-10-23
+Pronósticos NBA 2026-27 — 2026-10-22 a 2026-10-24
 ═════════════════════════════════════════════════
   Fecha       Partido        Prob. local   Spread   Total  Marcador  Jug.  Notas
-  2026-10-21  MIN @ MIA            54.7%     -1.2   236.8   118-119  +0.0  
-  2026-10-21  GS @ LAL             68.9%     -4.9   227.7   111-116  +0.0  
-  2026-10-21  ATL @ ORL            57.5%     -1.9   229.6   114-116  +0.0  
-  2026-10-21  MIL @ WSH            44.1%     +1.5   233.7   118-116  +0.0  
-  2026-10-21  CHA @ BKN            21.9%     +7.8   221.3   115-107  +0.0  
-  2026-10-21  CHI @ TOR            76.6%     -7.3   232.5   113-120  +0.0  
-  2026-10-21  UTAH @ MEM           58.9%     -2.3   242.8   120-123  +0.0  
-  2026-10-21  IND @ NO             64.3%     -3.7   236.7   117-120  +0.0  
-  2026-10-21  DAL @ HOU            79.0%     -8.1   227.8   110-118  +0.0  
-  2026-10-21  PHX @ POR            55.7%     -1.4   223.6   111-113  +0.0  
-  2026-10-21  SAC @ LAC            78.6%     -7.9   229.4   111-119  +0.0  
-  2026-10-22  CLE @ PHI            73.4%     -6.3   228.5   111-117  +5.9  bajas PHI: Paul George (+1.4), Kelly Oubre Jr. (+0.7), Quentin Grimes (+0.6)
-  2026-10-22  DEN @ OKC            79.5%     -8.3   232.0   112-120  +2.1  
-  2026-10-23  NY @ BOS             47.0%     +0.8   217.3   109-108  -0.1  bajas BOS: Jaylen Brown (+2.0), Nikola Vucevic (+1.0)
-  2026-10-23  HOU @ SA             73.6%     -6.3   221.7   108-114  +0.7  
-  2026-10-23  ATL @ CHA            65.7%     -4.1   229.1   113-117  +0.0  
-  2026-10-23  DAL @ IND            55.1%     -1.3   236.6   118-119  +0.0  
-  2026-10-23  MIN @ ORL            55.5%     -1.4   227.1   113-114  +0.0  
-  2026-10-23  TOR @ WSH            23.7%     +7.2   232.6   120-113  +0.0  
-  2026-10-23  DET @ MIA            38.8%     +2.8   233.2   118-115  -0.9  bajas DET: Tobias Harris (+1.1)
-  2026-10-23  CHI @ MIL            56.3%     -1.6   233.6   116-118  +0.0  
-  2026-10-23  NO @ UTAH            45.9%     +1.0   242.1   122-121  +0.0  
-  2026-10-23  MEM @ GS             71.7%     -5.7   234.3   114-120  +0.0  
-  2026-10-23  LAC @ LAL            60.8%     -2.7   225.8   112-114  +0.0  
-  2026-10-23  POR @ SAC            36.5%     +3.4   229.6   116-113  +0.0  
+  2026-10-22  CLE @ PHI            74.1%     -6.5   228.5   111-117  +6.0  bajas PHI: Paul George (+1.4), Kelly Oubre Jr. (+0.7), Quentin Grimes (+0.6)
+  2026-10-22  DEN @ OKC            79.9%     -8.4   232.2   112-120  +2.1  
+  2026-10-23  NY @ BOS             49.9%     +0.0   217.1   109-109  +0.4  bajas BOS: Jaylen Brown (+2.0)
+  2026-10-23  HOU @ SA             68.9%     -4.9   222.8   109-114  -0.6  
+  2026-10-23  ATL @ CHA            56.1%     -1.5   230.9   115-116  -2.2  bajas ATL: Jonathan Kuminga (+0.8) · bajas CHA: LaMelo Ball (+1.7), Kon Knueppel (+1.2), Miles Bridges (+1.2)
+  2026-10-23  DAL @ IND            68.7%     -4.9   238.4   117-122  +2.5  bajas DAL: Brandon Williams (+1.0), Marvin Bagley III (+1.0), Klay Thompson (+0.5), Ryan Nembhard (+0.3) · bajas IND: Jay Huff (+0.8), Aaron Nesmith (+0.6), Kobe Brown (+0.4)
+  2026-10-23  MIN @ ORL            46.8%     +0.8   229.6   115-114  -0.7  bajas MIN: Julius Randle (+1.6), Naz Reid (+1.0), Donte DiVincenzo (+0.7) · bajas ORL: Anthony Black (+0.6)
+  2026-10-23  TOR @ WSH            30.1%     +5.2   233.1   119-114  +2.4  bajas TOR: Brandon Ingram (+1.5) · bajas WSH: Will Riley (+0.7), Julian Reese (+0.5), Anthony Gill (+0.5), Jamir Watkins (+0.4)
+  2026-10-23  DET @ MIA            43.7%     +1.6   232.9   117-116  +1.4  bajas DET: Tobias Harris (+1.1) · bajas MIA: Tyler Herro (+1.5), Norman Powell (+1.2), Jaime Jaquez Jr. (+1.0), Kel'el Ware (+1.0)
+  2026-10-23  CHI @ MIL            64.1%     -3.6   234.1   115-119  +1.0  bajas CHI: Collin Sexton (+1.3), Guerschon Yabusele (+0.5) · bajas MIL: Cormac Ryan (+0.5)
+  2026-10-23  NO @ UTAH            47.0%     +0.7   241.2   121-120  +0.5  bajas UTAH: John Konchar (+0.5), Blake Hinson (+0.4), Kennedy Chandler (+0.3)
+  2026-10-23  MEM @ GS             62.4%     -3.2   233.2   115-118  -1.1  bajas MEM: Javon Small (+0.8), Olivier-Maxence Prosper (+0.8), Taylor Hendricks (+0.4), Walter Clayton Jr. (+0.4) · bajas GS: Kristaps Porzingis (+1.3), Brandin Podziemski (+1.0), Pat Spencer (+0.4)
+  2026-10-23  LAC @ LAL            69.8%     -5.2   225.0   110-115  +2.2  bajas LAC: Kawhi Leonard (+2.5), John Collins (+0.9), Bennedict Mathurin (+0.9), Jordan Miller (+0.7) · bajas LAL: LeBron James (+2.4), Deandre Ayton (+1.1), Rui Hachimura (+0.7), Luke Kennard (+0.7)
+  2026-10-23  POR @ SAC            17.3%     +9.4   227.0   118-109  -3.7  bajas POR: Jerami Grant (+0.9), Shaedon Sharpe (+0.8), Caleb Love (+0.3) · bajas SAC: DeMar DeRozan (+1.5), Maxime Raynaud (+1.1), Malik Monk (+0.8), Devin Carter (+0.5)
+  2026-10-24  MIA @ CHA            56.0%     -1.5   233.3   116-117  -4.3  bajas MIA: Tyler Herro (+1.5), Norman Powell (+1.2), Jaime Jaquez Jr. (+1.0), Kel'el Ware (+1.0) · bajas CHA: LaMelo Ball (+1.7), Kon Knueppel (+1.2), Miles Bridges (+1.2)
+  2026-10-24  BKN @ CLE            82.9%     -9.5   224.0   107-117  -1.5  bajas BKN: Nic Claxton (+1.0), Ziaire Williams (+0.4), Malachi Smith (+0.3), Terance Mann (+0.3)
+  2026-10-24  MIL @ PHI            90.8%    -13.3   227.1   107-120  +4.0  visitante en días seguidos · bajas MIL: Cormac Ryan (+0.5) · bajas PHI: Paul George (+1.4), Kelly Oubre Jr. (+0.7), Quentin Grimes (+0.6)
+  2026-10-24  HOU @ ATL            48.9%     +0.3   229.9   115-115  -0.9  bajas ATL: Jonathan Kuminga (+0.8)
+  2026-10-24  WSH @ CHI            49.3%     +0.2   241.4   121-121  -3.7  bajas WSH: Will Riley (+0.7), Julian Reese (+0.5), Anthony Gill (+0.5), Jamir Watkins (+0.4) · bajas CHI: Collin Sexton (+1.3), Guerschon Yabusele (+0.5)
+  2026-10-24  SA @ DAL             21.6%     +7.9   232.3   120-112  +0.5  bajas DAL: Brandon Williams (+1.0), Marvin Bagley III (+1.0), Klay Thompson (+0.5), Ryan Nembhard (+0.3)
+  2026-10-24  NO @ DEN             76.9%     -7.4   239.4   116-123  -2.3  visitante en días seguidos
+  2026-10-24  GS @ PHX             70.2%     -5.3   224.4   110-115  +0.7  visitante en días seguidos · bajas GS: Kristaps Porzingis (+1.3), Brandin Podziemski (+1.0), Pat Spencer (+0.4) · bajas PHX: Mark Williams (+1.2), Grayson Allen (+0.8), Royce O'Neale (+0.4)
 
   Spread desde el punto de vista del local (negativo = local favorito). Jug.: ajuste por jugadores
   disponibles, en puntos para el local. Bajas: jugadores importantes que no jugaron el último partido
@@ -42,44 +39,44 @@ Pronósticos NBA 2026-27 — 2026-10-21 a 2026-10-23
 ## Probabilidades de playoffs y de título
 
 ```
-Simulación de la temporada 2026-27 (2000 simulaciones, 1197 partidos pendientes)
+Simulación de la temporada 2026-27 (2000 simulaciones, 1186 partidos pendientes)
 ════════════════════════════════════════════════════════════════════════════════
 
 ── Este ────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                         Top 6      1º   Final  Campeón
-  New York Knicks                  57.3  ███████████████████░  96.3%   91.0%   34.8%   33.8%    18.2%
-  Detroit Pistons                  54.6  ███████████████████░  93.6%   84.2%   23.2%   19.2%     8.5%
-  Boston Celtics                   51.0  █████████████████░░░  86.8%   72.5%   11.6%   12.2%     5.0%
-  Charlotte Hornets                50.4  █████████████████░░░  86.2%   69.7%   10.4%    9.4%     3.6%
-  Cleveland Cavaliers              48.0  ████████████████░░░░  78.3%   59.9%    6.5%    7.4%     2.9%
-  Toronto Raptors                  45.1  ██████████████░░░░░░  68.9%   47.6%    3.5%    4.7%     1.4%
-  Atlanta Hawks                    43.9  █████████████░░░░░░░  64.5%   41.9%    2.3%    2.9%     1.0%
-  Philadelphia 76ers               43.8  █████████████░░░░░░░  63.0%   40.6%    2.5%    3.1%     1.0%
-  Miami Heat                       43.7  █████████████░░░░░░░  62.9%   39.6%    3.0%    3.8%     1.0%
-  Orlando Magic                    43.8  █████████████░░░░░░░  62.7%   40.8%    2.1%    2.9%     0.8%
-  Chicago Bulls                    29.9  ███░░░░░░░░░░░░░░░░░  12.7%    4.7%    0.1%    0.1%     0.1%
-  Milwaukee Bucks                  29.4  ██░░░░░░░░░░░░░░░░░░  11.1%    3.6%    0.1%    0.1%     0.1%
-  Indiana Pacers                   28.5  ██░░░░░░░░░░░░░░░░░░   9.0%    2.5%    0.0%    0.1%     0.0%
-  Brooklyn Nets                    22.9  █░░░░░░░░░░░░░░░░░░░   2.7%    0.9%    0.0%    0.0%     0.0%
-  Washington Wizards               20.6  ░░░░░░░░░░░░░░░░░░░░   1.2%    0.4%    0.0%    0.0%     0.0%
+  New York Knicks                  57.7  ███████████████████░  97.3%   92.0%   35.0%   31.4%    17.4%
+  Detroit Pistons                  54.5  ███████████████████░  94.0%   84.9%   20.9%   20.0%     8.9%
+  Boston Celtics                   51.1  ██████████████████░░  88.8%   73.5%    9.8%   11.1%     4.6%
+  Charlotte Hornets                50.7  █████████████████░░░  86.2%   70.3%   11.2%   10.5%     4.5%
+  Toronto Raptors                  49.3  █████████████████░░░  84.6%   65.3%    7.5%    8.2%     3.1%
+  Cleveland Cavaliers              48.1  ████████████████░░░░  80.1%   61.8%    6.2%    6.9%     2.5%
+  Atlanta Hawks                    45.6  ██████████████░░░░░░  71.7%   48.5%    4.0%    4.7%     1.6%
+  Philadelphia 76ers               44.2  █████████████░░░░░░░  66.5%   40.3%    2.9%    3.5%     1.4%
+  Orlando Magic                    41.7  ███████████░░░░░░░░░  54.0%   30.6%    1.7%    1.8%     0.7%
+  Miami Heat                       39.6  █████████░░░░░░░░░░░  45.4%   23.3%    0.8%    1.6%     0.5%
+  Indiana Pacers                   30.5  ███░░░░░░░░░░░░░░░░░  13.7%    4.5%    0.1%    0.1%     0.0%
+  Milwaukee Bucks                  27.3  █░░░░░░░░░░░░░░░░░░░   6.7%    2.2%    0.1%    0.1%     0.0%
+  Chicago Bulls                    25.5  █░░░░░░░░░░░░░░░░░░░   5.7%    1.7%    0.0%    0.0%     0.0%
+  Washington Wizards               23.0  █░░░░░░░░░░░░░░░░░░░   3.3%    0.8%    0.0%    0.0%     0.0%
+  Brooklyn Nets                    22.8  ░░░░░░░░░░░░░░░░░░░░   2.1%    0.4%    0.0%    0.0%     0.0%
 
 ── Oeste ───────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                         Top 6      1º   Final  Campeón
-  Oklahoma City Thunder            61.8  ████████████████████  99.1%   97.3%   50.0%   42.0%    26.8%
-  San Antonio Spurs                58.3  ████████████████████  98.1%   94.7%   27.1%   27.9%    16.4%
-  Denver Nuggets                   49.3  █████████████████░░░  85.2%   70.9%    6.0%    7.0%     3.5%
-  Houston Rockets                  48.1  ████████████████░░░░  80.6%   64.3%    5.1%    7.0%     3.5%
-  Los Angeles Lakers               46.0  ███████████████░░░░░  73.7%   55.6%    3.1%    3.9%     1.6%
-  Minnesota Timberwolves           44.9  ██████████████░░░░░░  70.8%   49.2%    2.9%    4.0%     1.8%
-  LA Clippers                      44.2  ██████████████░░░░░░  67.7%   46.8%    2.2%    2.4%     1.1%
-  Phoenix Suns                     43.1  █████████████░░░░░░░  62.5%   40.6%    1.5%    2.4%     0.9%
-  Portland Trail Blazers           42.1  ████████████░░░░░░░░  59.9%   37.7%    1.3%    2.2%     0.7%
-  Golden State Warriors            37.5  ████████░░░░░░░░░░░░  40.4%   19.4%    0.6%    0.9%     0.3%
-  New Orleans Pelicans             33.3  █████░░░░░░░░░░░░░░░  24.6%   10.2%    0.2%    0.1%     0.1%
-  Dallas Mavericks                 30.0  ███░░░░░░░░░░░░░░░░░  16.1%    6.5%    0.1%    0.1%     0.0%
-  Sacramento Kings                 26.7  ██░░░░░░░░░░░░░░░░░░   8.5%    2.6%    0.0%    0.0%     0.0%
-  Memphis Grizzlies                26.3  █░░░░░░░░░░░░░░░░░░░   6.7%    2.2%    0.0%    0.0%     0.0%
-  Utah Jazz                        25.4  █░░░░░░░░░░░░░░░░░░░   6.4%    2.0%    0.0%    0.1%     0.0%
+  Oklahoma City Thunder            61.5  ████████████████████  99.2%   97.0%   49.1%   38.8%    23.7%
+  San Antonio Spurs                57.6  ███████████████████░  97.1%   91.1%   25.7%   26.1%    15.2%
+  Houston Rockets                  49.3  █████████████████░░░  84.2%   65.8%    5.5%    6.2%     2.9%
+  Denver Nuggets                   49.4  █████████████████░░░  84.0%   66.5%    5.1%    6.8%     3.3%
+  Minnesota Timberwolves           48.9  █████████████████░░░  83.0%   64.5%    5.0%    6.8%     3.2%
+  Los Angeles Lakers               48.4  ████████████████░░░░  80.8%   62.2%    3.9%    5.4%     2.4%
+  Portland Trail Blazers           46.7  ████████████████░░░░  78.6%   56.1%    3.2%    4.6%     1.9%
+  LA Clippers                      46.3  ███████████████░░░░░  74.2%   51.7%    2.1%    3.9%     1.5%
+  Phoenix Suns                     37.6  ████████░░░░░░░░░░░░  40.0%   18.4%    0.4%    0.5%     0.4%
+  Golden State Warriors            35.2  ██████░░░░░░░░░░░░░░  29.6%   11.5%    0.1%    0.4%     0.1%
+  New Orleans Pelicans             31.5  ████░░░░░░░░░░░░░░░░  18.4%    6.2%    0.1%    0.1%     0.0%
+  Dallas Mavericks                 29.0  ██░░░░░░░░░░░░░░░░░░  11.5%    3.6%    0.0%    0.1%     0.0%
+  Memphis Grizzlies                29.2  ██░░░░░░░░░░░░░░░░░░  11.2%    3.5%    0.0%    0.2%     0.1%
+  Sacramento Kings                 24.5  █░░░░░░░░░░░░░░░░░░░   5.1%    1.1%    0.0%    0.0%     0.0%
+  Utah Jazz                        23.2  █░░░░░░░░░░░░░░░░░░░   3.4%    0.7%    0.0%    0.1%     0.0%
 
   Playoffs incluye pasar el play-in (puestos 7-10). Desempates simplificados.
   Final = llegar a las Finales de la NBA. Lesiones y traspasos futuros no se tienen en cuenta.
@@ -93,43 +90,43 @@ Clasificación por conferencias 2026-27
 
 ── Este ────────────────────────────────────────────────────────
    Equipo  Récord   PCT   PF/p   PC/p  DIF/p   Local  Visit.   Conf.  Racha  Últ.10
- 1 DET        1-0 1.000  121.0  113.0   +8.0     1-0     0-0     1-0     G1  G
- 2 PHI        1-0 1.000  106.0  100.0   +6.0     0-0     1-0     1-0     G1  G
- 3 ATL        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 4 BKN        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 5 CHA        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 6 CHI        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 1 TOR        1-0 1.000  135.0   92.0  +43.0     1-0     0-0     1-0     G1  G
+ 2 WSH        1-0 1.000  128.0  116.0  +12.0     1-0     0-0     1-0     G1  G
+ 3 DET        1-0 1.000  121.0  113.0   +8.0     1-0     0-0     1-0     G1  G
+ 4 ATL        1-0 1.000  132.0  125.0   +7.0     0-0     1-0     1-0     G1  G
+ 5 CHA        1-0 1.000  110.0  103.0   +7.0     0-0     1-0     1-0     G1  G
+ 6 PHI        1-0 1.000  106.0  100.0   +6.0     0-0     1-0     1-0     G1  G
   ······································································
- 7 CLE        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 8 IND        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 9 MIA        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-10 MIL        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 7 IND        1-0 1.000  123.0  120.0   +3.0     0-0     1-0     0-0     G1  G
+ 8 CLE        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 9 NY         0-1  .000  100.0  106.0   -6.0     0-1     0-0     0-1     P1  P
+10 BKN        0-1  .000  103.0  110.0   -7.0     0-1     0-0     0-1     P1  P
   ······································································
-11 ORL        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-12 TOR        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-13 WSH        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-14 NY         0-1  .000  100.0  106.0   -6.0     0-1     0-0     0-1     P1  P
-15 BOS        0-1  .000  113.0  121.0   -8.0     0-0     0-1     0-1     P1  P
+11 ORL        0-1  .000  125.0  132.0   -7.0     0-1     0-0     0-1     P1  P
+12 BOS        0-1  .000  113.0  121.0   -8.0     0-0     0-1     0-1     P1  P
+13 MIL        0-1  .000  116.0  128.0  -12.0     0-0     0-1     0-1     P1  P
+14 MIA        0-1  .000  106.0  131.0  -25.0     0-1     0-0     0-0     P1  P
+15 CHI        0-1  .000   92.0  135.0  -43.0     0-0     0-1     0-1     P1  P
 
 ── Oeste ───────────────────────────────────────────────────────
    Equipo  Récord   PCT   PF/p   PC/p  DIF/p   Local  Visit.   Conf.  Racha  Últ.10
- 1 OKC        1-0 1.000  116.0  104.0  +12.0     0-0     1-0     1-0     G1  G
- 2 DAL        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 3 DEN        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 4 GS         0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 5 HOU        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 6 LAC        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 1 POR        1-0 1.000  124.0   83.0  +41.0     1-0     0-0     1-0     G1  G
+ 2 LAC        1-0 1.000  121.0   96.0  +25.0     1-0     0-0     1-0     G1  G
+ 3 MIN        1-0 1.000  131.0  106.0  +25.0     0-0     1-0     0-0     G1  G
+ 4 LAL        1-0 1.000  127.0  105.0  +22.0     1-0     0-0     1-0     G1  G
+ 5 MEM        1-0 1.000  123.0  103.0  +20.0     1-0     0-0     1-0     G1  G
+ 6 HOU        1-0 1.000  128.0  110.0  +18.0     1-0     0-0     1-0     G1  G
   ······································································
- 7 LAL        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 8 MEM        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
- 9 MIN        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-10 NO         0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 7 OKC        1-0 1.000  116.0  104.0  +12.0     0-0     1-0     1-0     G1  G
+ 8 DEN        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
+ 9 NO         0-1  .000  120.0  123.0   -3.0     0-1     0-0     0-0     P1  P
+10 SA         0-1  .000  104.0  116.0  -12.0     0-1     0-0     0-1     P1  P
   ······································································
-11 PHX        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-12 POR        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-13 SAC        0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-14 UTAH       0-0  .000    0.0    0.0   +0.0     0-0     0-0     0-0         
-15 SA         0-1  .000  104.0  116.0  -12.0     0-1     0-0     0-1     P1  P
+11 DAL        0-1  .000  110.0  128.0  -18.0     0-0     0-1     0-1     P1  P
+12 UTAH       0-1  .000  103.0  123.0  -20.0     0-0     0-1     0-1     P1  P
+13 GS         0-1  .000  105.0  127.0  -22.0     0-0     0-1     0-1     P1  P
+14 SAC        0-1  .000   96.0  121.0  -25.0     0-0     0-1     0-1     P1  P
+15 PHX        0-1  .000   83.0  124.0  -41.0     0-0     0-1     0-1     P1  P
 
   1-6: playoffs directos · 7-10: play-in · línea de puntos = corte
   Desempates simplificados: % victorias, victorias, diferencia de puntos por partido.
@@ -144,36 +141,36 @@ Power ranking 2026-27
   At./Def.: puntos por encima de la media que anota / evita. Pit.: victorias pitagóricas.
 
    #  Equipo                      Récord    Elo   Neto    At.   Def.  Pit.  Elo (temporada)
-   1  Oklahoma City Thunder          1-0   1683   +8.4   +3.1   +5.4   0.8  ▄
-   2  San Antonio Spurs              0-1   1665   +6.6   +2.4   +4.3   0.2  ▄
-   3  New York Knicks                0-1   1677   +6.4   -0.2   +6.6   0.3  ▄
-   4  Detroit Pistons                1-0   1611   +5.5   +1.1   +4.4   0.7  ▄
-   5  Boston Celtics                 0-1   1597   +4.4   -0.2   +4.6   0.3  ▄
-   6  Charlotte Hornets                    1577   +3.8   +0.7   +3.1        
-   7  Denver Nuggets                       1585   +2.9   +4.2   -1.3        
-   8  Houston Rockets                      1564   +2.7   -1.3   +3.9        
-   9  Cleveland Cavaliers                  1569   +2.2   +1.7   +0.5        
-  10  Los Angeles Lakers                   1558   +1.3   -0.2   +1.5        
-  11  Toronto Raptors                      1534   +2.1   -0.1   +2.2        
-  12  Minnesota Timberwolves               1548   +1.2   +0.7   +0.5        
-  13  Atlanta Hawks                        1524   +1.2   +1.9   -0.7        
-  14  Orlando Magic                        1535   +0.6   -0.7   +1.3        
-  15  LA Clippers                          1523   +1.1   -0.1   +1.2        
-  16  Miami Heat                           1515   +1.2   +4.5   -3.3        
-  17  Philadelphia 76ers             1-0   1528   +0.5   -0.5   +1.0   0.7  ▄
-  18  Phoenix Suns                         1521   +0.6   -1.7   +2.3        
-  19  Portland Trail Blazers               1510   +0.0   -0.6   +0.6        
-  20  Golden State Warriors                1463   -1.2   -0.3   -0.8        
-  21  New Orleans Pelicans                 1423   -2.3   +1.0   -3.3        
-  22  Dallas Mavericks                     1399   -3.9   +0.1   -4.0        
-  23  Chicago Bulls                        1394   -3.8   +1.1   -4.9        
-  24  Milwaukee Bucks                      1398   -4.8   -3.0   -1.8        
-  25  Indiana Pacers                       1385   -4.7   -0.5   -4.2        
-  26  Memphis Grizzlies                    1360   -5.3   -0.2   -5.1        
-  27  Sacramento Kings                     1376   -6.1   -2.1   -4.0        
-  28  Utah Jazz                            1349   -5.6   +1.7   -7.3        
-  29  Brooklyn Nets                        1331   -7.2   -6.2   -1.0        
-  30  Washington Wizards                   1297   -7.8   -0.8   -6.9        
+   1  Oklahoma City Thunder          1-0   1683   +8.4   +3.0   +5.4   0.8  ▄
+   2  San Antonio Spurs              0-1   1665   +6.9   +2.5   +4.4   0.2  ▄
+   3  New York Knicks                0-1   1677   +6.4   -0.3   +6.7   0.3  ▄
+   4  Detroit Pistons                1-0   1611   +5.4   +0.8   +4.6   0.7  ▄
+   5  Boston Celtics                 0-1   1597   +4.4   -0.3   +4.7   0.3  ▄
+   6  Toronto Raptors                1-0   1542   +5.1   +1.1   +4.0   1.0  ▄
+   7  Houston Rockets                1-0   1568   +3.6   -0.3   +4.0   0.9  ▄
+   8  Charlotte Hornets              1-0   1580   +3.4   +0.1   +3.4   0.7  ▄
+   9  Denver Nuggets                       1585   +3.2   +4.3   -1.2        
+  10  Minnesota Timberwolves         1-0   1565   +3.5   +1.8   +1.7   1.0  ▄
+  11  Los Angeles Lakers             1-0   1565   +2.8   +0.7   +2.1   0.9  ▄
+  12  Cleveland Cavaliers                  1569   +2.3   +1.7   +0.6        
+  13  Portland Trail Blazers         1-0   1526   +3.7   +0.5   +3.2   1.0  ▄
+  14  LA Clippers                    1-0   1529   +2.6   -0.0   +2.6   1.0  ▄
+  15  Atlanta Hawks                  1-0   1533   +1.9   +3.5   -1.6   0.7  ▄
+  16  Philadelphia 76ers             1-0   1528   +0.5   -0.5   +1.1   0.7  ▄
+  17  Orlando Magic                  0-1   1527   -0.1   +0.1   -0.3   0.3  ▄
+  18  Miami Heat                     0-1   1499   -1.4   +3.1   -4.5   0.0  ▄
+  19  Phoenix Suns                   0-1   1504   -3.0   -4.3   +1.3   0.0  ▄
+  20  New Orleans Pelicans           0-1   1417   -2.9   +1.0   -3.9   0.4  ▄
+  21  Golden State Warriors          0-1   1457   -2.9   -0.9   -1.9   0.1  ▄
+  22  Indiana Pacers                 1-0   1391   -4.0   +0.1   -4.1   0.6  ▄
+  23  Dallas Mavericks               0-1   1395   -4.8   +0.2   -5.0   0.1  ▄
+  24  Memphis Grizzlies              1-0   1369   -3.5   -0.1   -3.4   0.9  ▄
+  25  Milwaukee Bucks                0-1   1388   -6.1   -3.2   -2.9   0.2  ▄
+  26  Chicago Bulls                  0-1   1386   -7.3   -1.0   -6.3   0.0  ▄
+  27  Washington Wizards             1-0   1306   -6.6   +0.2   -6.8   0.8  ▄
+  28  Brooklyn Nets                  0-1   1328   -6.9   -6.6   -0.4   0.3  ▄
+  29  Utah Jazz                      0-1   1340   -7.2   +0.0   -7.2   0.1  ▄
+  30  Sacramento Kings               0-1   1371   -7.6   -3.5   -4.1   0.0  ▄
 
-  Ventaja de campo estimada: +1.0 pts · media de la liga 114.4 pts por equipo
+  Ventaja de campo estimada: +1.6 pts · media de la liga 114.5 pts por equipo
 ```
