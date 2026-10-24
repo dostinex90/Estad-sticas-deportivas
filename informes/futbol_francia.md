@@ -1,14 +1,15 @@
 # Ligue 1: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-23 09:54 UTC_
+_Actualizado automáticamente: 2026-10-24 09:50 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-23 Brest vs Nice                                    45%   27%   28%    52%   56%  1-1
   2026-10-24 Toulouse vs Troyes                               58%   24%   18%    54%   53%  1-1
   2026-10-24 Lens vs Paris FC                                 56%   24%   20%    55%   55%  1-1
   2026-10-25 Monaco vs Lille                                  38%   28%   34%    50%   55%  1-1
@@ -23,6 +24,7 @@ Pronósticos de los próximos 15 partidos
   2026-10-31 Lyon vs Angers                                   64%   22%   15%    57%   52%  2-0
   2026-10-31 Lorient vs Brest                                 44%   27%   29%    50%   55%  1-1
   2026-10-31 Troyes vs Le Mans                                43%   27%   30%    52%   57%  1-1
+  2026-11-01 Strasbourg vs Auxerre                            52%   25%   23%    57%   58%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
