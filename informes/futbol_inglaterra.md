@@ -1,19 +1,15 @@
 # Premier League: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-24 09:50 UTC_
+_Actualizado automáticamente: 2026-10-25 09:50 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-24 Aston Villa vs Man City                          32%   27%   41%    52%   57%  1-1
-  2026-10-24 Arsenal vs Everton                               64%   22%   14%    53%   49%  2-0
-  2026-10-24 Coventry vs Fulham                               31%   28%   41%    49%   54%  1-1
-  2026-10-24 Chelsea vs Tottenham                             52%   25%   23%    54%   56%  1-1
   2026-10-25 Liverpool vs Brighton                            47%   26%   27%    53%   56%  1-1
   2026-10-25 Crystal Palace vs Newcastle                      40%   27%   33%    53%   57%  1-1
   2026-10-25 Man United vs Bournemouth                        48%   26%   26%    54%   57%  1-1
@@ -25,6 +21,10 @@ Pronósticos de los próximos 15 partidos
   2026-10-31 Coventry vs Sunderland                           36%   28%   36%    49%   55%  1-1
   2026-10-31 Hull vs Ipswich                                  37%   27%   36%    52%   57%  1-1
   2026-10-31 Brentford vs Nottm Forest                        46%   27%   27%    51%   55%  1-1
+  2026-10-31 Tottenham vs Crystal Palace                      43%   28%   30%    50%   55%  1-1
+  2026-10-31 Aston Villa vs Fulham                            49%   26%   24%    51%   54%  1-1
+  2026-11-01 Liverpool vs Arsenal                             32%   28%   40%    48%   54%  1-1
+  2026-11-02 Newcastle vs Everton                             44%   27%   29%    53%   57%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

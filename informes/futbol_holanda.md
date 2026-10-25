@@ -1,18 +1,15 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-24 09:50 UTC_
+_Actualizado automáticamente: 2026-10-25 09:50 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(4 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-24 Utrecht vs Zwolle                                56%   23%   22%    65%   63%  1-1
-  2026-10-24 Willem II vs Cambuur                             39%   25%   36%    62%   64%  1-1
-  2026-10-24 Den Haag vs Heerenveen                           22%   23%   55%    63%   62%  1-1
   2026-10-25 For Sittard vs Excelsior                         44%   25%   31%    61%   63%  1-1
   2026-10-25 Nijmegen vs Groningen                            49%   24%   27%    64%   65%  1-1
   2026-10-25 PSV Eindhoven vs Feyenoord                       52%   23%   25%    66%   66%  1-1
@@ -25,6 +22,9 @@ Pronósticos de los próximos 15 partidos
   2026-10-31 Ajax vs AZ Alkmaar                               45%   25%   30%    62%   64%  1-1
   2026-11-01 Zwolle vs Den Haag                               55%   23%   22%    63%   62%  1-1
   2026-11-01 Telstar vs Utrecht                               35%   25%   40%    63%   65%  1-1
+  2026-11-01 Excelsior vs Twente                              24%   24%   52%    61%   62%  1-1
+  2026-11-01 Groningen vs Sparta Rotterdam                    48%   24%   28%    64%   65%  1-1
+  2026-11-06 Willem II vs Zwolle                              30%   25%   45%    61%   63%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
