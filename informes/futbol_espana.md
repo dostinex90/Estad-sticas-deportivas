@@ -1,30 +1,30 @@
 # LaLiga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-25 09:50 UTC_
+_Actualizado automáticamente: 2026-10-26 10:02 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(11 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-25 Vallecano vs Elche                               54%   25%   21%    51%   53%  1-1
-  2026-10-25 Alaves vs Malaga                                 61%   23%   16%    52%   50%  2-0
-  2026-10-25 Ath Bilbao vs Getafe                             49%   28%   23%    44%   48%  1-1
-  2026-10-25 Sevilla vs Osasuna                               47%   27%   26%    48%   53%  1-1
-  2026-10-25 Valencia vs Villarreal                           34%   29%   38%    46%   52%  1-1
-  2026-10-25 Barcelona vs Real Madrid                         53%   25%   22%    55%   57%  1-1
-  2026-10-25 Ath Madrid vs La Coruna                          70%   19%   11%    58%   49%  2-0
-  2026-10-25 Celta vs Betis                                   38%   28%   34%    50%   55%  1-1
-  2026-10-25 Sociedad vs Levante                              51%   25%   23%    55%   57%  1-1
-  2026-10-25 Santander vs Espanol                             43%   27%   30%    54%   58%  1-1
   2026-11-01 Betis vs Malaga                                  71%   19%   10%    60%   50%  2-0
   2026-11-01 Villarreal vs Espanol                            63%   22%   14%    55%   51%  2-0
   2026-11-01 Elche vs Valencia                                43%   29%   29%    46%   52%  1-1
   2026-11-01 Ath Bilbao vs Sociedad                           48%   26%   25%    52%   55%  1-1
   2026-11-01 Levante vs Ath Madrid                            29%   27%   43%    51%   55%  1-1
+  2026-11-01 La Coruna vs Osasuna                             40%   28%   32%    49%   54%  1-1
+  2026-11-01 Barcelona vs Alaves                              77%   15%    7%    64%   48%  2-0
+  2026-11-01 Getafe vs Sevilla                                43%   29%   27%    43%   49%  1-1
+  2026-11-01 Santander vs Real Madrid                         17%   22%   61%    59%   56%  1-1
+  2026-11-01 Vallecano vs Celta                               48%   27%   25%    49%   53%  1-1
+  2026-11-08 Elche vs Betis                                   33%   28%   39%    51%   56%  1-1
+  2026-11-08 Osasuna vs Ath Bilbao                            44%   28%   28%    48%   53%  1-1
+  2026-11-08 Sevilla vs Alaves                                46%   28%   27%    49%   53%  1-1
+  2026-11-08 Valencia vs Real Madrid                          22%   26%   51%    50%   52%  1-1
+  2026-11-08 Celta vs Levante                                 51%   26%   22%    50%   53%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

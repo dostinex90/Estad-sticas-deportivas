@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-10-25 09:50 UTC_
+_Actualizado automáticamente: 2026-10-26 10:02 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -144,20 +144,20 @@ Validación histórica del modelo (sin mirar el futuro)
 ```
 Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ══════════════════════════════════════════════════════════════════
-  Partidos evaluados: 93
-  Acierto ganador (combinado)        █████████████░░░░░░░  64.5%
-  Acierto ganador (solo Elo)         ████████████░░░░░░░░  59.1%
-  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  53.8%
-  Acierto del favorito del mercado   █████████████░░░░░░░  63.4%
-  Brier score: 0.220 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.630
-  Error medio del margen: 9.18 pts · del total: 11.59 pts
+  Partidos evaluados: 105
+  Acierto ganador (combinado)        █████████████░░░░░░░  64.8%
+  Acierto ganador (solo Elo)         ████████████░░░░░░░░  59.0%
+  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  54.3%
+  Acierto del favorito del mercado   █████████████░░░░░░░  63.8%
+  Brier score: 0.223 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.637
+  Error medio del margen: 9.38 pts · del total: 11.48 pts
 
 ── Frente a las casas de apuestas ──────────────────────────────
-  Error medio del margen: modelo 9.18 pts vs mercado 9.30 pts
-  Acierto contra el spread           ███████████░░░░░░░░░  57.5%  (87)
+  Error medio del margen: modelo 9.38 pts vs mercado 9.43 pts
+  Acierto contra el spread           ███████████░░░░░░░░░  56.6%  (99)
   ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  56.0%  (25)
-  Error medio del total: modelo 11.59 vs mercado 10.50
-  Acierto over/under                 ████████░░░░░░░░░░░░  40.9%  (93)
+  Error medio del total: modelo 11.48 vs mercado 10.51
+  Acierto over/under                 █████████░░░░░░░░░░░  42.9%  (105)
   Para ganar apostando a -110 hace falta acertar más del 52.4% contra el spread.
 ```
 
@@ -166,12 +166,12 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ```
 Validación del modelo en 2026-27 (día a día, sin datos futuros)
 ═══════════════════════════════════════════════════════════════
-  Partidos evaluados: 28
-  Acierto ganador (combinado)        ███████████░░░░░░░░░  57.1%
-  Acierto ganador (solo Elo)         ██████████░░░░░░░░░░  50.0%
-  Acierto ganador (solo ratings)     ██████████░░░░░░░░░░  50.0%
-  Gana siempre el local              █████████░░░░░░░░░░░  46.4%
-  Brier score: 0.232 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.251 · log-loss 0.654
-  Error medio del margen: 13.56 pts · del total: 13.73 pts
+  Partidos evaluados: 36
+  Acierto ganador (combinado)        ████████████░░░░░░░░  58.3%
+  Acierto ganador (solo Elo)         ███████████░░░░░░░░░  55.6%
+  Acierto ganador (solo ratings)     ███████████░░░░░░░░░  55.6%
+  Gana siempre el local              ██████████░░░░░░░░░░  50.0%
+  Brier score: 0.211 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.230 · log-loss 0.604
+  Error medio del margen: 11.81 pts · del total: 14.23 pts
   La base no tiene líneas de apuestas de la NBA, así que no hay comparación con el mercado.
 ```

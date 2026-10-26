@@ -1,20 +1,15 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-25 09:50 UTC_
+_Actualizado automáticamente: 2026-10-26 10:02 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(4 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(9 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-25 For Sittard vs Excelsior                         44%   25%   31%    61%   63%  1-1
-  2026-10-25 Nijmegen vs Groningen                            49%   24%   27%    64%   65%  1-1
-  2026-10-25 PSV Eindhoven vs Feyenoord                       52%   23%   25%    66%   66%  1-1
-  2026-10-25 Sparta Rotterdam vs Ajax                         26%   24%   50%    64%   64%  1-1
-  2026-10-25 AZ Alkmaar vs Twente                             41%   25%   33%    61%   63%  1-1
   2026-10-31 Feyenoord vs For Sittard                         69%   18%   13%    69%   60%  2-1
   2026-10-31 Heerenveen vs Nijmegen                           39%   25%   36%    63%   65%  1-1
   2026-10-31 PSV Eindhoven vs Willem II                       87%    9%    4%    80%   52%  3-0
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-11-01 Excelsior vs Twente                              24%   24%   52%    61%   62%  1-1
   2026-11-01 Groningen vs Sparta Rotterdam                    48%   24%   28%    64%   65%  1-1
   2026-11-06 Willem II vs Zwolle                              30%   25%   45%    61%   63%  1-1
+  2026-11-07 For Sittard vs Telstar                           40%   25%   35%    62%   65%  1-1
+  2026-11-07 Den Haag vs Sparta Rotterdam                     27%   24%   48%    63%   64%  1-1
+  2026-11-07 Excelsior vs Go Ahead Eagles                     36%   25%   39%    62%   65%  1-1
+  2026-11-08 Heerenveen vs Feyenoord                          27%   24%   49%    63%   64%  1-1
+  2026-11-08 Twente vs Ajax                                   42%   25%   33%    62%   64%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

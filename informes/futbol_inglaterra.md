@@ -1,20 +1,15 @@
 # Premier League: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-25 09:50 UTC_
+_Actualizado automáticamente: 2026-10-26 10:02 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(10 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-25 Liverpool vs Brighton                            47%   26%   27%    53%   56%  1-1
-  2026-10-25 Crystal Palace vs Newcastle                      40%   27%   33%    53%   57%  1-1
-  2026-10-25 Man United vs Bournemouth                        48%   26%   26%    54%   57%  1-1
-  2026-10-25 Hull vs Brentford                                24%   26%   49%    51%   54%  1-1
-  2026-10-25 Sunderland vs Leeds                              37%   28%   35%    49%   54%  1-1
   2026-10-31 Chelsea vs Man United                            39%   27%   34%    55%   59%  1-1
   2026-10-31 Man City vs Brighton                             55%   24%   20%    55%   55%  1-1
   2026-10-31 Bournemouth vs Leeds                             49%   26%   25%    52%   55%  1-1
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-10-31 Aston Villa vs Fulham                            49%   26%   24%    51%   54%  1-1
   2026-11-01 Liverpool vs Arsenal                             32%   28%   40%    48%   54%  1-1
   2026-11-02 Newcastle vs Everton                             44%   27%   29%    53%   57%  1-1
+  2026-11-07 Arsenal vs Hull                                  80%   14%    6%    62%   43%  2-0
+  2026-11-07 Nottm Forest vs Man City                         27%   27%   46%    51%   55%  1-1
+  2026-11-07 Leeds vs Tottenham                               47%   27%   26%    50%   54%  1-1
+  2026-11-07 Fulham vs Newcastle                              42%   27%   30%    51%   56%  1-1
+  2026-11-07 Everton vs Coventry                              57%   24%   19%    54%   53%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

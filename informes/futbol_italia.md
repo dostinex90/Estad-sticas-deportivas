@@ -1,20 +1,15 @@
 # Serie A: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-25 09:50 UTC_
+_Actualizado automáticamente: 2026-10-26 10:02 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(10 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-25 Inter vs Fiorentina                              68%   21%   11%    53%   46%  2-0
-  2026-10-25 Atalanta vs Frosinone                            59%   24%   17%    50%   49%  1-1
-  2026-10-25 Genoa vs Venezia                                 44%   29%   27%    44%   50%  1-1
-  2026-10-25 Lecce vs Juventus                                16%   26%   58%    44%   45%  0-1
-  2026-10-25 Udinese vs Milan                                 24%   29%   47%    42%   48%  1-1
   2026-10-27 Sassuolo vs Lazio                                27%   29%   45%    44%   50%  1-1
   2026-10-27 Roma vs Cagliari                                 60%   25%   15%    46%   45%  1-0
   2026-10-27 Torino vs Como                                   23%   28%   49%    44%   48%  1-1
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-10-28 Monza vs Napoli                                  14%   23%   63%    51%   48%  0-2
   2026-10-29 Frosinone vs Lecce                               37%   30%   33%    43%   50%  1-1
   2026-10-29 Fiorentina vs Atalanta                           28%   29%   43%    44%   50%  1-1
+  2026-10-31 Bologna vs Monza                                 52%   27%   21%    47%   50%  1-1
+  2026-10-31 Udinese vs Roma                                  20%   27%   53%    44%   47%  1-1
+  2026-10-31 Milan vs Inter                                   22%   28%   50%    45%   49%  1-1
+  2026-11-01 Como vs Venezia                                  63%   23%   14%    51%   47%  2-0
+  2026-11-01 Frosinone vs Torino                              33%   29%   38%    45%   52%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
