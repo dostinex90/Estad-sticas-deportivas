@@ -1,20 +1,15 @@
 # Serie A: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-28 10:05 UTC_
+_Actualizado automáticamente: 2026-10-29 10:07 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(3 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(8 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-28 Milan vs Bologna                                 45%   30%   25%    40%   46%  1-1
-  2026-10-28 Venezia vs Inter                                  8%   17%   75%    59%   45%  0-2
-  2026-10-28 Parma vs Udinese                                 33%   31%   36%    39%   47%  1-1
-  2026-10-28 Genoa vs Juventus                                18%   27%   54%    43%   45%  0-1
-  2026-10-28 Monza vs Napoli                                  14%   22%   64%    52%   48%  0-2
   2026-10-29 Frosinone vs Lecce                               38%   29%   33%    45%   52%  1-1
   2026-10-29 Fiorentina vs Atalanta                           28%   29%   43%    44%   50%  1-1
   2026-10-31 Bologna vs Monza                                 53%   26%   20%    47%   49%  1-1
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-11-01 Lazio vs Cagliari                                49%   29%   22%    42%   47%  1-1
   2026-11-01 Lecce vs Genoa                                   34%   31%   35%    39%   46%  1-1
   2026-11-01 Juventus vs Napoli                               36%   30%   34%    41%   48%  1-1
+  2026-11-02 Sassuolo vs Fiorentina                           33%   29%   38%    44%   51%  1-1
+  2026-11-02 Atalanta vs Parma                                55%   27%   18%    44%   46%  1-0
+  2026-11-06 Venezia vs Udinese                               30%   29%   41%    45%   51%  1-1
+  2026-11-07 Torino vs Lecce                                  42%   30%   28%    41%   48%  1-1
+  2026-11-07 Cagliari vs Frosinone                            42%   29%   30%    46%   52%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
