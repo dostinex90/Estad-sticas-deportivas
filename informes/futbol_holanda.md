@@ -1,6 +1,6 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-29 10:07 UTC_
+_Actualizado automáticamente: 2026-10-30 10:08 UTC_
 
 ## Pronósticos de los próximos partidos
 
