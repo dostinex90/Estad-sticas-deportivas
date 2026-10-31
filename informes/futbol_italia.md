@@ -1,6 +1,6 @@
 # Serie A: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-30 10:08 UTC_
+_Actualizado automáticamente: 2026-10-31 09:57 UTC_
 
 ## Pronósticos de los próximos partidos
 

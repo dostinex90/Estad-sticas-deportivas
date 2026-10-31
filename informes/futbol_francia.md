@@ -1,15 +1,15 @@
 # Ligue 1: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-30 10:08 UTC_
+_Actualizado automáticamente: 2026-10-31 09:57 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(2 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-30 Le Havre vs Paris SG                             16%   22%   61%    57%   54%  1-1
-  2026-10-30 Lille vs Lens                                    43%   27%   30%    52%   56%  1-1
   2026-10-31 Nice vs Rennes                                   33%   27%   41%    54%   59%  1-1
   2026-10-31 Lyon vs Angers                                   63%   22%   15%    57%   53%  2-0
   2026-10-31 Lorient vs Brest                                 44%   27%   29%    50%   55%  1-1
@@ -23,6 +23,8 @@ Pronósticos de los próximos 15 partidos
   2026-11-08 Rennes vs Lille                                  38%   27%   35%    53%   58%  1-1
   2026-11-08 Le Mans vs Monaco                                22%   25%   53%    55%   56%  1-1
   2026-11-08 Brest vs Lyon                                    32%   27%   40%    52%   57%  1-1
+  2026-11-08 Le Havre vs Lorient                              37%   28%   34%    49%   54%  1-1
+  2026-11-08 Angers vs Nice                                   36%   28%   36%    51%   56%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
