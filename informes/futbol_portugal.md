@@ -1,17 +1,15 @@
 # Primeira Liga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-31 09:57 UTC_
+_Actualizado automáticamente: 2026-11-01 16:08 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(3 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-31 Moreirense vs Estrela                            41%   29%   31%    46%   52%  1-1
-  2026-10-31 Porto vs Estoril                                 76%   17%    7%    59%   44%  2-0
   2026-11-01 Arouca vs Nacional                               49%   27%   24%    49%   52%  1-1
   2026-11-01 Maritimo vs Santa Clara                          30%   29%   41%    44%   50%  1-1
   2026-11-01 Academico Viseu vs Rio Ave                       48%   27%   25%    49%   53%  1-1
@@ -25,6 +23,8 @@ Pronósticos de los próximos 15 partidos
   2026-11-08 Estoril vs Maritimo                              47%   27%   26%    50%   54%  1-1
   2026-11-08 Santa Clara vs Gil Vicente                       38%   30%   32%    41%   48%  1-1
   2026-11-08 Guimaraes vs Porto                               15%   24%   60%    49%   48%  0-1
+  2026-11-08 Rio Ave vs Sp Braga                              21%   26%   52%    49%   51%  1-1
+  2026-11-08 Estrela vs Benfica                               11%   19%   70%    58%   49%  0-2
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

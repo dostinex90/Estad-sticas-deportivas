@@ -1,21 +1,15 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-31 09:57 UTC_
+_Actualizado automáticamente: 2026-11-01 16:08 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(7 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-31 MGladbach vs Paderborn                           56%   23%   21%    63%   61%  1-1
-  2026-10-31 Schalke 04 vs RB Leipzig                         21%   23%   56%    61%   60%  1-1
-  2026-10-31 Augsburg vs Freiburg                             42%   25%   33%    62%   64%  1-1
-  2026-10-31 Werder Bremen vs Hoffenheim                      35%   25%   40%    62%   65%  1-1
-  2026-10-31 Leverkusen vs Stuttgart                          50%   23%   26%    65%   65%  1-1
-  2026-10-31 Bayern Munich vs Dortmund                        63%   20%   16%    65%   60%  2-1
   2026-11-01 Union Berlin vs FC Koln                          50%   25%   26%    60%   61%  1-1
   2026-11-01 Ein Frankfurt vs Hamburg                         56%   23%   22%    64%   62%  1-1
   2026-11-06 Hamburg vs MGladbach                             44%   25%   31%    61%   63%  1-1
@@ -25,6 +19,12 @@ Pronósticos de los próximos 15 partidos
   2026-11-07 Paderborn vs Ein Frankfurt                       30%   25%   45%    61%   63%  1-1
   2026-11-07 Stuttgart vs Werder Bremen                       65%   20%   16%    68%   62%  2-1
   2026-11-08 FC Koln vs Leverkusen                            23%   23%   53%    63%   63%  1-1
+  2026-11-08 Freiburg vs Union Berlin                         55%   24%   22%    60%   60%  1-1
+  2026-11-08 Hoffenheim vs Schalke 04                         66%   20%   14%    64%   57%  2-0
+  2026-11-20 Bayern Munich vs FC Koln                         89%    8%    3%    82%   51%  3-0
+  2026-11-21 Leverkusen vs Paderborn                          75%   16%    9%    70%   55%  2-0
+  2026-11-21 Union Berlin vs RB Leipzig                       29%   25%   47%    62%   63%  1-1
+  2026-11-21 Elversberg vs Freiburg                           31%   25%   44%    60%   63%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

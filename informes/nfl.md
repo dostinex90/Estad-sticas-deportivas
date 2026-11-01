@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-10-31 09:57 UTC_
+_Actualizado automáticamente: 2026-11-01 16:08 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -9,18 +9,18 @@ Pronósticos semana 8 — 2026
 ═══════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
   BAL @ BUF   2026-11-01         71.5%      -7.0      -3.0   +4.0   55.4     54.5   +0.0
-  TEN @ CIN   2026-11-01         84.3%     -12.3     -12.5   -0.2   45.0     46.5   +1.0
+  TEN @ CIN   2026-11-01         84.3%     -12.3     -13.5   -1.2   45.0     46.5   +1.0
   ARI @ DAL   2026-11-01         67.6%      -5.6      -7.0   -1.4   54.6     54.5   -0.3
-  KC @ DEN    2026-11-01         54.0%      -1.2      +1.5   +2.7   39.5     40.5   -0.8
+  KC @ DEN    2026-11-01         54.0%      -1.2      +1.5   +2.7   39.5     41.5   -0.8
   MIN @ DET   2026-11-01         48.1%      +0.6      -3.0   -3.6   45.3     46.5   -0.1
   IND @ JAX   2026-11-01         78.3%      -9.6     -10.0   -0.4   49.0     46.5   -0.1
   LAC @ LA    2026-11-01         74.2%      -7.9      -6.5   +1.4   42.6     45.5   +0.7
-  NE @ MIA    2026-11-01         28.6%      +6.9      +7.0   +0.1   42.1     43.5   -0.1
-  LV @ NYJ    2026-11-01         53.1%      -0.9      -1.5   -0.6   47.3     45.5   -0.0
-  CLE @ PIT   2026-11-01         66.2%      -5.1      -3.5   +1.6   39.3     39.5   +0.1
+  NE @ MIA    2026-11-01         28.6%      +6.9      +7.0   +0.1   42.1     41.5   -0.1
+  LV @ NYJ    2026-11-01         53.1%      -0.9      -1.5   -0.6   47.3     46.5   -0.0
+  CLE @ PIT   2026-11-01         66.2%      -5.1      -3.5   +1.6   39.3     38.5   +0.1
   ATL @ TB    2026-11-01         56.0%      -1.9      -2.5   -0.6   46.8     43.5   -0.4
-  PHI @ WAS   2026-11-01         61.1%      -3.5      -5.5   -2.0   45.2     40.5   +2.1
-  CHI @ SEA   2026-11-02         60.7%      -3.3      -3.0   +0.3   46.1     46.5   +0.0
+  PHI @ WAS   2026-11-01         61.1%      -3.5      -6.0   -2.5   45.2     40.5   +2.1
+  CHI @ SEA   2026-11-02         58.3%      -2.6      -3.0   -0.4   46.1     46.5   -0.7
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
@@ -37,6 +37,8 @@ Pronósticos semana 8 — 2026
     ATL @ TB     bajas TB: Emeka Egbuka (WR) -0.8
     ATL @ TB     bajas ATL: Brian Robinson (RB) -0.2
     PHI @ WAS    bajas PHI: DeVonta Smith (WR) -0.8, Dontayvion Wicks (WR) -0.7, Jihaad Campbell (LB) -0.5
+    CHI @ SEA    bajas SEA: Rashid Shaheed (WR) -0.4, Uchenna Nwosu (LB) -0.4, Charles Cross (T) -0.2
+    CHI @ SEA    bajas CHI: Kyle Monangai (RB) -0.3
 ```
 
 ## Probabilidades de playoffs
@@ -66,17 +68,17 @@ Simulación de la temporada 2026 (5000 simulaciones, 164 partidos pendientes)
 
 ── NFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  San Francisco 49ers              12.4  ████████████████████  97.8%     74.9%     38.6%
-  Minnesota Vikings                12.7  ████████████████████  97.7%     74.4%     44.2%
-  Seattle Seahawks                 10.9  █████████████████░░░  84.7%     23.1%      7.3%
-  Chicago Bears                    10.5  ██████████████░░░░░░  68.3%      9.9%      3.7%
-  Detroit Lions                    10.1  █████████████░░░░░░░  65.9%     12.0%      4.3%
+  San Francisco 49ers              12.4  ████████████████████  97.8%     75.1%     38.5%
+  Minnesota Vikings                12.7  ████████████████████  97.6%     74.3%     44.2%
+  Seattle Seahawks                 10.9  █████████████████░░░  84.2%     22.9%      7.3%
+  Chicago Bears                    10.5  ██████████████░░░░░░  68.6%     10.2%      3.9%
+  Detroit Lions                    10.1  █████████████░░░░░░░  65.8%     12.0%      4.4%
   New York Giants                   8.7  ███████████░░░░░░░░░  55.3%     53.4%      0.4%
-  Green Bay Packers                 9.5  █████████░░░░░░░░░░░  47.4%      3.7%      1.0%
+  Green Bay Packers                 9.5  █████████░░░░░░░░░░░  47.4%      3.6%      0.9%
   Atlanta Falcons                   7.8  ████████░░░░░░░░░░░░  40.0%     38.5%      0.1%
   Dallas Cowboys                    8.0  ████████░░░░░░░░░░░░  38.8%     33.8%      0.1%
   Tampa Bay Buccaneers              7.2  ██████░░░░░░░░░░░░░░  32.0%     30.9%      0.0%
-  Los Angeles Rams                  8.6  █████░░░░░░░░░░░░░░░  25.1%      2.0%      0.2%
+  Los Angeles Rams                  8.6  █████░░░░░░░░░░░░░░░  25.3%      2.0%      0.2%
   Carolina Panthers                 7.1  █████░░░░░░░░░░░░░░░  23.7%     22.5%      0.0%
   New Orleans Saints                6.0  ██░░░░░░░░░░░░░░░░░░   8.6%      8.1%      0.0%
   Philadelphia Eagles               6.3  ██░░░░░░░░░░░░░░░░░░   8.5%      7.7%      0.0%

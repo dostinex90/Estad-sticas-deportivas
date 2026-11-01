@@ -1,18 +1,15 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-10-31 09:57 UTC_
+_Actualizado automáticamente: 2026-11-01 16:08 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-10-31 Feyenoord vs For Sittard                         69%   18%   13%    69%   60%  2-1
-  2026-10-31 Heerenveen vs Nijmegen                           38%   25%   37%    63%   65%  1-1
-  2026-10-31 PSV Eindhoven vs Willem II                       88%    8%    4%    81%   52%  3-0
-  2026-10-31 Cambuur vs Go Ahead Eagles                       29%   24%   48%    66%   66%  1-1
-  2026-10-31 Ajax vs AZ Alkmaar                               45%   25%   30%    62%   64%  1-1
   2026-11-01 Zwolle vs Den Haag                               55%   23%   22%    64%   63%  1-1
   2026-11-01 Telstar vs Utrecht                               35%   25%   40%    63%   65%  1-1
   2026-11-01 Excelsior vs Twente                              24%   24%   52%    61%   61%  1-1
@@ -23,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-11-07 Excelsior vs Go Ahead Eagles                     35%   25%   39%    62%   64%  1-1
   2026-11-08 Heerenveen vs Feyenoord                          26%   24%   50%    64%   64%  1-1
   2026-11-08 Twente vs Ajax                                   42%   25%   33%    62%   64%  1-1
+  2026-11-08 AZ Alkmaar vs Groningen                          53%   23%   23%    63%   63%  1-1
+  2026-11-08 Cambuur vs PSV Eindhoven                          9%   15%   76%    75%   60%  0-2
+  2026-11-08 Utrecht vs Nijmegen                              40%   25%   35%    63%   66%  1-1
+  2026-11-21 Nijmegen vs PSV Eindhoven                        23%   22%   54%    67%   66%  1-1
+  2026-11-21 Feyenoord vs Excelsior                           70%   18%   12%    68%   58%  2-0
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
