@@ -1,30 +1,28 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-01 16:08 UTC_
+_Actualizado automáticamente: 2026-11-02 19:35 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(7 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
-
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-01 Union Berlin vs FC Koln                          50%   25%   26%    60%   61%  1-1
-  2026-11-01 Ein Frankfurt vs Hamburg                         56%   23%   22%    64%   62%  1-1
   2026-11-06 Hamburg vs MGladbach                             44%   25%   31%    61%   63%  1-1
-  2026-11-07 RB Leipzig vs Augsburg                           61%   21%   18%    68%   64%  2-1
+  2026-11-07 RB Leipzig vs Augsburg                           62%   20%   18%    68%   63%  2-1
   2026-11-07 Dortmund vs Elversberg                           78%   14%    8%    70%   53%  2-0
   2026-11-07 Mainz vs Bayern Munich                           15%   19%   66%    69%   62%  1-2
   2026-11-07 Paderborn vs Ein Frankfurt                       30%   25%   45%    61%   63%  1-1
   2026-11-07 Stuttgart vs Werder Bremen                       65%   20%   16%    68%   62%  2-1
   2026-11-08 FC Koln vs Leverkusen                            23%   23%   53%    63%   63%  1-1
-  2026-11-08 Freiburg vs Union Berlin                         55%   24%   22%    60%   60%  1-1
-  2026-11-08 Hoffenheim vs Schalke 04                         66%   20%   14%    64%   57%  2-0
-  2026-11-20 Bayern Munich vs FC Koln                         89%    8%    3%    82%   51%  3-0
-  2026-11-21 Leverkusen vs Paderborn                          75%   16%    9%    70%   55%  2-0
-  2026-11-21 Union Berlin vs RB Leipzig                       29%   25%   47%    62%   63%  1-1
-  2026-11-21 Elversberg vs Freiburg                           31%   25%   44%    60%   63%  1-1
+  2026-11-08 Freiburg vs Union Berlin                         55%   24%   22%    60%   59%  1-1
+  2026-11-08 Hoffenheim vs Schalke 04                         67%   19%   13%    64%   56%  2-0
+  2026-11-20 Bayern Munich vs FC Koln                         88%    8%    3%    81%   51%  3-0
+  2026-11-21 Leverkusen vs Paderborn                          75%   16%    9%    69%   55%  2-0
+  2026-11-21 Union Berlin vs RB Leipzig                       28%   25%   47%    61%   63%  1-1
+  2026-11-21 Elversberg vs Freiburg                           32%   25%   43%    60%   63%  1-1
+  2026-11-21 MGladbach vs Dortmund                            22%   23%   55%    61%   60%  1-1
+  2026-11-21 Ein Frankfurt vs Hoffenheim                      43%   25%   32%    63%   65%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,24 +34,24 @@ Clasificación general
 ═════════════════════
   #  Equipo         PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ────────────────────────────────────────────────────────────────────
-  1  Bayern Munich   7   5   2   0   25    6  +19   17  2.43  GGEGG
-  2  Dortmund        7   5   2   0   12    4   +8   17  2.43  GGEEG
-  3  Freiburg        7   4   1   2   16    9   +7   13  1.86  GEGPP
-  4  Leverkusen      7   4   1   2   16   12   +4   13  1.86  EGGGP
-  5  RB Leipzig      7   4   0   3   20   11   +9   12  1.71  GPGPG
-  6  Werder Bremen   7   3   3   1   15   14   +1   12  1.71  EGEEG
-  7  Mainz           7   3   1   3   16   13   +3   10  1.43  PGPGP
-  8  Elversberg      7   3   1   3   12   15   -3   10  1.43  PEPGP
-  9  Augsburg        7   2   3   2   17   13   +4    9  1.29  EPEPE
- 10  Hoffenheim      7   3   0   4   14   14   +0    9  1.29  GPPGG
- 11  Hamburg         7   3   0   4    6   16  -10    9  1.29  PGGGP
- 12  FC Koln         7   2   2   3    8   11   -3    8  1.14  EPGPE
- 13  Paderborn       7   2   2   3    6    9   -3    8  1.14  PGPEG
- 14  Ein Frankfurt   7   2   2   3   10   17   -7    8  1.14  GEPGP
- 15  Stuttgart       7   2   0   5   10   13   -3    6  0.86  PPGPP
- 16  Schalke 04      7   1   3   3    4    7   -3    6  0.86  GEPPE
- 17  Union Berlin    7   1   3   3    6   18  -12    6  0.86  PPGEE
- 18  MGladbach       7   1   0   6   11   22  -11    3  0.43  PPPPG
+  1  Bayern Munich   8   5   3   0   27    8  +19   18  2.25  GEGGE
+  2  Dortmund        8   5   3   0   14    6   +8   18  2.25  GEEGE
+  3  Freiburg        8   5   1   2   18   10   +8   16  2.00  EGPPG
+  4  RB Leipzig      8   5   0   3   22   11  +11   15  1.88  PGPGG
+  5  Werder Bremen   8   4   3   1   17   14   +3   15  1.88  GEEGG
+  6  Leverkusen      8   4   1   3   18   16   +2   13  1.62  GGGPP
+  7  Elversberg      8   4   1   3   16   16   +0   13  1.62  EPGPG
+  8  Ein Frankfurt   8   3   2   3   13   18   -5   11  1.38  EPGPG
+  9  Mainz           8   3   1   4   17   17   +0   10  1.25  GPGPP
+ 10  Augsburg        8   2   3   3   18   15   +3    9  1.12  PEPEP
+ 11  Stuttgart       8   3   0   5   14   15   -1    9  1.12  PGPPG
+ 12  Hoffenheim      8   3   0   5   14   16   -2    9  1.12  PPGGP
+ 13  FC Koln         8   2   3   3    9   12   -3    9  1.12  PGPEE
+ 14  Paderborn       8   2   3   3    6    9   -3    9  1.12  GPEGE
+ 15  Hamburg         8   3   0   5    7   19  -12    9  1.12  GGGPP
+ 16  Union Berlin    8   1   4   3    7   19  -12    7  0.88  PGEEE
+ 17  Schalke 04      8   1   3   4    4    9   -5    6  0.75  EPPEP
+ 18  MGladbach       8   1   1   6   11   22  -11    4  0.50  PPPGE
 ```
 
 ## Ranking de fuerza
@@ -65,22 +63,22 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo           Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  Bayern Munich   1763    1.86     0.70    +1.93  ▂▃▁▂▃▄▃▅▆▄▆█
-   2  Dortmund        1666    1.04     0.68    +0.61  ▂▃▁▂▃▄▅▇█▇▆▇
-   3  Leverkusen      1580    1.15     0.93    +0.38  ▂▃▆▄▃▁▃▃▅▇█▅
-   4  RB Leipzig      1578    1.26     0.94    +0.54  ▇█▆▆▃▄▁▃▁▃▂▄
-   5  Stuttgart       1560    1.24     0.97    +0.45  ▆▅▆██▆▇▆▄▆▄▁
-   6  Hoffenheim      1541    1.11     0.93    +0.30  ▇█▇█▅▄▃▄▃▁▂▄
-   7  Freiburg        1525    0.97     0.89    +0.13  ▄▃▂▁▃▄▆▇▇█▇▆
-   8  Elversberg      1501    0.92     1.10    -0.29  ▄█▆▇▃▆▁
-   9  Augsburg        1495    1.08     1.09    -0.02  ▁▁▄▅▂▅██▆▇▆▅
-  10  Mainz           1492    1.01     1.01    -0.01  ▅▃▅▁▄▄█▄▆▄▇▄
-  11  Paderborn       1491    0.74     1.08    -0.56  █▄▁▇▁▁▄
-  12  Schalke 04      1484    0.66     1.02    -0.61  ▁▃██▅▁▁
-  13  Ein Frankfurt   1468    1.04     1.11    -0.12  ██▅▄▅▅▁▅▅▂▄▃
-  14  Werder Bremen   1450    1.00     1.05    -0.08  ▆▆▄▄▂▁▄▄▅▆▆█
-  15  Hamburg         1450    0.85     1.03    -0.30  ▄▃▅▇█▇▃▁▃▅█▆
-  16  Union Berlin    1437    0.82     1.00    -0.30  ▂▁▁▅██▆▃▃▅▅▆
-  17  MGladbach       1426    0.91     1.19    -0.46  ▅▅▇▅█▇▆▄▃▂▁▃
-  18  FC Koln         1414    0.94     1.02    -0.13  █▆▇▃▂▄▃▃▁▃▁▁
+   1  Bayern Munich   1759    1.85     0.73    +1.86  ▃▁▂▃▄▃▅▆▄▆█▇
+   2  Dortmund        1670    1.07     0.67    +0.67  ▃▁▂▃▄▅▇█▇▆▇▇
+   3  RB Leipzig      1591    1.29     0.92    +0.62  █▆▆▃▄▁▃▁▃▂▄▆
+   4  Stuttgart       1578    1.27     0.98    +0.49  ▅▆██▆▇▆▄▆▄▁▅
+   5  Leverkusen      1562    1.17     0.96    +0.35  ▃▆▄▃▁▃▃▅▇█▅▁
+   6  Freiburg        1535    0.96     0.89    +0.12  ▃▂▁▃▄▆▇▇█▇▆▇
+   7  Hoffenheim      1525    1.08     0.93    +0.26  █▇█▅▄▃▄▃▁▂▄▂
+   8  Elversberg      1515    0.97     1.06    -0.15  ▄█▆▇▃▆▁▆
+   9  Paderborn       1491    0.73     1.03    -0.51  █▄▁▇▁▁▄▄
+  10  Augsburg        1484    1.07     1.08    -0.02  ▁▄▅▂▅██▆▇▆▅▃
+  11  Ein Frankfurt   1480    1.07     1.10    -0.05  █▅▄▅▅▁▅▅▂▄▃▅
+  12  Mainz           1478    0.99     1.04    -0.07  ▃▅▁▄▄█▄▆▄▇▄▁
+  13  Schalke 04      1470    0.60     1.09    -0.81  ▄▅██▆▄▄▁
+  14  Werder Bremen   1467    1.00     1.02    -0.04  ▅▃▃▂▁▃▃▄▅▅▆█
+  15  Hamburg         1439    0.85     1.06    -0.35  ▃▅▇█▇▃▁▃▅█▆▄
+  16  Union Berlin    1435    0.80     0.99    -0.31  ▁▁▅██▆▃▃▅▅▆▆
+  17  MGladbach       1426    0.89     1.18    -0.47  ▅▇▅█▇▆▄▃▂▁▃▃
+  18  FC Koln         1417    0.92     1.00    -0.12  ██▃▂▅▃▃▁▃▁▁▂
 ```
