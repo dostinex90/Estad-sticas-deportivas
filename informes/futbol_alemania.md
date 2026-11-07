@@ -1,14 +1,15 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-06 16:50 UTC_
+_Actualizado automáticamente: 2026-11-07 15:45 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-06 Hamburg vs MGladbach                             44%   25%   31%    61%   63%  1-1
   2026-11-07 RB Leipzig vs Augsburg                           62%   20%   18%    68%   63%  2-1
   2026-11-07 Dortmund vs Elversberg                           78%   14%    8%    70%   53%  2-0
   2026-11-07 Mainz vs Bayern Munich                           15%   19%   66%    69%   62%  1-2
@@ -23,6 +24,7 @@ Pronósticos de los próximos 15 partidos
   2026-11-21 Elversberg vs Freiburg                           32%   25%   43%    60%   63%  1-1
   2026-11-21 MGladbach vs Dortmund                            22%   23%   55%    61%   60%  1-1
   2026-11-21 Ein Frankfurt vs Hoffenheim                      43%   25%   32%    63%   65%  1-1
+  2026-11-21 Schalke 04 vs Stuttgart                          20%   23%   57%    62%   60%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
