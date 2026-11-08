@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-11-07 15:45 UTC_
+_Actualizado automáticamente: 2026-11-08 16:05 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -8,33 +8,34 @@ _Actualizado automáticamente: 2026-11-07 15:45 UTC_
 Pronósticos semana 9 — 2026
 ═══════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
-  CIN @ ATL   2026-11-08         34.9%      +4.8      +3.0   -1.8   50.6     52.5   -0.5
-  DEN @ CAR   2026-11-08         34.0%      +5.1      +3.0   -2.1   46.8     44.5   -1.0
+  CIN @ ATL   2026-11-08         34.4%      +4.9      +3.0   -1.9   50.6     52.5   -0.6
+  DEN @ CAR   2026-11-08         34.0%      +5.1      +2.5   -2.6   46.8     44.5   -1.0
   TB @ CHI    2026-11-08         67.0%      -5.4      -6.0   -0.6   45.8     47.5   +0.2
-  DAL @ IND   2026-11-08         47.5%      +0.8      +4.5   +3.7   56.0     51.5   -0.5
-  NYJ @ KC    2026-11-08         77.4%      -9.2      -8.5   +0.7   42.9     47.5   +0.4
-  HOU @ LAC   2026-11-08         33.2%      +5.3      +6.0   +0.7   39.3     40.5   -0.8
-  DET @ MIA   2026-11-08         35.0%      +4.7      +6.5   +1.8   49.8     49.5   +1.3
-  GB @ NE     2026-11-08         65.8%      -5.0      -3.0   +2.0   40.8     44.5   +0.7
-  CLE @ NO    2026-11-08         72.2%      -7.2      -3.5   +3.7   42.6     42.5   -0.4
+  DAL @ IND   2026-11-08         46.4%      +1.1      +4.5   +3.4   56.0     51.5   -0.8
+  NYJ @ KC    2026-11-08         77.6%      -9.3      -9.5   -0.2   42.9     47.5   +0.5
+  HOU @ LAC   2026-11-08         35.3%      +4.6      +5.5   +0.9   39.3     40.5   -0.1
+  DET @ MIA   2026-11-08         35.0%      +4.7      +6.5   +1.8   49.8     50.5   +1.3
+  GB @ NE     2026-11-08         65.5%      -4.9      -3.0   +1.9   40.8     44.5   +0.6
+  CLE @ NO    2026-11-08         72.2%      -7.2      -3.0   +4.2   42.6     42.5   -0.4
   NYG @ PHI   2026-11-08         48.6%      +0.4      +3.0   +2.6   41.9     38.5   -1.7
   ARI @ SEA   2026-11-08         83.4%     -11.9      -8.5   +3.4   47.9     39.5   -0.8
-  LV @ SF     2026-11-08         76.3%      -8.8     -10.0   -1.2   52.3     51.5   -1.5
+  LV @ SF     2026-11-08         76.3%      -8.8      -9.5   -0.7   52.3     51.5   -1.5
   LA @ WAS    2026-11-08         34.8%      +4.8      +4.5   -0.3   47.9     47.5   -0.5
-  BUF @ MIN   2026-11-09         50.0%      +0.0      +3.0   +3.0   45.6     43.5   +0.0
+  BUF @ MIN   2026-11-09         49.2%      +0.2      +3.0   +2.8   45.6     43.5   -0.2
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
   Bajas = puntos que gana (+) o pierde (−) el local por los lesionados de ambos equipos (parte oficial).
-    CIN @ ATL    bajas ATL: Brian Robinson (RB) -0.2, Zachariah Branch (WR) -0.2
+    CIN @ ATL    bajas ATL: Brian Robinson (RB) -0.2, Zachariah Branch (WR) -0.2, Cameron Williams (T) -0.2
     DEN @ CAR    bajas CAR: Bobby Okereke (LB) -0.7, Jaelan Phillips (LB) -0.4, Will Lee III (CB) -0.4
     DEN @ CAR    bajas DEN: Brandon Jones (S) -0.4, Kris Abrams-Draine (CB) -0.3
     TB @ CHI     bajas TB: Yaya Diaby (LB) -0.3
-    DAL @ IND    bajas IND: Akeem Davis-Gaither (LB) -0.6, Justin Walley (CB) -0.3
+    DAL @ IND    bajas IND: Akeem Davis-Gaither (LB) -0.6, A.J. Haulcy (S) -0.4, Justin Walley (CB) -0.3
     DAL @ IND    bajas DAL: Malachi Lawrence (LB) -0.3
     NYJ @ KC     bajas KC: Mansoor Delane (CB) -0.4
     NYJ @ KC     bajas NYJ: Garrett Wilson (WR) -0.8
     HOU @ LAC    bajas LAC: Denzel Perryman (LB) -0.4
+    HOU @ LAC    bajas HOU: David Montgomery (RB) -0.4, Reed Blankenship (S) -0.4
     DET @ MIA    bajas DET: Jack Campbell (LB) -0.7, D.J. Reed (CB) -0.4, Cade Mays (C) -0.2
     GB @ NE      bajas NE: A.J. Brown (WR) -0.7, TreVeyon Henderson (RB) -0.2
     GB @ NE      bajas GB: Zaire Franklin (LB) -0.7, Micah Parsons (LB) -0.6, Travis Glover (G) -0.3
@@ -46,6 +47,8 @@ Pronósticos semana 9 — 2026
     LV @ SF      bajas SF: Deebo Samuel Sr. (WR) -0.5, Christian Kirk (WR) -0.5, Mike Evans (WR) -0.4
     LA @ WAS     bajas WAS: Treylon Burks (WR) -0.6, Dyami Brown (WR) -0.4
     LA @ WAS     bajas LA: Jaylen Watson (CB) -0.4
+    BUF @ MIN    bajas MIN: Jauan Jennings (WR) -0.6
+    BUF @ MIN    bajas BUF: Josh Palmer (WR) -0.3
 ```
 
 ## Probabilidades de playoffs
@@ -56,18 +59,18 @@ Simulación de la temporada 2026 (5000 simulaciones, 150 partidos pendientes)
 
 ── AFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  Jacksonville Jaguars             12.6  ████████████████████  99.0%     98.3%     30.9%
-  Buffalo Bills                    12.6  ███████████████████░  97.3%     76.6%     27.6%
-  Denver Broncos                   11.7  ███████████████████░  94.7%     65.2%     13.8%
-  Cincinnati Bengals               11.4  ██████████████████░░  87.9%     51.4%      9.7%
-  Pittsburgh Steelers              11.1  █████████████████░░░  86.4%     42.2%      7.1%
-  New England Patriots             10.5  █████████████████░░░  85.9%     23.4%      5.7%
-  Kansas City Chiefs               10.7  █████████████████░░░  85.6%     33.4%      4.9%
+  Jacksonville Jaguars             12.6  ████████████████████  99.0%     98.3%     30.8%
+  Buffalo Bills                    12.6  ███████████████████░  97.3%     76.8%     27.7%
+  Denver Broncos                   11.7  ███████████████████░  94.7%     65.2%     13.7%
+  Cincinnati Bengals               11.5  ██████████████████░░  87.9%     51.5%      9.7%
+  Pittsburgh Steelers              11.1  █████████████████░░░  86.4%     42.1%      7.0%
+  New England Patriots             10.5  █████████████████░░░  85.9%     23.2%      5.7%
+  Kansas City Chiefs               10.7  █████████████████░░░  85.7%     33.4%      4.9%
   Cleveland Browns                  8.8  ██████░░░░░░░░░░░░░░  30.7%      5.6%      0.3%
-  Houston Texans                    7.7  ███░░░░░░░░░░░░░░░░░  16.0%      1.6%      0.1%
+  Houston Texans                    7.7  ███░░░░░░░░░░░░░░░░░  15.8%      1.5%      0.1%
   Las Vegas Raiders                 7.6  ██░░░░░░░░░░░░░░░░░░   8.9%      1.4%      0.0%
   Baltimore Ravens                  7.4  █░░░░░░░░░░░░░░░░░░░   6.4%      0.7%      0.0%
-  Indianapolis Colts                5.9  ░░░░░░░░░░░░░░░░░░░░   1.2%      0.1%      0.0%
+  Indianapolis Colts                5.9  ░░░░░░░░░░░░░░░░░░░░   1.1%      0.1%      0.0%
   New York Jets                     4.8  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
   Miami Dolphins                    4.2  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
   Tennessee Titans                  3.4  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
@@ -75,20 +78,20 @@ Simulación de la temporada 2026 (5000 simulaciones, 150 partidos pendientes)
 
 ── NFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  San Francisco 49ers              12.4  ███████████████████░  97.4%     84.7%     47.8%
-  Minnesota Vikings                12.0  ███████████████████░  93.7%     52.0%     28.4%
-  Chicago Bears                    11.2  ████████████████░░░░  81.7%     22.6%      9.8%
-  Detroit Lions                    10.7  ████████████████░░░░  78.2%     21.3%      9.4%
-  New York Giants                   8.7  █████████████░░░░░░░  65.1%     64.3%      0.5%
-  Seattle Seahawks                  9.9  █████████████░░░░░░░  63.5%     11.6%      2.3%
+  San Francisco 49ers              12.4  ███████████████████░  97.4%     84.7%     47.9%
+  Minnesota Vikings                12.0  ███████████████████░  93.6%     51.8%     28.3%
+  Chicago Bears                    11.2  ████████████████░░░░  81.7%     22.7%      9.8%
+  Detroit Lions                    10.7  ████████████████░░░░  78.2%     21.4%      9.5%
+  New York Giants                   8.7  █████████████░░░░░░░  65.0%     64.2%      0.5%
+  Seattle Seahawks                  9.9  █████████████░░░░░░░  63.4%     11.6%      2.3%
   Tampa Bay Buccaneers              7.9  ███████████░░░░░░░░░  52.7%     51.7%      0.1%
-  Green Bay Packers                 9.4  ████████░░░░░░░░░░░░  41.7%      4.0%      1.0%
+  Green Bay Packers                 9.4  ████████░░░░░░░░░░░░  41.8%      4.0%      1.0%
   Los Angeles Rams                  9.1  ███████░░░░░░░░░░░░░  34.8%      3.7%      0.6%
-  Carolina Panthers                 7.2  █████░░░░░░░░░░░░░░░  24.0%     22.8%      0.0%
-  Dallas Cowboys                    7.2  ████░░░░░░░░░░░░░░░░  21.2%     19.5%      0.0%
-  Atlanta Falcons                   7.0  ████░░░░░░░░░░░░░░░░  17.5%     16.4%      0.0%
+  Carolina Panthers                 7.2  █████░░░░░░░░░░░░░░░  24.1%     22.8%      0.0%
+  Dallas Cowboys                    7.2  ████░░░░░░░░░░░░░░░░  21.4%     19.6%      0.0%
+  Atlanta Falcons                   7.0  ███░░░░░░░░░░░░░░░░░  17.5%     16.4%      0.0%
   Washington Commanders             6.8  ███░░░░░░░░░░░░░░░░░  12.9%     12.3%      0.0%
-  New Orleans Saints                6.2  ██░░░░░░░░░░░░░░░░░░   9.3%      9.0%      0.0%
+  New Orleans Saints                6.2  ██░░░░░░░░░░░░░░░░░░   9.3%      9.1%      0.0%
   Philadelphia Eagles               5.6  █░░░░░░░░░░░░░░░░░░░   4.1%      3.9%      0.0%
   Arizona Cardinals                 6.5  ░░░░░░░░░░░░░░░░░░░░   2.0%      0.1%      0.0%
 

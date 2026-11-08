@@ -1,20 +1,15 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-07 15:45 UTC_
+_Actualizado automáticamente: 2026-11-08 16:05 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(6 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-07 RB Leipzig vs Augsburg                           62%   20%   18%    68%   63%  2-1
-  2026-11-07 Dortmund vs Elversberg                           78%   14%    8%    70%   53%  2-0
-  2026-11-07 Mainz vs Bayern Munich                           15%   19%   66%    69%   62%  1-2
-  2026-11-07 Paderborn vs Ein Frankfurt                       30%   25%   45%    61%   63%  1-1
-  2026-11-07 Stuttgart vs Werder Bremen                       65%   20%   16%    68%   62%  2-1
   2026-11-08 FC Koln vs Leverkusen                            23%   23%   53%    63%   63%  1-1
   2026-11-08 Freiburg vs Union Berlin                         55%   24%   22%    60%   59%  1-1
   2026-11-08 Hoffenheim vs Schalke 04                         67%   19%   13%    64%   56%  2-0
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-11-21 MGladbach vs Dortmund                            22%   23%   55%    61%   60%  1-1
   2026-11-21 Ein Frankfurt vs Hoffenheim                      43%   25%   32%    63%   65%  1-1
   2026-11-21 Schalke 04 vs Stuttgart                          20%   23%   57%    62%   60%  1-1
+  2026-11-22 Augsburg vs Mainz                                44%   25%   31%    63%   65%  1-1
+  2026-11-22 Werder Bremen vs Hamburg                         49%   24%   27%    61%   63%  1-1
+  2026-11-27 Werder Bremen vs MGladbach                       46%   24%   29%    63%   64%  1-1
+  2026-11-28 FC Koln vs Elversberg                            49%   24%   27%    62%   63%  1-1
+  2026-11-28 Mainz vs Union Berlin                            54%   24%   23%    61%   61%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

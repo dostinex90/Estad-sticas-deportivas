@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-11-07 15:45 UTC_
+_Actualizado automáticamente: 2026-11-08 16:05 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -166,12 +166,12 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ```
 Validación del modelo en 2026-27 (día a día, sin datos futuros)
 ═══════════════════════════════════════════════════════════════
-  Partidos evaluados: 132
-  Acierto ganador (combinado)        ██████████████░░░░░░  68.9%
-  Acierto ganador (solo Elo)         █████████████░░░░░░░  62.9%
-  Acierto ganador (solo ratings)     █████████████░░░░░░░  65.9%
-  Gana siempre el local              ██████████░░░░░░░░░░  51.5%
-  Brier score: 0.203 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.217 · log-loss 0.590
-  Error medio del margen: 11.41 pts · del total: 14.70 pts
+  Partidos evaluados: 139
+  Acierto ganador (combinado)        ██████████████░░░░░░  69.8%
+  Acierto ganador (solo Elo)         █████████████░░░░░░░  64.0%
+  Acierto ganador (solo ratings)     █████████████░░░░░░░  66.9%
+  Gana siempre el local              ██████████░░░░░░░░░░  51.8%
+  Brier score: 0.200 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.213 · log-loss 0.583
+  Error medio del margen: 11.37 pts · del total: 14.91 pts
   La base no tiene líneas de apuestas de la NBA, así que no hay comparación con el mercado.
 ```

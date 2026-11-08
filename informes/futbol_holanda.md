@@ -1,18 +1,15 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-07 15:45 UTC_
+_Actualizado automáticamente: 2026-11-08 16:05 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(4 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-07 For Sittard vs Telstar                           40%   25%   35%    62%   65%  1-1
-  2026-11-07 Den Haag vs Sparta Rotterdam                     28%   24%   48%    63%   64%  1-1
-  2026-11-07 Excelsior vs Go Ahead Eagles                     35%   25%   40%    63%   65%  1-1
   2026-11-08 Heerenveen vs Feyenoord                          26%   24%   50%    63%   64%  1-1
   2026-11-08 Twente vs Ajax                                   43%   25%   32%    62%   64%  1-1
   2026-11-08 AZ Alkmaar vs Groningen                          54%   23%   23%    64%   63%  1-1
@@ -25,6 +22,9 @@ Pronósticos de los próximos 15 partidos
   2026-11-21 Groningen vs Heerenveen                          41%   25%   34%    63%   65%  1-1
   2026-11-22 Twente vs Willem II                              78%   14%    8%    72%   55%  2-0
   2026-11-22 Sparta Rotterdam vs AZ Alkmaar                   28%   24%   47%    62%   64%  1-1
+  2026-11-22 Ajax vs Den Haag                                 75%   15%    9%    71%   57%  2-0
+  2026-11-22 Go Ahead Eagles vs For Sittard                   48%   24%   28%    64%   65%  1-1
+  2026-11-27 Groningen vs Willem II                           67%   19%   14%    68%   60%  2-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
