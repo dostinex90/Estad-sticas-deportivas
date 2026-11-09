@@ -1,30 +1,28 @@
 # Serie A: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-08 16:05 UTC_
+_Actualizado automáticamente: 2026-11-09 19:55 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
-
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-08 Napoli vs Lazio                                  48%   29%   24%    43%   48%  1-1
-  2026-11-08 Genoa vs Milan                                   22%   28%   50%    42%   47%  1-1
-  2026-11-08 Monza vs Atalanta                                18%   24%   57%    52%   52%  1-1
-  2026-11-08 Inter vs Como                                    54%   27%   20%    46%   48%  1-1
-  2026-11-08 Fiorentina vs Juventus                           22%   28%   49%    44%   48%  1-1
   2026-11-21 Como vs Cagliari                                 55%   27%   18%    44%   46%  1-0
-  2026-11-21 Lazio vs Lecce                                   53%   27%   20%    44%   47%  1-0
+  2026-11-21 Lazio vs Lecce                                   53%   27%   19%    44%   46%  1-0
   2026-11-21 Parma vs Roma                                    17%   26%   57%    45%   46%  0-1
   2026-11-21 Napoli vs Torino                                 60%   25%   15%    47%   46%  1-0
-  2026-11-22 Sassuolo vs Genoa                                37%   30%   34%    43%   50%  1-1
+  2026-11-22 Sassuolo vs Genoa                                36%   30%   34%    43%   50%  1-1
   2026-11-22 Milan vs Frosinone                               59%   24%   17%    52%   51%  1-1
-  2026-11-22 Bologna vs Udinese                               44%   29%   27%    42%   48%  1-1
-  2026-11-22 Atalanta vs Inter                                21%   26%   52%    48%   51%  1-1
+  2026-11-22 Bologna vs Udinese                               45%   29%   26%    43%   48%  1-1
+  2026-11-22 Atalanta vs Inter                                21%   27%   52%    48%   50%  1-1
   2026-11-23 Monza vs Fiorentina                              26%   27%   46%    49%   53%  1-1
-  2026-11-23 Juventus vs Venezia                              65%   23%   12%    49%   44%  2-0
+  2026-11-23 Juventus vs Venezia                              65%   23%   13%    49%   45%  2-0
+  2026-11-29 Sassuolo vs Napoli                               17%   25%   58%    48%   48%  0-1
+  2026-11-29 Cagliari vs Milan                                22%   28%   50%    43%   48%  1-1
+  2026-11-29 Como vs Juventus                                 33%   30%   37%    40%   48%  1-1
+  2026-11-29 Roma vs Monza                                    69%   20%   11%    57%   49%  2-0
+  2026-11-29 Frosinone vs Parma                               38%   29%   33%    45%   52%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,26 +34,26 @@ Clasificación general
 ═════════════════════
   #  Equipo      PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ─────────────────────────────────────────────────────────────────
-  1  Lazio       10   9   1   0   24    8  +16   28  2.80  GGGGG
-  2  Inter       10   8   1   1   26   13  +13   25  2.50  GGGGP
-  3  Roma        10   7   3   0   28   10  +18   24  2.40  EGEGG
-  4  Como        10   7   2   1   18    8  +10   23  2.30  EGGGG
-  5  Milan       10   6   3   1   21   12   +9   21  2.10  EGGPG
-  6  Frosinone   10   6   2   2   24   14  +10   20  2.00  PGEGG
-  7  Juventus    10   5   2   3   13   10   +3   17  1.70  EPGPG
-  8  Napoli      10   4   2   4   17   13   +4   14  1.40  GPEGP
-  9  Bologna     10   4   2   4   14   13   +1   14  1.40  GPGGG
- 10  Torino      10   4   1   5   14   16   -2   13  1.30  GGGPP
- 11  Genoa       10   4   1   5   10   14   -4   13  1.30  GPGGG
- 12  Cagliari    10   4   1   5    9   15   -6   13  1.30  EPPPP
- 13  Atalanta    10   3   2   5   16   20   -4   11  1.10  GPEEP
- 14  Lecce       10   3   0   7   11   21  -10    9  0.90  PGPPP
- 15  Parma       10   2   2   6    8   15   -7    8  0.80  PPPEG
- 16  Fiorentina  10   2   2   6   15   23   -8    8  0.80  PPPEG
- 17  Sassuolo    10   2   2   6   16   26  -10    8  0.80  EPPPP
- 18  Monza       10   2   1   7   17   24   -7    7  0.70  PGPPP
- 19  Udinese     10   1   2   7   11   23  -12    5  0.50  PPPEP
- 20  Venezia     10   1   0   9    6   20  -14    3  0.30  PGPPP
+  1  Lazio       11   9   2   0   25    9  +16   29  2.64  GGGGE
+  2  Inter       11   9   1   1   28   13  +15   28  2.55  GGGPG
+  3  Roma        11   8   3   0   31   10  +21   27  2.45  GEGGG
+  4  Milan       11   7   3   1   23   13  +10   24  2.18  GGPGG
+  5  Como        11   7   2   2   18   10   +8   23  2.09  GGGGP
+  6  Frosinone   11   6   2   3   24   15   +9   20  1.82  GEGGP
+  7  Juventus    11   5   3   3   15   12   +3   18  1.64  PGPGE
+  8  Bologna     11   5   2   4   16   14   +2   17  1.55  PGGGG
+  9  Cagliari    11   5   1   5   10   15   -5   16  1.45  PPPPG
+ 10  Napoli      11   4   3   4   18   14   +4   15  1.36  PEGPE
+ 11  Torino      11   4   2   5   15   17   -2   14  1.27  GGPPE
+ 12  Atalanta    11   4   2   5   17   20   -3   14  1.27  PEEPG
+ 13  Genoa       11   4   1   6   11   16   -5   13  1.18  PGGGP
+ 14  Lecce       11   3   1   7   12   22  -10   10  0.91  GPPPE
+ 15  Fiorentina  11   2   3   6   17   25   -8    9  0.82  PPEGE
+ 16  Parma       11   2   2   7    9   17   -8    8  0.73  PPEGP
+ 17  Sassuolo    11   2   2   7   16   29  -13    8  0.73  PPPPP
+ 18  Monza       11   2   1   8   17   25   -8    7  0.64  GPPPP
+ 19  Venezia     11   2   0   9    8   21  -13    6  0.55  GPPPG
+ 20  Udinese     11   1   2   8   12   25  -13    5  0.45  PPEPP
 ```
 
 ## Ranking de fuerza
@@ -67,24 +65,24 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo        Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  Inter        1715    1.51     0.78    +0.99  ▂▁▂▃▄▅▅▅▇▇█▅
-   2  Roma         1672    1.29     0.85    +0.59  ▁▂▃▄▅▆▆▆▆▆▇█
-   3  Como         1660    1.23     0.70    +0.72  ▁▃▂▄▆▆▃▃▅▆██
-   4  Lazio        1609    1.03     0.90    +0.18  ▁▁▂▂▃▃▄▅▆▇██
-   5  Milan        1601    1.06     0.88    +0.25  ▃▁▂▄▄▄▅▅▆█▅█
-   6  Napoli       1591    1.15     0.77    +0.52  ▁▃█▄▁▄▃▇▂▂█▃
-   7  Juventus     1583    1.21     0.68    +0.71  ▅▅▇█▇▅▇▇▂▅▁▄
-   8  Frosinone    1556    1.41     1.23    +0.25  ▁▃▄▄▆▄▆▆▇█
-   9  Bologna      1524    0.92     0.85    +0.09  ▅▅▃▂▂▁▁▃▁▄▇█
-  10  Atalanta     1507    1.09     1.02    +0.10  ▆▆▇█▇▆▄▅▄▄▄▁
-  11  Fiorentina   1465    0.94     1.08    -0.20  ██▆▃▁▄▅▃▁▁▁▄
-  12  Torino       1463    0.91     1.06    -0.21  ▃▄▂▁▃▁▂▃▇█▆▅
-  13  Genoa        1461    0.82     0.97    -0.21  █▇▅▄▂▂▁▃▂▃▆█
-  14  Monza        1458    1.15     1.35    -0.27  █▆▆▄▆▄▇▅▂▁
-  15  Cagliari     1445    0.85     1.05    -0.27  ▁▃▄▄▅▆██▆▄▃▃
-  16  Sassuolo     1437    0.97     1.20    -0.31  ▇▆▆▆▇█▇▇▆▅▃▁
-  17  Parma        1436    0.69     0.98    -0.40  ▆█▆▅▅▄▆▅▂▁▁▅
-  18  Udinese      1435    0.94     1.08    -0.19  ▇▇▇█▇▇▆▅▃▂▂▁
-  19  Venezia      1419    0.81     1.22    -0.56  █▇▆▄▂▂▃▂▁▁
-  20  Lecce        1409    0.78     1.08    -0.40  ▃▄█▆▄▆▅▃▇▅▃▁
+   1  Inter        1725    1.50     0.75    +1.02  ▁▂▃▄▅▅▅▇▇█▅▇
+   2  Roma         1678    1.31     0.83    +0.64  ▁▂▃▄▅▅▅▆▆▆▇█
+   3  Como         1649    1.20     0.70    +0.68  ▁▁▃▅▆▂▂▄▅▇█▆
+   4  Lazio        1610    1.04     0.90    +0.19  ▁▂▂▃▃▄▅▆▆███
+   5  Milan        1609    1.05     0.89    +0.22  ▁▂▃▄▄▅▅▆▇▄▇█
+   6  Napoli       1590    1.16     0.78    +0.51  ▃█▃▁▃▂▇▂▂█▂▂
+   7  Juventus     1582    1.21     0.71    +0.67  ▅▇█▇▅▇▇▂▅▁▄▃
+   8  Frosinone    1544    1.41     1.21    +0.27  ▁▃▄▄▆▄▆▆▇█▇
+   9  Bologna      1533    0.96     0.85    +0.14  ▄▃▂▂▁▁▂▁▃▆▇█
+  10  Atalanta     1518    1.09     1.02    +0.09  ▆▇█▇▆▄▅▄▄▄▁▂
+  11  Fiorentina   1466    0.97     1.09    -0.17  █▆▃▁▄▅▃▁▁▁▄▄
+  12  Torino       1460    0.89     1.05    -0.21  ▄▂▁▃▁▂▃▇█▆▅▄
+  13  Cagliari     1457    0.85     1.05    -0.28  ▁▃▂▃▆██▅▃▂▁▃
+  14  Genoa        1453    0.83     0.96    -0.19  ▇▅▄▂▂▁▃▂▃▆█▇
+  15  Monza        1447    1.14     1.35    -0.28  █▆▆▅▆▅▇▆▄▃▁
+  16  Sassuolo     1432    0.95     1.22    -0.36  ▆▆▇▇█▇▇▆▅▄▂▁
+  17  Venezia      1427    0.83     1.22    -0.53  █▇▆▄▂▂▃▂▁▁▂
+  18  Parma        1427    0.69     1.02    -0.45  █▆▅▅▄▆▅▂▁▁▅▄
+  19  Udinese      1426    0.94     1.09    -0.20  ▇▇█▇▇▆▅▃▂▂▂▁
+  20  Lecce        1412    0.77     1.06    -0.39  ▄█▆▄▆▅▃▇▅▃▁▂
 ```

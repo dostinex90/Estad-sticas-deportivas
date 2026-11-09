@@ -1,30 +1,28 @@
 # Premier League: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-08 16:05 UTC_
+_Actualizado automáticamente: 2026-11-09 19:55 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(10 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
-
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
   2026-11-21 Chelsea vs Leeds                                 48%   26%   26%    53%   56%  1-1
   2026-11-21 Man City vs Fulham                               61%   23%   16%    55%   52%  2-0
-  2026-11-21 Aston Villa vs Sunderland                        55%   25%   20%    53%   53%  1-1
-  2026-11-21 Liverpool vs Man United                          45%   27%   29%    53%   57%  1-1
-  2026-11-21 Hull vs Brighton                                 21%   25%   54%    52%   53%  1-1
+  2026-11-21 Aston Villa vs Sunderland                        55%   25%   20%    53%   54%  1-1
+  2026-11-21 Liverpool vs Man United                          45%   26%   29%    54%   58%  1-1
+  2026-11-21 Hull vs Brighton                                 20%   25%   54%    52%   53%  1-1
   2026-11-21 Bournemouth vs Nottm Forest                      50%   26%   23%    51%   54%  1-1
-  2026-11-21 Tottenham vs Ipswich                             53%   25%   22%    54%   55%  1-1
-  2026-11-21 Brentford vs Everton                             45%   27%   27%    51%   55%  1-1
-  2026-11-21 Coventry vs Crystal Palace                       34%   28%   38%    50%   55%  1-1
+  2026-11-21 Tottenham vs Ipswich                             54%   25%   21%    53%   55%  1-1
+  2026-11-21 Brentford vs Everton                             45%   27%   28%    50%   55%  1-1
+  2026-11-21 Coventry vs Crystal Palace                       34%   28%   38%    51%   56%  1-1
   2026-11-21 Newcastle vs Arsenal                             24%   27%   49%    50%   53%  1-1
-  2026-11-28 Leeds vs Coventry                                56%   25%   19%    52%   52%  1-1
-  2026-11-28 Ipswich vs Aston Villa                           28%   26%   46%    55%   58%  1-1
-  2026-11-28 Arsenal vs Man City                              47%   27%   26%    49%   53%  1-1
-  2026-11-28 Man United vs Brentford                          50%   26%   24%    54%   56%  1-1
-  2026-11-28 Everton vs Liverpool                             35%   28%   37%    50%   55%  1-1
+  2026-11-28 Leeds vs Coventry                                57%   24%   19%    53%   53%  1-1
+  2026-11-28 Ipswich vs Aston Villa                           27%   26%   46%    55%   58%  1-1
+  2026-11-28 Arsenal vs Man City                              47%   27%   25%    49%   53%  1-1
+  2026-11-28 Man United vs Brentford                          51%   26%   24%    54%   57%  1-1
+  2026-11-28 Everton vs Liverpool                             35%   28%   37%    51%   56%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,26 +34,26 @@ Clasificación general
 ═════════════════════
   #  Equipo          PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ─────────────────────────────────────────────────────────────────────
-  1  Arsenal          9   8   0   1   14    5   +9   24  2.67  PGGGG
-  2  Man City         9   7   0   2   20   10  +10   21  2.33  GGGPP
-  3  Brighton         9   6   1   2   24    7  +17   19  2.11  GGGPG
-  4  Chelsea          9   5   1   3   19   15   +4   16  1.78  PGGPG
-  5  Liverpool        9   4   3   2   11    9   +2   15  1.67  GPGGP
-  6  Brentford        9   3   5   1   16    9   +7   14  1.56  GEPEG
-  7  Everton          9   3   4   2    9    9   +0   13  1.44  GEPPG
-  8  Bournemouth      9   3   3   3   14   13   +1   12  1.33  PPGGG
-  9  Tottenham        9   3   3   3   10   10   +0   12  1.33  PEGGG
- 10  Aston Villa      9   3   3   3   10   13   -3   12  1.33  GEGGE
- 11  Hull             9   2   5   2   11   10   +1   11  1.22  PEPEE
- 12  Leeds            9   2   5   2    9    8   +1   11  1.22  EPEEP
- 13  Newcastle        9   3   2   4   12   15   -3   11  1.22  GPPGP
- 14  Ipswich          9   3   2   4   14   18   -4   11  1.22  PGPEE
- 15  Fulham           9   2   3   4    9   11   -2    9  1.00  EPGGE
- 16  Coventry         9   3   0   6    9   16   -7    9  1.00  GGPPG
- 17  Man United       9   1   4   4   10   15   -5    7  0.78  EEEPP
- 18  Crystal Palace   9   2   1   6    9   21  -12    7  0.78  EGPPP
- 19  Nottm Forest     9   1   3   5    6   12   -6    6  0.67  PPPEP
- 20  Sunderland       9   1   2   6    7   17  -10    5  0.56  PPPEP
+  1  Arsenal         10   9   0   1   15    5  +10   27  2.70  GGGGG
+  2  Brighton        10   7   1   2   26    7  +19   22  2.20  GGPGG
+  3  Man City        10   7   0   3   21   13   +8   21  2.10  GGPPP
+  4  Liverpool       10   5   3   2   14   10   +4   18  1.80  PGGPG
+  5  Chelsea         10   5   1   4   19   16   +3   16  1.60  GGPGP
+  6  Everton         10   4   4   2   12   10   +2   16  1.60  EPPGG
+  7  Bournemouth     10   4   3   3   16   14   +2   15  1.50  PGGGG
+  8  Brentford       10   3   5   2   16   11   +5   14  1.40  EPEGP
+  9  Leeds           10   3   5   2   10    8   +2   14  1.40  PEEPG
+ 10  Aston Villa     10   3   4   3   14   17   -3   13  1.30  EGGEE
+ 11  Tottenham       10   3   3   4   10   11   -1   12  1.20  EGGGP
+ 12  Newcastle       10   3   3   4   13   16   -3   12  1.20  PPGPE
+ 13  Hull            10   2   5   3   11   11   +0   11  1.10  EPEEP
+ 14  Ipswich         10   3   2   5   15   20   -5   11  1.10  GPEEP
+ 15  Fulham          10   2   4   4   10   12   -2   10  1.00  PGGEE
+ 16  Nottm Forest    10   2   3   5    9   13   -4    9  0.90  PPEPG
+ 17  Coventry        10   3   0   7   10   19   -9    9  0.90  GPPGP
+ 18  Man United      10   1   5   4   14   19   -5    8  0.80  EEPPE
+ 19  Sunderland      10   2   2   6    8   17   -9    8  0.80  PPEPG
+ 20  Crystal Palace  10   2   1   7   10   24  -14    7  0.70  GPPPP
 ```
 
 ## Ranking de fuerza
@@ -67,24 +65,24 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo            Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  Arsenal          1695    1.15     0.60    +0.76  ▁▁▂▄▅▆█▄▄▆▇█
-   2  Man City         1669    1.33     0.81    +0.71  ▃▃▁▂▃▄▅▆██▆▄
-   3  Brighton         1584    1.20     0.86    +0.47  ▃▃▁▃▂▂▄▆▇█▇█
-   4  Bournemouth      1557    1.13     0.93    +0.28  ▇▇▇▆▆▆▆▄▁▃▆█
-   5  Liverpool        1555    1.11     0.89    +0.30  ▅▂▁▂▁▄▃▆▃▅█▆
-   6  Man United       1546    1.26     0.98    +0.38  ▆▆█▆▇▇▆▆▅▅▃▁
-   7  Brentford        1535    1.00     0.98    +0.02  ▂▁▂▄▅▄▅██▅▅█
-   8  Aston Villa      1530    1.03     1.04    -0.01  ▂▅█▅▃▄▁▃▃▅█▇
-   9  Chelsea          1516    1.18     1.07    +0.15  ▁▃▁▃▅▄▄▁▅█▄▇
-  10  Leeds            1502    0.95     0.96    -0.02  ▃▆▁▄▄▄█▇▆▆▆▃
-  11  Hull             1502    0.78     1.08    -0.42  ▅█▇█▅▅▂▂▁
-  12  Everton          1489    0.98     0.95    +0.04  █▃▁▄▅▅▅▇▇▃▂▅
-  13  Ipswich          1487    1.02     1.25    -0.31  █▅▁▄▂▄▃▂▃
-  14  Fulham           1482    0.91     0.91    +0.01  ▆▅█▆▄▁▂▃▁▃▅▆
-  15  Newcastle        1471    1.01     1.11    -0.13  ▅█▅▅██▅▇▃▁▅▂
-  16  Coventry         1470    0.83     1.11    -0.38  █▆▅▁▃▇▄▁▄
-  17  Nottm Forest     1459    0.93     0.91    +0.03  █▇▇▅▆▅▇▅▃▂▂▁
-  18  Tottenham        1459    0.96     0.92    +0.05  ▅▄▅▄▂▂▂▁▂▄▇█
-  19  Sunderland       1439    0.86     0.98    -0.18  ▄▆█▇██▇▆▄▃▃▁
-  20  Crystal Palace   1412    0.87     1.14    -0.36  ██▇▅▄▆▄▅▇▅▃▁
+   1  Arsenal          1699    1.16     0.59    +0.79  ▁▂▃▅▅▇▃▄▅▆▇█
+   2  Man City         1648    1.31     0.82    +0.67  ▃▁▂▃▄▅▆██▆▄▂
+   3  Brighton         1594    1.20     0.82    +0.51  ▂▁▂▂▁▃▅▆▇▆▇█
+   4  Bournemouth      1567    1.13     0.91    +0.30  ▆▆▅▅▅▅▃▁▂▅▇█
+   5  Liverpool        1566    1.14     0.91    +0.33  ▂▁▂▁▄▃▅▃▅▇▆█
+   6  Man United       1544    1.29     1.01    +0.38  ▆█▆▇▇▆▆▅▅▃▁▁
+   7  Aston Villa      1532    1.06     1.06    -0.00  ▅█▅▃▄▁▃▃▅█▇▇
+   8  Brentford        1525    0.97     0.98    -0.01  ▁▂▄▅▄▅██▅▅█▅
+   9  Leeds            1509    0.94     0.95    -0.01  ▆▁▄▄▄█▇▆▆▆▃▅
+  10  Chelsea          1506    1.16     1.05    +0.16  ▃▁▃▅▄▄▁▅█▄▇▅
+  11  Everton          1500    0.99     0.95    +0.06  ▄▁▄▅▅▅▇█▃▂▅█
+  12  Hull             1498    0.77     1.12    -0.48  ▅█▇█▆▅▃▂▂▁
+  13  Nottm Forest     1480    0.95     0.90    +0.07  ██▆▆▆█▆▃▂▃▁▄
+  14  Fulham           1480    0.90     0.91    -0.01  ▅█▆▄▁▂▃▁▃▅▆▆
+  15  Ipswich          1478    0.97     1.22    -0.35  █▆▂▄▂▄▃▃▃▁
+  16  Newcastle        1473    1.01     1.10    -0.12  █▅▅██▅▇▃▁▅▂▂
+  17  Coventry         1458    0.85     1.15    -0.42  █▆▅▁▃▇▄▁▄▁
+  18  Tottenham        1452    0.95     0.91    +0.05  ▄▅▄▂▂▂▁▂▄▇█▇
+  19  Sunderland       1450    0.84     0.97    -0.18  ▆█▇██▇▆▄▃▃▁▂
+  20  Crystal Palace   1401    0.89     1.16    -0.37  █▇▆▅▆▅▅▇▆▄▂▁
 ```
