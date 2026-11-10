@@ -1,6 +1,6 @@
 # Informes automáticos
 
-_Última actualización: 2026-11-09 19:55 UTC_
+_Última actualización: 2026-11-10 17:09 UTC_
 
 Una tarea de GitHub Actions actualiza cada día la base de datos con los partidos nuevos y regenera estos informes. No usa IA ni consume uso de Claude.
 
