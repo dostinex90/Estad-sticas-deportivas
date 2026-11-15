@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-11-14 15:54 UTC_
+_Actualizado automáticamente: 2026-11-15 16:27 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -8,19 +8,19 @@ _Actualizado automáticamente: 2026-11-14 15:54 UTC_
 Pronósticos semana 10 — 2026
 ════════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
-  LA @ ARI    2026-11-15         23.4%      +8.9      +9.5   +0.6   47.1     39.5   -0.3
+  LA @ ARI    2026-11-15         23.4%      +8.9      +9.5   +0.6   47.1     38.5   -0.3
   KC @ ATL    2026-11-15         37.1%      +4.0      +3.0   -1.0   42.8     47.5   -0.4
   PIT @ CIN   2026-11-15         53.9%      -1.2      -3.5   -2.3   48.6     49.5   -0.9
-  HOU @ CLE   2026-11-15         41.0%      +2.8      +4.5   +1.7   41.6     40.5   +0.8
+  HOU @ CLE   2026-11-15         41.0%      +2.8      +4.5   +1.7   41.6     41.5   +0.8
   SF @ DAL    2026-11-15         34.5%      +4.9      +4.5   -0.4   54.5     55.5   -0.4
-  NE @ DET    2026-11-15         54.1%      -1.3      -2.5   -1.2   50.2     49.5   +0.4
+  NE @ DET    2026-11-15         54.1%      -1.3      -2.5   -1.2   50.2     50.5   +0.4
   MIN @ GB    2026-11-15         54.2%      -1.3      -2.5   -1.2   36.1     42.5   -0.7
-  MIA @ IND   2026-11-15         60.0%      -3.1      -3.5   -0.4   45.3     38.5   -0.0
+  MIA @ IND   2026-11-15         60.0%      -3.1      -4.5   -1.4   45.3     37.5   -0.0
   SEA @ LV    2026-11-15         21.7%      +9.6      +6.5   -3.1   47.7     40.5   +0.5
-  CAR @ NO    2026-11-15         52.3%      -0.7      -2.5   -1.8   51.0     48.5   +0.2
+  CAR @ NO    2026-11-15         52.3%      -0.7      -1.5   -0.8   51.0     48.5   +0.2
   BUF @ NYJ   2026-11-15         19.2%     +10.7      +8.5   -2.2   51.9     50.5   +0.1
-  JAX @ TEN   2026-11-15         13.7%     +13.4     +10.5   -2.9   43.3     46.5   -1.7
-  LAC @ BAL   2026-11-16         51.1%      -0.3      -4.5   -4.2   43.2     38.5   +0.0
+  JAX @ TEN   2026-11-15         13.7%     +13.4     +10.5   -2.9   43.3     45.5   -1.7
+  LAC @ BAL   2026-11-16         51.4%      -0.4      -4.5   -4.1   43.2     38.5   +0.1
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
@@ -46,6 +46,7 @@ Pronósticos semana 10 — 2026
     BUF @ NYJ    bajas BUF: Spencer Brown (T) -0.2
     JAX @ TEN    bajas TEN: Anthony Hill Jr. (LB) -0.7, Carnell Tate (WR) -0.7, Cody Barton (LB) -0.5
     JAX @ TEN    bajas JAX: Jessie Bates (S) -0.4
+    LAC @ BAL    bajas BAL: Jaylinn Hawkins (S) -0.3
 ```
 
 ## Probabilidades de playoffs
