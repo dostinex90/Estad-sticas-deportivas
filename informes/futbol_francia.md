@@ -1,6 +1,6 @@
 # Ligue 1: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-15 16:27 UTC_
+_Actualizado automáticamente: 2026-11-16 19:42 UTC_
 
 ## Pronósticos de los próximos partidos
 
