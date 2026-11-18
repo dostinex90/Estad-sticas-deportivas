@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-11-17 18:43 UTC_
+_Actualizado automáticamente: 2026-11-18 18:11 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -14,13 +14,13 @@ Pronósticos semana 11 — 2026
   NO @ CHI    2026-11-22         80.7%     -10.6     -11.5   -0.9   49.5     48.5   +0.0
   TEN @ DAL   2026-11-22         73.3%      -7.6      -8.5   -0.9   53.7     54.5   +0.0
   LV @ DEN    2026-11-22         89.7%     -15.5     -10.0   +5.5   47.5     40.5   +0.0
-  TB @ DET    2026-11-22         63.9%      -4.4      -6.5   -2.1   48.2     45.5   +0.0
-  ARI @ KC    2026-11-22         86.0%     -13.3     -16.5   -3.2   45.5     41.5   +0.0
-  NYJ @ LAC   2026-11-22         59.2%      -2.8      -3.5   -0.7   42.0     40.5   +0.0
+  TB @ DET    2026-11-22         63.9%      -4.4      -7.0   -2.6   48.2     43.5   +0.0
+  ARI @ KC    2026-11-22         86.0%     -13.3     -15.5   -2.2   45.5     40.5   +0.0
+  NYJ @ LAC   2026-11-22         59.2%      -2.8      -3.0   -0.2   42.0     41.5   +0.0
   JAX @ NYG   2026-11-22         16.1%     +12.1      +6.0   -6.1   45.1     46.5   +0.0
   PIT @ PHI   2026-11-22         29.3%      +6.7      +4.5   -2.2   39.1     38.5   +0.0
-  MIN @ SF    2026-11-22         55.8%      -1.8      -3.0   -1.2   41.5     46.5   +0.0
-  CIN @ WAS   2026-11-23         33.0%      +5.4      +6.5   +1.1   52.7     52.5   +0.0
+  MIN @ SF    2026-11-22         55.8%      -1.8      -3.0   -1.2   41.5     45.5   +0.0
+  CIN @ WAS   2026-11-23         33.0%      +5.4      +6.5   +1.1   52.7     54.5   +0.0
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).

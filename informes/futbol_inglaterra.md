@@ -1,6 +1,6 @@
 # Premier League: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-17 18:43 UTC_
+_Actualizado automáticamente: 2026-11-18 18:11 UTC_
 
 ## Pronósticos de los próximos partidos
 
