@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-11-18 18:11 UTC_
+_Actualizado automáticamente: 2026-11-19 18:24 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -8,23 +8,25 @@ _Actualizado automáticamente: 2026-11-18 18:11 UTC_
 Pronósticos semana 11 — 2026
 ════════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
-  IND @ HOU   2026-11-19         71.0%      -6.8     -12.5   -5.7   49.0     44.5   +0.0
-  MIA @ BUF   2026-11-22         91.2%     -16.6     -16.5   +0.1   48.4     45.5   +0.0
+  IND @ HOU   2026-11-19         70.8%      -6.7     -12.5   -5.8   49.0     44.5   -0.1
+  MIA @ BUF   2026-11-22         91.2%     -16.6     -16.5   +0.1   48.4     44.5   +0.0
   BAL @ CAR   2026-11-22         55.5%      -1.7      -2.5   -0.8   48.5     43.5   +0.0
   NO @ CHI    2026-11-22         80.7%     -10.6     -11.5   -0.9   49.5     48.5   +0.0
-  TEN @ DAL   2026-11-22         73.3%      -7.6      -8.5   -0.9   53.7     54.5   +0.0
+  TEN @ DAL   2026-11-22         73.3%      -7.6      -8.5   -0.9   53.7     55.5   +0.0
   LV @ DEN    2026-11-22         89.7%     -15.5     -10.0   +5.5   47.5     40.5   +0.0
-  TB @ DET    2026-11-22         63.9%      -4.4      -7.0   -2.6   48.2     43.5   +0.0
+  TB @ DET    2026-11-22         63.9%      -4.4      -6.5   -2.1   48.2     45.5   +0.0
   ARI @ KC    2026-11-22         86.0%     -13.3     -15.5   -2.2   45.5     40.5   +0.0
   NYJ @ LAC   2026-11-22         59.2%      -2.8      -3.0   -0.2   42.0     41.5   +0.0
   JAX @ NYG   2026-11-22         16.1%     +12.1      +6.0   -6.1   45.1     46.5   +0.0
-  PIT @ PHI   2026-11-22         29.3%      +6.7      +4.5   -2.2   39.1     38.5   +0.0
-  MIN @ SF    2026-11-22         55.8%      -1.8      -3.0   -1.2   41.5     45.5   +0.0
-  CIN @ WAS   2026-11-23         33.0%      +5.4      +6.5   +1.1   52.7     54.5   +0.0
+  PIT @ PHI   2026-11-22         29.3%      +6.7      +4.5   -2.2   39.1     37.5   +0.0
+  MIN @ SF    2026-11-22         55.8%      -1.8      -3.0   -1.2   41.5     46.5   +0.0
+  CIN @ WAS   2026-11-23         33.0%      +5.4      +6.5   +1.1   52.7     53.5   +0.0
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
   Bajas = puntos que gana (+) o pierde (−) el local por los lesionados de ambos equipos (parte oficial).
+    IND @ HOU    bajas HOU: Woody Marks (RB) -0.6, Marvin Harrison Jr. (WR) -0.3
+    IND @ HOU    bajas IND: Charvarius Ward (CB) -0.4, Jalen Travis (T) -0.2
 ```
 
 ## Probabilidades de playoffs
@@ -36,14 +38,14 @@ Simulación de la temporada 2026 (5000 simulaciones, 122 partidos pendientes)
 ── AFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
   Buffalo Bills                    13.7  ████████████████████ 100.0%     99.1%     43.2%
-  Jacksonville Jaguars             13.0  ████████████████████  99.8%     99.1%     21.1%
+  Jacksonville Jaguars             13.0  ████████████████████  99.8%     99.2%     21.1%
   Cincinnati Bengals               12.6  ████████████████████  99.0%     83.8%     14.4%
   Denver Broncos                   12.5  ████████████████████  98.9%     63.4%     14.0%
   Kansas City Chiefs               11.7  ████████████████████  97.7%     36.5%      6.6%
   Pittsburgh Steelers              10.6  █████████████████░░░  83.0%     11.0%      0.6%
   New England Patriots              8.7  ██████████░░░░░░░░░░  47.9%      0.9%      0.0%
   Cleveland Browns                  9.2  █████████░░░░░░░░░░░  46.5%      5.1%      0.1%
-  Houston Texans                    7.7  ████░░░░░░░░░░░░░░░░  18.7%      0.8%      0.0%
+  Houston Texans                    7.7  ████░░░░░░░░░░░░░░░░  18.6%      0.8%      0.0%
   Baltimore Ravens                  6.9  █░░░░░░░░░░░░░░░░░░░   4.5%      0.1%      0.0%
   Las Vegas Raiders                 6.7  █░░░░░░░░░░░░░░░░░░░   3.0%      0.0%      0.0%
   Indianapolis Colts                5.8  ░░░░░░░░░░░░░░░░░░░░   1.1%      0.0%      0.0%
