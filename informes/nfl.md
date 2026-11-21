@@ -1,6 +1,6 @@
 # NFL: pronósticos, playoffs y ranking
 
-_Actualizado automáticamente: 2026-11-20 17:54 UTC_
+_Actualizado automáticamente: 2026-11-21 16:52 UTC_
 
 ## Pronósticos de la próxima semana
 
@@ -9,21 +9,36 @@ Pronósticos semana 11 — 2026
 ════════════════════════════
   Partido     Fecha        Prob. local    Modelo   Mercado   Dif.  Total  Mercado  Bajas
   MIA @ BUF   2026-11-22         91.4%     -16.7     -16.5   +0.2   48.5     44.5   +0.0
-  BAL @ CAR   2026-11-22         55.7%      -1.7      -3.0   -1.3   48.5     43.5   +0.0
-  NO @ CHI    2026-11-22         80.8%     -10.7     -11.5   -0.8   49.4     48.5   +0.0
-  TEN @ DAL   2026-11-22         73.4%      -7.7      -8.5   -0.8   53.9     54.5   +0.0
-  LV @ DEN    2026-11-22         89.7%     -15.5     -10.5   +5.0   47.4     40.5   +0.0
-  TB @ DET    2026-11-22         64.0%      -4.4      -5.5   -1.1   48.2     45.5   +0.0
-  ARI @ KC    2026-11-22         86.0%     -13.3     -15.5   -2.2   45.6     40.5   +0.0
-  NYJ @ LAC   2026-11-22         59.4%      -2.9      -3.0   -0.1   42.0     41.5   +0.0
-  JAX @ NYG   2026-11-22         16.3%     +12.1      +6.0   -6.1   45.3     46.5   +0.0
-  PIT @ PHI   2026-11-22         29.5%      +6.6      +3.5   -3.1   39.1     37.5   +0.0
-  MIN @ SF    2026-11-22         55.9%      -1.8      -3.0   -1.2   41.5     46.5   +0.0
+  BAL @ CAR   2026-11-22         55.6%      -1.7      -3.0   -1.3   48.5     43.5   -0.0
+  NO @ CHI    2026-11-22         83.3%     -11.8     -11.5   +0.3   49.4     48.5   +1.2
+  TEN @ DAL   2026-11-22         71.5%      -6.9      -7.5   -0.6   53.9     54.5   -0.7
+  LV @ DEN    2026-11-22         89.6%     -15.4     -10.5   +4.9   47.4     40.5   -0.1
+  TB @ DET    2026-11-22         64.2%      -4.5      -4.5   -0.0   48.2     46.5   +0.1
+  ARI @ KC    2026-11-22         84.4%     -12.4     -15.5   -3.1   45.6     40.5   -0.8
+  NYJ @ LAC   2026-11-22         59.1%      -2.8      -3.0   -0.2   42.0     42.5   -0.1
+  JAX @ NYG   2026-11-22         16.7%     +11.8      +6.0   -5.8   45.3     46.5   +0.2
+  PIT @ PHI   2026-11-22         26.1%      +7.8      +3.5   -4.3   39.1     37.5   -1.2
+  MIN @ SF    2026-11-22         58.2%      -2.5      -3.5   -1.0   41.5     46.5   +0.7
   CIN @ WAS   2026-11-23         32.9%      +5.4      +6.0   +0.6   52.8     53.5   +0.0
 
   Spreads desde el punto de vista del local (negativo = local favorito).
   Dif. = ventaja del modelo para el local respecto al mercado (positivo = el modelo ve mejor al local).
   Bajas = puntos que gana (+) o pierde (−) el local por los lesionados de ambos equipos (parte oficial).
+    MIA @ BUF    bajas BUF: Dorian Williams (LB) -0.4, Christian Benford (CB) -0.3
+    MIA @ BUF    bajas MIA: Dante Trader Jr. (S) -0.4
+    BAL @ CAR    bajas CAR: Bobby Okereke (LB) -0.7
+    BAL @ CAR    bajas BAL: Marlon Humphrey (CB) -0.3, Jaylinn Hawkins (S) -0.3
+    NO @ CHI     bajas CHI: Kyler Gordon (CB) -0.2
+    NO @ CHI     bajas NO: Martin Emerson (CB) -0.3, Justin Reid (S) -0.3, Taliese Fuaga (T) -0.3
+    TEN @ DAL    bajas DAL: DaRon Bland (CB) -0.3, Jonathan Mingo (WR) -0.2, Tyler Booker (G) -0.2
+    TB @ DET     bajas DET: Cade Mays (C) -0.2
+    TB @ DET     bajas TB: Antoine Winfield Jr. (S) -0.4
+    ARI @ KC     bajas KC: Kenneth Walker III (RB) -0.6, Trey Smith (G) -0.2, Jaylon Moore (T) -0.2
+    NYJ @ LAC    bajas LAC: Daiyan Henley (LB) -0.6
+    NYJ @ LAC    bajas NYJ: Omar Cooper Jr. (WR) -0.5, Isaiah Williams (WR) -0.4
+    JAX @ NYG    bajas JAX: Robert Hainsey (C) -0.2
+    PIT @ PHI    bajas PHI: Dontayvion Wicks (WR) -0.7, Zack Baun (LB) -0.6
+    MIN @ SF     bajas MIN: Jordan Addison (WR) -0.8
 ```
 
 ## Probabilidades de playoffs
@@ -34,40 +49,40 @@ Simulación de la temporada 2026 (5000 simulaciones, 121 partidos pendientes)
 
 ── AFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  Buffalo Bills                    13.8  ████████████████████  99.9%     99.2%     46.6%
-  Jacksonville Jaguars             13.0  ████████████████████  99.8%     99.2%     20.0%
-  Denver Broncos                   12.5  ████████████████████  99.1%     62.7%     13.3%
-  Cincinnati Bengals               12.6  ████████████████████  98.8%     84.6%     13.8%
-  Kansas City Chiefs               11.7  ███████████████████░  97.4%     37.3%      6.0%
-  Pittsburgh Steelers              10.5  ████████████████░░░░  80.8%     10.7%      0.3%
-  Cleveland Browns                  9.2  █████████░░░░░░░░░░░  46.0%      4.6%      0.1%
-  New England Patriots              8.7  █████████░░░░░░░░░░░  44.9%      0.8%      0.0%
-  Houston Texans                    8.1  █████░░░░░░░░░░░░░░░  26.0%      0.8%      0.0%
-  Baltimore Ravens                  6.8  █░░░░░░░░░░░░░░░░░░░   4.3%      0.1%      0.0%
-  Las Vegas Raiders                 6.7  █░░░░░░░░░░░░░░░░░░░   2.9%      0.0%      0.0%
-  Indianapolis Colts                5.4  ░░░░░░░░░░░░░░░░░░░░   0.1%      0.0%      0.0%
-  New York Jets                     4.2  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
+  Buffalo Bills                    13.8  ████████████████████  99.9%     99.2%     46.7%
+  Jacksonville Jaguars             13.0  ████████████████████  99.8%     99.2%     19.9%
+  Denver Broncos                   12.5  ████████████████████  99.1%     63.0%     13.3%
+  Cincinnati Bengals               12.6  ████████████████████  98.8%     84.0%     13.8%
+  Kansas City Chiefs               11.7  ███████████████████░  97.3%     37.0%      5.9%
+  Pittsburgh Steelers              10.5  ████████████████░░░░  81.0%     10.7%      0.3%
+  Cleveland Browns                  9.4  ██████████░░░░░░░░░░  49.4%      5.1%      0.1%
+  New England Patriots              8.7  █████████░░░░░░░░░░░  43.6%      0.8%      0.0%
+  Houston Texans                    8.1  █████░░░░░░░░░░░░░░░  24.8%      0.8%      0.0%
+  Baltimore Ravens                  6.8  █░░░░░░░░░░░░░░░░░░░   4.1%      0.1%      0.0%
+  Las Vegas Raiders                 6.6  ░░░░░░░░░░░░░░░░░░░░   2.2%      0.0%      0.0%
+  Indianapolis Colts                5.5  ░░░░░░░░░░░░░░░░░░░░   0.1%      0.0%      0.0%
+  New York Jets                     4.3  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
   Los Angeles Chargers              3.9  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
-  Miami Dolphins                    3.3  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
+  Miami Dolphins                    3.2  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
   Tennessee Titans                  3.1  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
 
 ── NFC ─────────────────────────────────────────────────────────
   Equipo                     Vict. esp.  Playoffs                        División  1º conf.
-  San Francisco 49ers              13.1  ████████████████████  99.1%     87.4%     53.9%
-  Minnesota Vikings                12.1  ███████████████████░  96.0%     43.2%     20.0%
-  Detroit Lions                    12.0  ███████████████████░  93.2%     39.7%     17.8%
-  Chicago Bears                    11.4  ████████████████░░░░  77.8%     16.5%      5.4%
-  New York Giants                   8.7  █████████████░░░░░░░  67.4%     67.2%      0.0%
-  Seattle Seahawks                 10.4  █████████████░░░░░░░  65.5%      8.9%      2.1%
+  San Francisco 49ers              13.2  ████████████████████  99.1%     88.6%     56.0%
+  Minnesota Vikings                12.0  ███████████████████░  95.7%     42.1%     18.6%
+  Detroit Lions                    12.0  ███████████████████░  93.3%     40.3%     17.5%
+  Chicago Bears                    11.4  ████████████████░░░░  78.6%     17.0%      5.4%
+  Seattle Seahawks                 10.4  █████████████░░░░░░░  64.1%      8.0%      1.8%
+  New York Giants                   8.6  █████████████░░░░░░░  64.1%     63.8%      0.0%
   Tampa Bay Buccaneers              7.5  ██████████░░░░░░░░░░  51.0%     50.9%      0.0%
-  Los Angeles Rams                  9.9  █████████░░░░░░░░░░░  43.5%      3.7%      0.6%
+  Los Angeles Rams                  9.9  █████████░░░░░░░░░░░  43.8%      3.4%      0.6%
   Carolina Panthers                 7.4  ███████░░░░░░░░░░░░░  35.8%     35.6%      0.0%
-  Green Bay Packers                 9.4  █████░░░░░░░░░░░░░░░  23.7%      0.6%      0.1%
-  Dallas Cowboys                    7.3  ████░░░░░░░░░░░░░░░░  20.3%     19.8%      0.0%
-  Washington Commanders             6.9  ██░░░░░░░░░░░░░░░░░░  12.3%     12.1%      0.0%
-  New Orleans Saints                5.9  █░░░░░░░░░░░░░░░░░░░   7.2%      7.2%      0.0%
-  Atlanta Falcons                   5.8  █░░░░░░░░░░░░░░░░░░░   6.4%      6.3%      0.0%
-  Philadelphia Eagles               4.8  ░░░░░░░░░░░░░░░░░░░░   0.9%      0.9%      0.0%
+  Green Bay Packers                 9.4  █████░░░░░░░░░░░░░░░  23.9%      0.6%      0.1%
+  Dallas Cowboys                    7.4  █████░░░░░░░░░░░░░░░  22.9%     22.4%      0.0%
+  Washington Commanders             7.0  ███░░░░░░░░░░░░░░░░░  13.4%     13.2%      0.0%
+  New Orleans Saints                5.9  █░░░░░░░░░░░░░░░░░░░   7.0%      7.0%      0.0%
+  Atlanta Falcons                   5.8  █░░░░░░░░░░░░░░░░░░░   6.6%      6.5%      0.0%
+  Philadelphia Eagles               4.7  ░░░░░░░░░░░░░░░░░░░░   0.6%      0.6%      0.0%
   Arizona Cardinals                 5.8  ░░░░░░░░░░░░░░░░░░░░   0.0%      0.0%      0.0%
 
   Desempates simplificados (victorias, récord divisional, sorteo).
