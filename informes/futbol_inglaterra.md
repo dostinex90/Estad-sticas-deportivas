@@ -1,28 +1,30 @@
 # Premier League: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-21 16:52 UTC_
+_Actualizado automáticamente: 2026-11-22 17:14 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(10 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-21 Chelsea vs Leeds                                 48%   26%   26%    53%   56%  1-1
-  2026-11-21 Man City vs Fulham                               61%   23%   16%    55%   52%  2-0
-  2026-11-21 Aston Villa vs Sunderland                        55%   25%   20%    53%   54%  1-1
-  2026-11-21 Liverpool vs Man United                          45%   26%   29%    54%   58%  1-1
-  2026-11-21 Hull vs Brighton                                 20%   25%   54%    52%   53%  1-1
-  2026-11-21 Bournemouth vs Nottm Forest                      50%   26%   23%    51%   54%  1-1
-  2026-11-21 Tottenham vs Ipswich                             54%   25%   21%    53%   55%  1-1
-  2026-11-21 Brentford vs Everton                             45%   27%   28%    50%   55%  1-1
-  2026-11-21 Coventry vs Crystal Palace                       34%   28%   38%    51%   56%  1-1
-  2026-11-21 Newcastle vs Arsenal                             24%   27%   49%    50%   53%  1-1
   2026-11-28 Leeds vs Coventry                                57%   24%   19%    53%   53%  1-1
   2026-11-28 Ipswich vs Aston Villa                           27%   26%   46%    55%   58%  1-1
   2026-11-28 Arsenal vs Man City                              47%   27%   25%    49%   53%  1-1
   2026-11-28 Man United vs Brentford                          51%   26%   24%    54%   57%  1-1
   2026-11-28 Everton vs Liverpool                             35%   28%   37%    51%   56%  1-1
+  2026-11-28 Fulham vs Bournemouth                            37%   28%   35%    49%   55%  1-1
+  2026-11-28 Nottm Forest vs Chelsea                          39%   28%   33%    51%   56%  1-1
+  2026-11-28 Brighton vs Newcastle                            50%   26%   24%    53%   56%  1-1
+  2026-11-28 Sunderland vs Tottenham                          40%   28%   32%    48%   53%  1-1
+  2026-11-28 Crystal Palace vs Hull                           60%   23%   17%    54%   52%  1-1
+  2026-12-02 Tottenham vs Fulham                              41%   28%   31%    48%   53%  1-1
+  2026-12-02 Liverpool vs Sunderland                          59%   24%   17%    53%   52%  1-1
+  2026-12-02 Hull vs Nottm Forest                             25%   27%   47%    49%   53%  1-1
+  2026-12-02 Chelsea vs Crystal Palace                        52%   25%   23%    55%   57%  1-1
+  2026-12-02 Aston Villa vs Everton                           48%   26%   25%    53%   56%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

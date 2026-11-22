@@ -1,21 +1,15 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-21 16:52 UTC_
+_Actualizado automáticamente: 2026-11-22 17:14 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(7 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-21 Leverkusen vs Paderborn                          75%   16%    9%    69%   55%  2-0
-  2026-11-21 Union Berlin vs RB Leipzig                       28%   25%   48%    61%   63%  1-1
-  2026-11-21 Elversberg vs Freiburg                           32%   25%   43%    61%   63%  1-1
-  2026-11-21 MGladbach vs Dortmund                            22%   23%   54%    61%   61%  1-1
-  2026-11-21 Ein Frankfurt vs Hoffenheim                      44%   25%   32%    63%   65%  1-1
-  2026-11-21 Schalke 04 vs Stuttgart                          21%   23%   56%    62%   61%  1-1
   2026-11-22 Augsburg vs Mainz                                44%   24%   31%    63%   65%  1-1
   2026-11-22 Werder Bremen vs Hamburg                         49%   24%   27%    61%   63%  1-1
   2026-11-27 Werder Bremen vs MGladbach                       47%   24%   29%    63%   64%  1-1
@@ -25,6 +19,12 @@ Pronósticos de los próximos 15 partidos
   2026-11-28 Hamburg vs Bayern Munich                         10%   16%   74%    71%   59%  0-2
   2026-11-28 Stuttgart vs Ein Frankfurt                       57%   22%   21%    67%   65%  2-1
   2026-11-29 Freiburg vs RB Leipzig                           37%   25%   38%    62%   64%  1-1
+  2026-11-29 Hoffenheim vs Augsburg                           53%   23%   24%    65%   64%  1-1
+  2026-11-29 Dortmund vs Leverkusen                           53%   24%   24%    61%   61%  1-1
+  2026-12-05 Union Berlin vs Hamburg                          46%   25%   28%    59%   61%  1-1
+  2026-12-05 Schalke 04 vs Dortmund                           15%   21%   64%    60%   55%  0-2
+  2026-12-05 Leverkusen vs MGladbach                          67%   19%   14%    69%   61%  2-1
+  2026-12-05 Ein Frankfurt vs Werder Bremen                   54%   23%   23%    64%   64%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

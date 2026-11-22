@@ -1,20 +1,15 @@
 # Ligue 1: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-21 16:52 UTC_
+_Actualizado automáticamente: 2026-11-22 17:14 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(1 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+(6 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
 
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-21 Nice vs Paris SG                                 18%   23%   59%    58%   56%  1-1
-  2026-11-21 Monaco vs Auxerre                                55%   24%   20%    55%   55%  1-1
-  2026-11-21 Lens vs Toulouse                                 54%   25%   21%    55%   56%  1-1
-  2026-11-21 Lille vs Lyon                                    47%   27%   26%    50%   54%  1-1
-  2026-11-21 Strasbourg vs Brest                              49%   26%   25%    55%   58%  1-1
   2026-11-22 Paris FC vs Angers                               55%   25%   20%    52%   53%  1-1
   2026-11-22 Lorient vs Rennes                                36%   27%   37%    53%   57%  1-1
   2026-11-22 Marseille vs Le Mans                             69%   19%   12%    62%   53%  2-0
@@ -25,6 +20,11 @@ Pronósticos de los próximos 15 partidos
   2026-11-28 Le Havre vs Strasbourg                           33%   27%   40%    54%   58%  1-1
   2026-11-28 Paris SG vs Lorient                              69%   19%   11%    60%   51%  2-0
   2026-11-29 Auxerre vs Marseille                             30%   27%   43%    54%   58%  1-1
+  2026-11-29 Toulouse vs Rennes                               38%   27%   35%    55%   59%  1-1
+  2026-11-29 Lyon vs Monaco                                   45%   27%   29%    53%   57%  1-1
+  2026-12-05 Troyes vs Lyon                                   24%   26%   50%    51%   54%  1-1
+  2026-12-05 Monaco vs Angers                                 62%   22%   16%    57%   53%  2-0
+  2026-12-05 Lens vs Le Havre                                 62%   22%   16%    58%   54%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```

@@ -1,17 +1,15 @@
 # Serie A: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-21 16:52 UTC_
+_Actualizado automáticamente: 2026-11-22 17:14 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
+(4 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
+
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-21 Como vs Cagliari                                 55%   27%   18%    44%   46%  1-0
-  2026-11-21 Lazio vs Lecce                                   53%   27%   19%    44%   46%  1-0
-  2026-11-21 Parma vs Roma                                    17%   26%   57%    45%   46%  0-1
-  2026-11-21 Napoli vs Torino                                 60%   25%   15%    47%   46%  1-0
   2026-11-22 Sassuolo vs Genoa                                36%   30%   34%    43%   50%  1-1
   2026-11-22 Milan vs Frosinone                               59%   24%   17%    52%   51%  1-1
   2026-11-22 Bologna vs Udinese                               45%   29%   26%    43%   48%  1-1
@@ -23,6 +21,10 @@ Pronósticos de los próximos 15 partidos
   2026-11-29 Como vs Juventus                                 33%   30%   37%    40%   48%  1-1
   2026-11-29 Roma vs Monza                                    69%   20%   11%    57%   49%  2-0
   2026-11-29 Frosinone vs Parma                               38%   29%   33%    45%   52%  1-1
+  2026-11-29 Torino vs Lazio                                  26%   29%   44%    43%   49%  1-1
+  2026-11-29 Venezia vs Bologna                               24%   29%   47%    43%   48%  1-1
+  2026-11-29 Lecce vs Atalanta                                21%   27%   52%    45%   48%  1-1
+  2026-11-29 Udinese vs Fiorentina                            34%   29%   37%    44%   51%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
