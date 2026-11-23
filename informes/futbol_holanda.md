@@ -1,30 +1,28 @@
 # Eredivisie: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-22 17:14 UTC_
+_Actualizado automáticamente: 2026-11-23 21:31 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(5 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
-
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-22 Twente vs Willem II                              78%   14%    8%    72%   55%  2-0
-  2026-11-22 Sparta Rotterdam vs AZ Alkmaar                   28%   24%   48%    63%   64%  1-1
-  2026-11-22 Ajax vs Den Haag                                 75%   16%   10%    71%   58%  2-0
-  2026-11-22 Go Ahead Eagles vs For Sittard                   48%   24%   28%    64%   65%  1-1
-  2026-11-27 Groningen vs Willem II                           66%   19%   15%    68%   61%  2-1
-  2026-11-28 Excelsior vs Telstar                             37%   25%   38%    61%   64%  1-1
-  2026-11-28 PSV Eindhoven vs Go Ahead Eagles                 73%   16%   11%    73%   61%  2-1
-  2026-11-28 Cambuur vs Sparta Rotterdam                      33%   24%   43%    65%   66%  1-1
-  2026-11-29 Den Haag vs Utrecht                              22%   22%   56%    65%   64%  1-1
-  2026-11-29 For Sittard vs Heerenveen                        34%   25%   41%    62%   64%  1-1
-  2026-11-29 Feyenoord vs Ajax                                49%   24%   27%    64%   65%  1-1
-  2026-11-29 Zwolle vs AZ Alkmaar                             25%   24%   51%    62%   62%  1-1
-  2026-11-29 Nijmegen vs Twente                               36%   25%   39%    62%   65%  1-1
-  2026-12-04 Telstar vs Groningen                             39%   25%   36%    64%   66%  1-1
-  2026-12-05 Willem II vs Feyenoord                           10%   16%   74%    71%   58%  0-2
+  2026-11-27 Groningen vs Willem II                           66%   19%   15%    67%   61%  2-1
+  2026-11-28 Excelsior vs Telstar                             37%   25%   38%    62%   64%  1-1
+  2026-11-28 PSV Eindhoven vs Go Ahead Eagles                 72%   16%   11%    73%   61%  2-1
+  2026-11-28 Cambuur vs Sparta Rotterdam                      33%   24%   43%    66%   67%  1-1
+  2026-11-29 Den Haag vs Utrecht                              21%   22%   57%    66%   64%  1-1
+  2026-11-29 For Sittard vs Heerenveen                        33%   25%   42%    62%   64%  1-1
+  2026-11-29 Feyenoord vs Ajax                                48%   24%   28%    64%   65%  1-1
+  2026-11-29 Zwolle vs AZ Alkmaar                             24%   24%   52%    62%   62%  1-1
+  2026-11-29 Nijmegen vs Twente                               35%   25%   40%    62%   65%  1-1
+  2026-12-04 Telstar vs Groningen                             39%   25%   37%    64%   66%  1-1
+  2026-12-05 Willem II vs Feyenoord                           10%   16%   73%    70%   58%  0-2
+  2026-12-05 Sparta Rotterdam vs Nijmegen                     32%   24%   44%    64%   66%  1-1
+  2026-12-05 AZ Alkmaar vs PSV Eindhoven                      27%   24%   49%    65%   65%  1-1
+  2026-12-05 For Sittard vs Zwolle                            43%   25%   32%    61%   64%  1-1
+  2026-12-06 Heerenveen vs Cambuur                            61%   21%   18%    68%   64%  2-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,24 +34,24 @@ Clasificación general
 ═════════════════════
   #  Equipo            PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ───────────────────────────────────────────────────────────────────────
-  1  PSV Eindhoven     12   8   2   2   40   15  +25   26  2.17  GPEGG
-  2  Feyenoord         12   7   4   1   36   17  +19   25  2.08  GGEEP
-  3  Ajax              12   7   4   1   32   15  +17   25  2.08  EGGGE
-  4  Twente            12   7   3   2   30   12  +18   24  2.00  EPGGE
-  5  AZ Alkmaar        12   7   2   3   24   16   +8   23  1.92  PEPPG
-  6  Heerenveen        12   6   3   3   24   16   +8   21  1.75  PGGGG
-  7  For Sittard       12   5   5   2   20   20   +0   20  1.67  EEGEE
-  8  Go Ahead Eagles   12   4   5   3   24   27   -3   17  1.42  EPGPG
-  9  Groningen         12   4   3   5   29   28   +1   15  1.25  GPEPP
- 10  Cambuur           12   4   3   5   25   27   -2   15  1.25  GEGGP
- 11  Nijmegen          12   3   5   4   20   21   -1   14  1.17  EEEPG
- 12  Sparta Rotterdam  12   3   3   6   21   29   -8   12  1.00  EGPGP
- 13  Zwolle            12   3   3   6   13   24  -11   12  1.00  PGEGE
- 14  Utrecht           12   3   3   6   21   34  -13   12  1.00  GGEPP
- 15  Excelsior         12   3   2   7   16   29  -13   11  0.92  PPPPP
- 16  Telstar           12   2   4   6   18   25   -7   10  0.83  EPPGE
- 17  Den Haag          12   2   3   7   16   25   -9    9  0.75  EGPPG
- 18  Willem II         12   0   3   9   11   40  -29    3  0.25  PPPPE
+  1  PSV Eindhoven     13   9   2   2   44   16  +28   29  2.23  PEGGG
+  2  Ajax              13   8   4   1   35   15  +20   28  2.15  GGGEG
+  3  Twente            13   8   3   2   32   13  +19   27  2.08  PGGEG
+  4  AZ Alkmaar        13   8   2   3   29   17  +12   26  2.00  EPPGG
+  5  Feyenoord         13   7   4   2   38   20  +18   25  1.92  GEEPP
+  6  Heerenveen        13   7   3   3   27   17  +10   24  1.85  GGGGG
+  7  For Sittard       13   6   5   2   21   20   +1   23  1.77  EGEEG
+  8  Cambuur           13   5   3   5   28   29   -1   18  1.38  EGGPG
+  9  Go Ahead Eagles   13   4   5   4   24   28   -4   17  1.31  PGPGP
+ 10  Groningen         13   4   3   6   30   31   -1   15  1.15  PEPPP
+ 11  Zwolle            13   4   3   6   16   25   -9   15  1.15  GEGEG
+ 12  Nijmegen          13   3   5   5   21   25   -4   14  1.08  EEPGP
+ 13  Excelsior         13   4   2   7   19   31  -12   14  1.08  PPPPG
+ 14  Sparta Rotterdam  13   3   3   7   22   34  -12   12  0.92  GPGPP
+ 15  Utrecht           13   3   3   7   23   37  -14   12  0.92  GEPPP
+ 16  Telstar           13   2   4   7   19   28   -9   10  0.77  PPGEP
+ 17  Den Haag          13   2   3   8   16   28  -12    9  0.69  GPPGP
+ 18  Willem II         13   0   3  10   12   42  -30    3  0.23  PPPEP
 ```
 
 ## Ranking de fuerza
@@ -65,22 +63,22 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo              Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  PSV Eindhoven      1720    1.50     0.81    +1.19  ▁▂▃▅▇█▆▇▅▄▅▇
-   2  Feyenoord          1637    1.34     0.79    +0.96  ▁▁▂▂▄▅▆▇██▇▆
-   3  Twente             1635    1.31     0.69    +1.08  ▁▂▃▃▄▅▆▆▄▆██
-   4  Ajax               1632    1.22     0.80    +0.72  ▁▁▃▂▄▅▄▄▆▇██
-   5  Heerenveen         1567    1.09     0.87    +0.38  ▅▅▂▂▁▁▃▂▄▅▆█
-   6  AZ Alkmaar         1563    1.13     0.77    +0.62  ▁▄▅▇█▇█▇▆▄▄▄
-   7  Nijmegen           1548    1.13     0.89    +0.43  ▅▇█▆▅▃▂▃▂▂▁▂
-   8  Groningen          1510    1.14     0.95    +0.32  ▃▆▅▂▂▂▄█▅▅▂▁
-   9  Utrecht            1504    1.02     1.04    -0.03  █▅▅▃▂▄▂▄▆▅▃▁
-  10  Cambuur            1495    1.03     1.08    -0.08  ▅▄▂▁▁▃▃▄▅▇█▇
-  11  For Sittard        1484    0.90     1.03    -0.23  ▁▃▁▃▅▃▅▅▆▇██
-  12  Go Ahead Eagles    1476    1.01     1.05    -0.06  ▅▆█▆▆▆▇▆▂▄▁▃
-  13  Telstar            1458    0.93     1.10    -0.30  █▆▄▄▃▃▃▃▂▁▃▃
-  14  Den Haag           1454    0.83     1.14    -0.54  █▅▃▄▂▁▁▂▄▂▁▃
-  15  Excelsior          1433    0.79     1.04    -0.43  ▆▅▆██▇▇▆▄▄▂▁
-  16  Sparta Rotterdam   1427    0.91     1.12    -0.37  ▃██▆▆▅▁▂▄▂▅▃
-  17  Zwolle             1422    0.78     1.13    -0.60  ▅▄█▆▇▄▃▁▄▅▇▇
-  18  Willem II          1390    0.60     1.43    -1.44  █▇▇▅▆▅▄▄▃▁▁▁
+   1  PSV Eindhoven      1732    1.49     0.82    +1.17  ▁▂▅▇█▆▇▄▃▄▆█
+   2  Ajax               1639    1.23     0.78    +0.77  ▁▃▁▃▄▄▃▅▆▇▇█
+   3  Twente             1638    1.29     0.69    +1.06  ▁▃▃▃▄▆▅▄▆███
+   4  Feyenoord          1621    1.31     0.80    +0.88  ▁▂▂▄▅▆▇██▇▆▄
+   5  Heerenveen         1583    1.10     0.88    +0.39  ▄▂▂▁▁▃▂▃▄▅▇█
+   6  AZ Alkmaar         1578    1.15     0.76    +0.68  ▁▄▆█▇█▆▆▂▁▂▅
+   7  Nijmegen           1536    1.14     0.88    +0.46  ▇█▆▅▃▂▃▂▂▁▂▁
+   8  Cambuur            1507    1.07     1.12    -0.08  ▄▂▁▁▃▃▄▅▆█▇█
+   9  For Sittard        1496    0.88     1.04    -0.27  ▃▁▃▅▂▄▄▅▆▇▆█
+  10  Groningen          1495    1.14     0.96    +0.33  ▇▆▄▄▄▅█▆▆▄▃▁
+  11  Utrecht            1492    1.04     1.06    -0.03  ▇▇▅▄▆▄▆█▇▅▃▁
+  12  Go Ahead Eagles    1465    1.02     1.03    -0.02  ▆█▆▆▆▇▆▂▄▁▃▁
+  13  Excelsior          1450    0.81     1.01    -0.34  ▅▆██▇▇▆▄▄▂▁▂
+  14  Den Haag           1447    0.79     1.17    -0.66  █▅▆▃▂▁▂▆▃▁▄▂
+  15  Zwolle             1441    0.79     1.12    -0.58  ▄▆▅▅▄▂▁▄▄▅▆█
+  16  Telstar            1439    0.92     1.11    -0.33  █▅▅▄▄▄▃▂▁▄▄▁
+  17  Sparta Rotterdam   1412    0.90     1.15    -0.43  ██▇▆▅▂▃▄▃▆▄▁
+  18  Willem II          1387    0.60     1.40    -1.39  ██▆▇▆▅▄▃▂▁▁▁
 ```

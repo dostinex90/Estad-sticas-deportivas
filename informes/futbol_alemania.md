@@ -1,30 +1,28 @@
 # Bundesliga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-22 17:14 UTC_
+_Actualizado automáticamente: 2026-11-23 21:31 UTC_
 
 ## Pronósticos de los próximos partidos
 
 ```
-(7 partidos ya disputados aún no tienen resultado en la fuente; se omiten)
-
 Pronósticos de los próximos 15 partidos
 ═══════════════════════════════════════
   Fecha      Partido                                            1     X     2   +2.5    AM  Marcador
-  2026-11-22 Augsburg vs Mainz                                44%   24%   31%    63%   65%  1-1
-  2026-11-22 Werder Bremen vs Hamburg                         49%   24%   27%    61%   63%  1-1
-  2026-11-27 Werder Bremen vs MGladbach                       47%   24%   29%    63%   64%  1-1
-  2026-11-28 FC Koln vs Elversberg                            48%   24%   28%    62%   63%  1-1
-  2026-11-28 Mainz vs Union Berlin                            54%   24%   22%    61%   61%  1-1
-  2026-11-28 Paderborn vs Schalke 04                          46%   26%   28%    55%   59%  1-1
-  2026-11-28 Hamburg vs Bayern Munich                         10%   16%   74%    71%   59%  0-2
-  2026-11-28 Stuttgart vs Ein Frankfurt                       57%   22%   21%    67%   65%  2-1
+  2026-11-27 Werder Bremen vs MGladbach                       47%   24%   28%    62%   64%  1-1
+  2026-11-28 FC Koln vs Elversberg                            49%   25%   27%    60%   62%  1-1
+  2026-11-28 Mainz vs Union Berlin                            54%   23%   23%    62%   61%  1-1
+  2026-11-28 Paderborn vs Schalke 04                          44%   26%   30%    55%   59%  1-1
+  2026-11-28 Hamburg vs Bayern Munich                         10%   16%   74%    71%   58%  0-2
+  2026-11-28 Stuttgart vs Ein Frankfurt                       57%   22%   21%    67%   64%  1-1
   2026-11-29 Freiburg vs RB Leipzig                           37%   25%   38%    62%   64%  1-1
   2026-11-29 Hoffenheim vs Augsburg                           53%   23%   24%    65%   64%  1-1
-  2026-11-29 Dortmund vs Leverkusen                           53%   24%   24%    61%   61%  1-1
-  2026-12-05 Union Berlin vs Hamburg                          46%   25%   28%    59%   61%  1-1
-  2026-12-05 Schalke 04 vs Dortmund                           15%   21%   64%    60%   55%  0-2
-  2026-12-05 Leverkusen vs MGladbach                          67%   19%   14%    69%   61%  2-1
-  2026-12-05 Ein Frankfurt vs Werder Bremen                   54%   23%   23%    64%   64%  1-1
+  2026-11-29 Dortmund vs Leverkusen                           52%   24%   24%    61%   61%  1-1
+  2026-12-05 Union Berlin vs Hamburg                          47%   25%   28%    59%   62%  1-1
+  2026-12-05 Schalke 04 vs Dortmund                           16%   22%   63%    59%   55%  0-2
+  2026-12-05 Leverkusen vs MGladbach                          68%   18%   14%    69%   61%  2-1
+  2026-12-05 Ein Frankfurt vs Werder Bremen                   54%   23%   23%    64%   63%  1-1
+  2026-12-05 RB Leipzig vs Mainz                              60%   21%   19%    67%   64%  2-1
+  2026-12-05 Elversberg vs Stuttgart                          25%   23%   52%    64%   64%  1-1
 
   +2.5 = más de 2.5 goles · AM = marcan ambos
 ```
@@ -36,24 +34,24 @@ Clasificación general
 ═════════════════════
   #  Equipo         PJ   G   E   P   GF   GC   DG  Pts   PPP  Forma
 ────────────────────────────────────────────────────────────────────
-  1  Bayern Munich   9   6   3   0   29    9  +20   21  2.33  EGGEG
-  2  Dortmund        9   6   3   0   16    7   +9   21  2.33  EEGEG
-  3  Freiburg        9   6   1   2   20   10  +10   19  2.11  GPPGG
-  4  RB Leipzig      9   6   0   3   27   13  +14   18  2.00  GPGGG
-  5  Leverkusen      9   5   1   3   20   17   +3   16  1.78  GGPPG
-  6  Werder Bremen   9   4   3   2   17   15   +2   15  1.67  EEGGP
-  7  Elversberg      9   4   1   4   17   18   -1   13  1.44  PGPGP
-  8  Stuttgart       9   4   0   5   15   15   +0   12  1.33  GPPGG
-  9  Hoffenheim      9   4   0   5   16   17   -1   12  1.33  PGGPG
- 10  Ein Frankfurt   9   3   3   3   15   20   -5   12  1.33  PGPGE
- 11  Hamburg         9   4   0   5   10   20  -10   12  1.33  GGPPG
- 12  Mainz           9   3   1   5   18   19   -1   10  1.11  PGPPP
- 13  Paderborn       9   2   4   3    8   11   -3   10  1.11  PEGEE
- 14  Augsburg        9   2   3   4   20   20   +0    9  1.00  EPEPP
- 15  FC Koln         9   2   3   4   10   14   -4    9  1.00  GPEEP
- 16  Union Berlin    9   1   4   4    7   21  -14    7  0.78  GEEEP
- 17  Schalke 04      9   1   3   5    5   11   -6    6  0.67  PPEPP
- 18  MGladbach       9   1   1   7   12   25  -13    4  0.44  PPGEP
+  1  Dortmund       10   7   3   0   17    7  +10   24  2.40  EGEGG
+  2  Bayern Munich  10   6   4   0   30   10  +20   22  2.20  GGEGE
+  3  Freiburg       10   7   1   2   21   10  +11   22  2.20  PPGGG
+  4  RB Leipzig     10   7   0   3   32   14  +18   21  2.10  PGGGG
+  5  Leverkusen     10   6   1   3   24   17   +7   19  1.90  GPPGG
+  6  Werder Bremen  10   5   3   2   21   15   +6   18  1.80  EGGPG
+  7  Ein Frankfurt  10   4   3   3   16   20   -4   15  1.50  GPGEG
+  8  Stuttgart      10   4   1   5   15   15   +0   13  1.30  PPGGE
+  9  Elversberg     10   4   1   5   17   19   -2   13  1.30  GPGPP
+ 10  Augsburg       10   3   3   4   23   21   +2   12  1.20  PEPPG
+ 11  Hoffenheim     10   4   0   6   16   18   -2   12  1.20  GGPGP
+ 12  Hamburg        10   4   0   6   10   24  -14   12  1.20  GPPGP
+ 13  Mainz          10   3   1   6   19   22   -3   10  1.00  GPPPP
+ 14  FC Koln        10   2   4   4   11   15   -4   10  1.00  PEEPE
+ 15  Paderborn      10   2   4   4    8   15   -7   10  1.00  EGEEP
+ 16  Schalke 04     10   1   4   5    5   11   -6    7  0.70  PEPPE
+ 17  Union Berlin   10   1   4   5    8   26  -18    7  0.70  EEEPP
+ 18  MGladbach      10   1   1   8   12   26  -14    4  0.40  PGEPP
 ```
 
 ## Ranking de fuerza
@@ -65,22 +63,22 @@ Ranking de fuerza
   DG esp.: diferencia de goles esperada por partido contra un rival medio en campo neutral.
 
    #  Equipo           Elo  Ataque  Defensa  DG esp.  Tendencia Elo
-   1  Bayern Munich   1763    1.83     0.70    +1.88  ▁▂▃▄▃▅▅▄▆█▇█
-   2  Dortmund        1674    1.06     0.69    +0.62  ▁▂▃▄▅▆█▇▆▇▇█
-   3  RB Leipzig      1601    1.29     0.94    +0.60  ▆▇▃▅▁▃▁▃▂▄▆█
-   4  Stuttgart       1584    1.24     0.97    +0.44  ▆██▆▇▆▄▆▄▁▅▆
-   5  Leverkusen      1569    1.18     0.96    +0.37  ▆▄▃▁▃▃▅▇█▅▁▃
-   6  Freiburg        1544    0.97     0.86    +0.19  ▂▁▃▄▅▇▇█▇▆▇█
-   7  Hoffenheim      1531    1.08     0.95    +0.22  ▇█▅▄▃▄▃▁▂▄▂▃
-   8  Elversberg      1510    1.02     1.05    -0.04  ▄█▆▇▃▆▁▆▄
-   9  Paderborn       1489    0.71     1.02    -0.51  █▄▁▇▁▁▄▄▃
-  10  Ein Frankfurt   1482    1.05     1.09    -0.06  ▇▆▇▇▁▇▇▃▅▄▇█
-  11  Augsburg        1474    1.09     1.09    +0.00  ▃▅▂▄██▆▇▅▅▃▁
-  12  Mainz           1473    0.97     1.03    -0.10  ▆▂▄▄█▄▆▅▇▄▂▁
-  13  Schalke 04      1464    0.66     1.09    -0.72  ▅▅██▆▄▄▂▁
-  14  Werder Bremen   1461    0.99     1.00    -0.03  ▃▃▂▁▃▃▄▅▅▆█▇
-  15  Hamburg         1451    0.87     1.07    -0.33  ▅▇█▇▃▁▃▅█▆▄▆
-  16  Union Berlin    1426    0.77     1.00    -0.38  ▁▅██▆▃▃▅▅▆▆▄
-  17  MGladbach       1415    0.90     1.20    -0.50  ▇▅█▇▆▄▃▂▁▃▃▁
-  18  FC Koln         1409    0.92     1.02    -0.16  █▄▃▆▄▃▂▄▂▂▃▁
+   1  Bayern Munich   1755    1.77     0.71    +1.74  ▁▂▄▃▄▅▄▆█▇█▆
+   2  Dortmund        1679    1.06     0.68    +0.62  ▁▂▃▅▆▇▆▅▆▇▇█
+   3  RB Leipzig      1614    1.35     0.96    +0.65  ▅▃▄▁▃▁▃▂▃▅▆█
+   4  Stuttgart       1582    1.22     0.99    +0.39  ██▆▇▆▄▆▄▁▅▆▅
+   5  Leverkusen      1581    1.21     0.94    +0.44  ▄▃▁▃▃▅▇█▅▁▃▅
+   6  Freiburg        1555    0.96     0.84    +0.20  ▁▃▄▅▆▆▇▆▅▆▇█
+   7  Hoffenheim      1522    1.07     0.94    +0.20  █▅▄▃▄▃▁▂▄▂▃▂
+   8  Elversberg      1499    0.96     1.00    -0.07  ▅█▆▇▃▆▁▆▅▁
+   9  Ein Frankfurt   1492    1.05     1.08    -0.04  ▅▅▅▁▅▅▂▄▃▆▆█
+  10  Augsburg        1487    1.12     1.08    +0.05  ▅▂▄██▆▇▅▅▃▁▃
+  11  Paderborn       1477    0.68     1.09    -0.68  █▅▂▇▃▃▅▅▄▁
+  12  Werder Bremen   1476    1.01     0.99    +0.03  ▃▂▁▃▃▄▅▅▆▇▇█
+  13  Schalke 04      1465    0.69     1.05    -0.59  ▅▅██▆▄▄▂▁▁
+  14  Mainz           1461    0.97     1.06    -0.15  ▃▅▅█▅▇▅▇▅▃▃▁
+  15  Hamburg         1436    0.86     1.09    -0.39  ▇█▇▃▁▃▅█▆▄▆▃
+  16  FC Koln         1417    0.93     0.95    -0.04  ▅▄█▅▅▂▅▃▃▃▁▄
+  17  Union Berlin    1414    0.81     1.05    -0.41  ▄██▆▃▂▄▅▆▅▄▁
+  18  MGladbach       1410    0.88     1.20    -0.52  ▅█▇▆▄▃▂▁▃▃▂▁
 ```
