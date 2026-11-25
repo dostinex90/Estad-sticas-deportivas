@@ -1,6 +1,6 @@
 # Precisión de los modelos
 
-_Actualizado automáticamente: 2026-11-24 20:14 UTC_
+_Actualizado automáticamente: 2026-11-25 19:24 UTC_
 
 ## LaLiga (temporada en curso)
 
@@ -151,12 +151,12 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
   Acierto ganador (solo Elo)         █████████████░░░░░░░  63.0%
   Acierto ganador (solo ratings)     ████████████░░░░░░░░  60.5%
   Acierto del favorito del mercado   ██████████████░░░░░░  68.5%
-  Brier score: 0.204 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.596
-  Error medio del margen: 9.47 pts · del total: 11.29 pts
+  Brier score: 0.205 (0.25 = lanzar una moneda; menor es mejor) · log-loss 0.597
+  Error medio del margen: 9.49 pts · del total: 11.29 pts
 
 ── Frente a las casas de apuestas ──────────────────────────────
-  Error medio del margen: modelo 9.47 pts vs mercado 9.46 pts
-  Acierto contra el spread           ███████████░░░░░░░░░  55.8%  (156)
+  Error medio del margen: modelo 9.49 pts vs mercado 9.46 pts
+  Acierto contra el spread           ███████████░░░░░░░░░  55.1%  (156)
   ATS con diferencia ≥3 pts          ███████████░░░░░░░░░  52.8%  (36)
   Error medio del total: modelo 11.29 vs mercado 10.41
   Acierto over/under                 █████████░░░░░░░░░░░  43.8%  (162)
@@ -168,12 +168,12 @@ Validación del modelo en 2026 (semana a semana, sin datos futuros)
 ```
 Validación del modelo en 2026-27 (día a día, sin datos futuros)
 ═══════════════════════════════════════════════════════════════
-  Partidos evaluados: 258
+  Partidos evaluados: 261
   Acierto ganador (combinado)        ██████████████░░░░░░  68.2%
-  Acierto ganador (solo Elo)         █████████████░░░░░░░  64.7%
-  Acierto ganador (solo ratings)     █████████████░░░░░░░  67.1%
-  Gana siempre el local              ██████████░░░░░░░░░░  51.9%
-  Brier score: 0.200 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.214 · log-loss 0.586
-  Error medio del margen: 11.12 pts · del total: 14.97 pts
+  Acierto ganador (solo Elo)         █████████████░░░░░░░  64.8%
+  Acierto ganador (solo ratings)     █████████████░░░░░░░  67.0%
+  Gana siempre el local              ██████████░░░░░░░░░░  51.3%
+  Brier score: 0.201 (0.25 = lanzar una moneda; menor es mejor) · solo Elo 0.215 · log-loss 0.587
+  Error medio del margen: 11.19 pts · del total: 15.07 pts
   La base no tiene líneas de apuestas de la NBA, así que no hay comparación con el mercado.
 ```
