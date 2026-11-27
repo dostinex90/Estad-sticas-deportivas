@@ -1,6 +1,6 @@
 # LaLiga: pronósticos y clasificación
 
-_Actualizado automáticamente: 2026-11-26 19:08 UTC_
+_Actualizado automáticamente: 2026-11-27 19:10 UTC_
 
 ## Pronósticos de los próximos partidos
 
